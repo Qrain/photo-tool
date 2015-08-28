@@ -33,30 +33,33 @@ Public Class 整理ツール２
 
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Using ii As New ImageInfo
+        Dim dtb = SQLite_GetDataTable("select * from gps_cache")
 
-            Console.WriteLine(ii.IsImage)
-            Console.WriteLine(ii.FileName)
-            Console.WriteLine(ii.CaptureDate)
-
-            Dim caploc = ii.CaptureLocation
-
-            If caploc IsNot Nothing Then
-                Console.WriteLine(caploc.AddressL)
-                Console.WriteLine(caploc.AddressM)
-                Console.WriteLine(caploc.AddressS)
-                Console.WriteLine(caploc.Postal)
-            End If
-            
-            'ファイル名を変換
-            ii.FileName = "C:\Users\sawai\Downloads\flashplayer17axau_ra_install.exe"
-            Console.WriteLine(ii.IsImage)
-            Console.WriteLine(ii.FileName)
-            Console.WriteLine(ii.CaptureDate)
-        End Using
+ 
+        Console.WriteLine(dtb.Rows.Count)
 
 
-        Dim ax = New CacheGPS(CacheGPS.CacheType.DB_SQLite)
+        'Using ii As New ImageInfo
+        '    Console.WriteLine(ii.IsImage)
+        '    Console.WriteLine(ii.FileName)
+        '    Console.WriteLine(ii.CaptureDate)
+        '    Dim caploc = ii.CaptureLocation
+        '    If caploc IsNot Nothing Then
+        '        Console.WriteLine(caploc.AddressL)
+        '        Console.WriteLine(caploc.AddressM)
+        '        Console.WriteLine(caploc.AddressS)
+        '        Console.WriteLine(caploc.Postal)
+        '    End If
+        '    'ファイル名を変換
+        '    ii.FileName = "C:\Users\sawai\Desktop\整理対象フォルダ（位置情報有）_1\東京都\葛飾区\東四つ木一丁目\0001-01-01IMG_0189.JPG"
+        '    Console.WriteLine(ii.IsImage)
+        '    Console.WriteLine(ii.FileName)
+        '    Console.WriteLine(ii.CaptureDate)
+        'End Using
+
+
+
+        'Dim ax = New CacheGPS(CacheGPS.CacheType.DB_SQLite)
 
 
 
@@ -771,39 +774,6 @@ Class ImageInfo
     Implements IDisposable
 
 
-    '位置情報のクラス
-    Class LocationInfo
-        Public Sub New(ByVal x As Double,
-                       ByVal y As Double,
-                       ByVal distance As Double,
-                       ByVal addressL As String,
-                       ByVal addressM As String,
-                       ByVal addressS As String,
-                       ByVal addressElse As String,
-                       ByVal postal As String)
-            Me.X = x
-            Me.Y = y
-            Me.Distance = distance
-            Me.AddressL = addressL
-            Me.AddressM = addressM
-            Me.AddressS = addressS
-            Me.AddressElse = addressElse
-            Me.Postal = postal
-        End Sub
-
-        '緯度と軽度
-        Public ReadOnly X As Double
-        Public ReadOnly Y As Double
-        '緯度・経度と住所との誤差目安（m）
-        Public ReadOnly Distance As Double
-        '各住所（大区分、中区分、小区分、それ以降）
-        Public ReadOnly AddressL As String
-        Public ReadOnly AddressM As String
-        Public ReadOnly AddressS As String
-        Public ReadOnly AddressElse As String
-        '郵便番号
-        Public ReadOnly Postal As String
-    End Class
 
     Private _FileName As String ' ファイル名
     Private _CaptureLocation As LocationInfo '区分毎に分割した住所

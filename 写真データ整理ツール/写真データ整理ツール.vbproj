@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheGPS.vb" />
+    <Compile Include="SQLiteCommon.vb" />
     <Compile Include="ObjGPS.vb" />
     <Compile Include="整理ツール１.vb">
       <SubType>Form</SubType>
