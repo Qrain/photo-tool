@@ -6,74 +6,31 @@ Imports System.Xml
 
 Public Class CacheGPS
 
+    '座標→住所解決に使用するWebAPI のURLフォーマット
+    Private Const apiUrl = "http://geoapi.heartrails.com/api/xml?method=searchByGeoLocation&x={0}&y={1}"
 
+    '緯度及び経度を四捨五入したときに残す小数部の桁数
+    ' 目安として、緯度及び経度 の値と距離の関係は
+    ' 0.01      ≒ 1000m → Round(n, 2)
+    ' 0.001     ≒ 100m  → Round(n, 3)
+    ' 0.0001    ≒ 10m   → Round(n, 4)
+    ' よって、100m 程度の誤差を許すなら、小数点以下3桁あればよく、
+    ' Math.Round(n, 3) で４桁目で四捨五入すればいいようだ。
+    ' ちなみに、iPhone4s では 6桁あったので、計算上は 10cm 程度の誤差になる。
+    Private Const decs = 3
 
-
-    Enum CacheType
-        DB_SQLite
-        JSON
-        XML
-        CSV
-    End Enum
-
-    Sub New(ByVal type As CacheType)
-
-
-        Select Case type
-            Case CacheType.DB_SQLite
-
-                Try
-                    Using con As New SQLiteConnection(My.Settings.DB接続文字列)
-                        '接続をオープン
-                        con.Open()
-                        Using com = con.CreateCommand
-                            Dim sql As New StringBuilder
-                            sql.AppendLine("")
-                            com.CommandText = "SELECT * FROM GPS_CACHE"
-
-                            'INSERT操作を実行
-                            'com.ExecuteNonQuery()
-                            'データリーダーにデータ取得
-                            Using dr = com.ExecuteReader
-                                'データを全件出力
-                                Do Until Not dr.Read
-                                    Debug.Print(dr.Item("LAT").ToString)
-                                    Debug.Print(dr.Item("LONG").ToString)
-                                    Debug.Print(dr.Item("ADDRESS_L").ToString)
-                                    Debug.Print(dr.Item("ADDRESS_M").ToString)
-                                    Debug.Print(dr.Item("ADDRESS_S").ToString)
-                                Loop
-
-                            End Using
-                        End Using
-                    End Using
-                Catch ex As Exception
-
-                    MsgBox(ex.Message)
-
-                End Try
-
-
-            Case CacheType.JSON
-
-            Case CacheType.CSV
-
-            Case CacheType.XML
-        End Select
-
-
-
-    End Sub
+    Private sql As New StringBuilder
 
 
     ''' <summary>
-    ''' 
+    ''' 引数に指定した経度と緯度に対応するLocationInfoオブジェクトを返却します。
+    ''' このメソッドは SQLite データベースに結果をキャッシュします。
     ''' </summary>
     ''' <param name="x">経度（60でなく10進数）</param>
     ''' <param name="y">緯度（60でなく10進数）</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetAddress(x As Double, y As Double) As LocationInfo
+    Public Function GetLocation(x As Double, y As Double) As LocationInfo
 
         '有効桁数を丸めて補正
         x = FixXY(x)
@@ -85,39 +42,35 @@ Public Class CacheGPS
         sql.AppendLine("FROM")
         sql.AppendLine("    GPS_CACHE")
         sql.AppendLine("WHERE")
-        sql.AppendLine("    LAT = " & y & " AND")
-        sql.AppendLine("    LONG = " & x & "")
-
+        sql.AppendLine("    Y = " & y & " AND")
+        sql.AppendLine("    X = " & x & "")
 
         Dim dtb = SQLite_GetDataTable(sql.ToString)
-
-        '返却する Location オブジェクト
         Dim loc As LocationInfo = Nothing
 
+        '返却する Location オブジェクト
         If dtb.Rows.Count > 0 Then
-            ' DB上にキャッシュが存在する
+            'キャッシュ存在すればそれを元に Location を作成
+            ' DataRowを取得
             Dim drw = dtb.Rows(0)
 
-            With dtb.Rows(0)
-                loc = New LocationInfo(
-                    x,
-                    y,
-                    CDbl(.Item("DISTANCE")),
-                    .Item("ADDRESS_L").ToString,
-                    .Item("ADDRESS_M").ToString,
-                    .Item("ADDRESS_S").ToString,
-                    "",
-                    .Item("POSTAL").ToString)
-            End With
-
-            ' 位置情報があるなら、位置情報オブジェクトを返す
+            loc = New LocationInfo(
+                x,
+                y,
+                CDbl(drw.Item("DISTANCE")),
+                drw.Item("ADDRESS_L").ToString,
+                drw.Item("ADDRESS_M").ToString,
+                drw.Item("ADDRESS_S").ToString,
+                "",
+                drw.Item("POSTAL").ToString)
 
 
         Else
+
             ' DB上にキャッシュが無い場合は WebAPI を使い新規に取得する
 
             'WebサービスのURLを作成する
-            Dim url = String.Format("http://geoapi.heartrails.com/api/xml?method=searchByGeoLocation&x={0}&y={1}", x, y)
+            Dim url = String.Format(apiUrl, x, y)
 
             'URLへのRequestを生成
             Dim req = System.Net.WebRequest.Create(url)
@@ -171,18 +124,9 @@ Public Class CacheGPS
                     End Using
                 End Using
             End Using
-
         End If
 
-
-
-
-
-
-  
-
         Return loc
-
     End Function
 
 
@@ -193,44 +137,49 @@ Public Class CacheGPS
     ''' <param name="y">削除するキャッシュの緯度</param>
     ''' <returns>削除に成功すればTrue、失敗または指定のキャッシュが存在しない場合はFlase</returns>
     ''' <remarks></remarks>
-    Public Function ClearCache(x As Double, y As Double) As Boolean
+    Private Function ClearCache(x As Double?, y As Double?) As Boolean
 
-        '小数点3桁程度でOKかと・・・
-        ' 目安として： 緯度経度 0.01≒1km なので
-        ' 100m程度の誤差を許すならば、 0.001 と3桁程度あればいい
-        ' ちなみに、iphone だと6桁あるので、計算上は 10cm 程度の誤差になる
         sql.Length = 0
         sql.AppendLine("DELETE")
         sql.AppendLine("FROM")
         sql.AppendLine("    GPS_CACHE")
         sql.AppendLine("WHERE")
-        sql.AppendLine("    LAT = " & FixXY(y) & " AND")
-        sql.AppendLine("    LONG = " & FixXY(x))
+
+        If x IsNot Nothing Then
+            sql.AppendLine("    X = " & FixXY(x) & " AND")
+        End If
+
+        If y IsNot Nothing Then
+            sql.AppendLine("    Y = " & FixXY(y) & " AND")
+        End If
+
+        sql.AppendLine("    1 = 1")
 
         '削除を実行する（成功→True、失敗→False）
         Return SQLite_NonQuery(sql.ToString)
-
     End Function
 
+    Public Function ClearCacheX(x As Double)
+        Return ClearCache(x, Nothing)
+    End Function
 
+    Public Function ClearCacheY(y As Double)
+        Return ClearCache(Nothing, y)
+    End Function
 
-    Private sql As New StringBuilder
-
+    Public Function ClearCacheAll()
+        Return ClearCache(Nothing, Nothing)
+    End Function
 
     ''' <summary>
     ''' 所定の桁数で値を丸めて返します。
-    ''' 小数点3桁程度でOKかと・・・
-    ''' 目安として： 緯度経度 0.01≒1km なので
-    ''' 100m程度の誤差を許すならば、 0.001 と3桁程度あればいい
-    ''' ちなみに、iphone だと6桁あるので、計算上は 10cm 程度の誤差になる
     ''' </summary>
     ''' <param name="xy"></param>
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function FixXY(ByVal xy As Double) As Double
-        Return Math.Round(xy, 4)
+        Return Math.Round(xy, decs)
     End Function
-
 
 End Class
 
@@ -267,4 +216,9 @@ Public Class LocationInfo
     Public ReadOnly AddressElse As String
     '郵便番号
     Public ReadOnly Postal As String
+
+    Public Overrides Function ToString() As String
+        Return AddressL & AddressM & AddressS
+    End Function
+
 End Class

@@ -155,7 +155,8 @@ Public Class 整理ツール１
         End If
 
         '画像比較クラスを生成
-        Dim imgCmp As New FileComparator
+        Dim imgCmp As New ImageComparator
+        Dim fileCmp As New FileComparator
 
         '指定ディレクトリ直下のファイルだけを対象にパス配列を取得
         Dim imgfiles() As String
@@ -198,15 +199,14 @@ Public Class 整理ツール１
                 'リネーム後のファイル名
                 Dim renamed = ""
 
-
                 Dim capDate = GetImageCaptureDate(file)
 
 
                 ' 同一画像の除去処理
                 If chk重複画像除去.Checked Then
                     '
-                    If (rbt重複判定高速.Checked AndAlso imgCmp.AlreadyFileData(file)) OrElse
-                       (rbt重複判定低速.Checked AndAlso imgCmp.AlreadyPixels(file)) Then
+                    If (rbt重複判定高速.Checked AndAlso fileCmp.Exist(file)) OrElse
+                       (rbt重複判定低速.Checked AndAlso imgCmp.Exist(file)) Then
                         cntRmImg += 1
                         My.Computer.FileSystem.DeleteFile(file)
                         Continue For

@@ -5,38 +5,30 @@
 ''' </summary>
 ''' <remarks></remarks>
 Public Class FileComparator
+    Implements IDisposable
+
 
     '処理済のハッシュ値を格納するリスト
-    Private hashs As New List(Of String)
-    Private sha256 As SHA256 = SHA256Managed.Create()
-    Private md5 As New MD5CryptoServiceProvider
+    Protected hashs As New List(Of String)
+    Protected sha256 As SHA256
+    Protected md5 As MD5
+
+
+    Public Sub New()
+        '各暗号器を初期化
+        sha256 = System.Security.Cryptography.SHA256Managed.Create()
+        md5 = System.Security.Cryptography.MD5.Create
+    End Sub
 
     ''' <summary>
-    ''' プログラムが同一と判断した画像ファイルが、既に存在するかどうか判断します。
-    ''' この関数に渡すファイル名のファイルは画像のみ有効です。
+    ''' ファイルが持つ全てのデータを対象にハッシュ値を計算します。
+    ''' そのため、Exifなどのメタ情報を変更するとハッシュ値も変わります。
+    ''' ※ただし、ファイルシステムで管理している「更新日時」「作成日時」などが変わってもハッシュ値は変わりません。
     ''' </summary>
-    ''' <param name="file">ファイルパス</param>
-    ''' <returns>指定ファイルのハッシュ値がハッシュ値リストにある場合はTrue、無ければFalse</returns>
+    ''' <param name="filename"></param>
+    ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function AlreadyPixels(ByVal file As String) As Boolean
-
-        'ピクセルデータでハッシュ計算
-        Dim hash = GetHashByPixel(file)
-
-        If hash Is Nothing Then 'ファイルが画像で無い場合などは常に False を返す
-            Return False
-
-        ElseIf hashs.Contains(hash) Then '既存の場合
-            Return True
-
-        Else '含まれていなければ登録して False
-            hashs.Add(hash)
-            Return False
-        End If
-    End Function
-
-
-    Public Function AlreadyFileData(ByVal filename As String) As Boolean
+    Public Overridable Function Exist(ByVal filename As String) As Boolean
 
         'ファイル全体でハッシュを計算
         Dim hash As String = GetHashByFile(filename)
@@ -100,35 +92,33 @@ Public Class FileComparator
         End Using
     End Function
 
-    ''' <summary>
-    ''' ビットマップ画像のピクセルデータのみを対象としてハッシュ値を計算します。
-    ''' そのため、Exifなどのメタ情報を変更しても、ハッシュ値は変わりません。
-    ''' </summary>
-    ''' <param name="filename"></param>
-    ''' <returns>指定された画像のピクセル情報から計算したMD5ハッシュ、
-    ''' ファイルが画像で無い場合はNothing</returns>
-    ''' <remarks></remarks>
-    Private Function GetHashByPixel(ByVal filename As String) As String
+#Region "IDisposable Support"
+    Private disposedValue As Boolean ' 重複する呼び出しを検出するには
 
-        '画像ファイルのピクセル情報を取得する
-        Dim pxs = GetImagePixels(filename)
-
-        If pxs Is Nothing Then
-            Return Nothing
+    ' IDisposable
+    Protected Overridable Sub Dispose(disposing As Boolean)
+        If Not Me.disposedValue Then
+            If disposing Then
+                md5.Clear()
+                sha256.Clear()
+            End If
         End If
+        Me.disposedValue = True
+    End Sub
 
-        'MD5でハッシュを計算する
-        Dim hashValue = md5.ComputeHash(pxs)
+    ' このコードは、破棄可能なパターンを正しく実装できるように Visual Basic によって追加されました。
+    Public Sub Dispose() Implements IDisposable.Dispose
+        ' このコードを変更しないでください。クリーンアップ コードを上の Dispose(disposing As Boolean) に記述します。
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+#End Region
 
-        '文字列変換
-        Dim strHash = ""
-        For Each byt In hashValue
-            strHash &= byt.ToString("X2")
-        Next
+End Class
 
-        Return strHash
-    End Function
 
+Public Class ImageComparator
+    Inherits FileComparator
 
     ''' <summary>
     ''' 画像のピクセル情報をバイト配列として取得します。この処理は LockBits による高速な方法です。
@@ -169,6 +159,42 @@ Public Class FileComparator
         End Try
     End Function
 
+    ''' <summary>
+    ''' プログラムが同一と判断した画像ファイルが、既に存在するかどうか判断します。
+    ''' この関数に渡すファイル名のファイルは画像のみ有効です。
+    ''' 重複の判断は画像のピクセルデータのみを対象に行うので、
+    ''' Exifなどのメタ情報を変更しても、ハッシュ値は変わりません。
+    ''' </summary>
+    ''' <param name="filename">ファイルパス</param>
+    ''' <returns>指定ファイルのハッシュ値がハッシュ値リストにある場合はTrue、無ければFalse</returns>
+    ''' <remarks></remarks>
+    Public Overrides Function Exist(filename As String) As Boolean
+
+        '画像ファイルのピクセル情報を取得する
+        Dim pxs = GetImagePixels(filename)
+
+        If pxs Is Nothing OrElse pxs.Count = 0 Then
+            Return False
+        End If
+
+        'ピクセルデータでハッシュ計算
+        Dim hash As String = ""
+
+        'ピクセルデータからMD5ハッシュを計算し、文字列化する
+        For Each byt In md5.ComputeHash(pxs)
+            hash &= byt.ToString("X2")
+        Next
+
+        If hashs.Contains(hash) Then '既存の場合
+            Return True
+
+        Else '含まれていなければ登録して False
+            hashs.Add(hash)
+            Return False
+        End If
+
+    End Function
+
     'Private Function GetImagePixelData(ByVal path As String) As Byte()
     '    Using img = Image.FromFile(path)
     '        Dim bmp = DirectCast(img, Bitmap)
@@ -190,7 +216,4 @@ Public Class FileComparator
     '        Return rgbs
     '    End Using
     'End Function
-
 End Class
-
-

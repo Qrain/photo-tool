@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheGPS.vb" />
+    <Compile Include="ImageInfo.vb" />
     <Compile Include="SQLiteCommon.vb" />
     <Compile Include="ObjGPS.vb" />
     <Compile Include="整理ツール１.vb">
@@ -152,9 +153,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-    <None Include="SQLite.cache.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
