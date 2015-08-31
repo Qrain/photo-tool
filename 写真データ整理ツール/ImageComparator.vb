@@ -7,11 +7,11 @@
 Public Class FileComparator
     Implements IDisposable
 
-
     '処理済のハッシュ値を格納するリスト
     Protected hashs As New List(Of String)
     Protected sha256 As SHA256
     Protected md5 As MD5
+
 
 
     Public Sub New()

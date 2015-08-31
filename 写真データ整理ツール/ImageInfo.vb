@@ -12,7 +12,6 @@ Public Class ImageInfo
     Private _CaptureLocation As LocationInfo '区分毎に分割した住所
     Private _CaptureDate As Date '撮影日時
 
-
     '現在のファイル名に対応するビットマップイメージを格納する変数
     Private img As Image = Nothing
 

@@ -294,9 +294,9 @@ Partial Class 整理ツール２
         Me.chk不明分類.Font = New System.Drawing.Font("Meiryo UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.chk不明分類.Location = New System.Drawing.Point(265, 24)
         Me.chk不明分類.Name = "chk不明分類"
-        Me.chk不明分類.Size = New System.Drawing.Size(179, 18)
+        Me.chk不明分類.Size = New System.Drawing.Size(148, 18)
         Me.chk不明分類.TabIndex = 16
-        Me.chk不明分類.Text = "撮影日不明画像もフォルダ分けする"
+        Me.chk不明分類.Text = "整理情報不明でも整理する"
         Me.chk不明分類.UseVisualStyleBackColor = True
         '
         'chkリネームしない
