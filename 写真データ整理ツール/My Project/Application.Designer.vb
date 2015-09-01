@@ -32,7 +32,7 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.写真データ整理ツール.整理ツール２
+            Me.MainForm = Global.写真データ整理ツール.整理ツール
         End Sub
     End Class
 End Namespace

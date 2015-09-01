@@ -33,12 +33,12 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="撮影日書式" Type="System.String" Scope="User">
-      <Value Profile="(Default)">yyyyMMdd</Value>
+      <Value Profile="(Default)">yyyyMMdd_</Value>
     </Setting>
     <Setting Name="日付付与" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DB接続文字列" Type="System.String" Scope="Application">
+    <Setting Name="SQLite接続文字列" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Data Source=SQLite.cache.db;Version=3;</Value>
     </Setting>
   </Settings>

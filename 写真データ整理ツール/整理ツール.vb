@@ -1,12 +1,7 @@
 ﻿Imports System.Text
 Imports System.IO
-Imports System.Drawing.Imaging
-Imports System.Security.Cryptography
-Imports System.Xml
-Imports System.Data.SQLite
 
-
-Public Class 整理ツール２
+Public Class 整理ツール
 
 #Region "１．大域変数の定義"
 
@@ -15,7 +10,6 @@ Public Class 整理ツール２
 
     'フォルダ区切り文字を取得
     Private ReadOnly _Sep As Char = System.IO.Path.DirectorySeparatorChar
-
 
 #End Region
 
@@ -29,42 +23,15 @@ Public Class 整理ツール２
 
 #Region "４．イベントの定義"
 
-
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
-
-        'Dim cgps As New CacheGPS
-
-
-        'Using ii As New ImageInfo
-
-        '    'ファイル名を変換
-        '    ii.FileName = "C:\Users\sawai\Desktop\整理対象フォルダ（位置情報有）_1\東京都\葛飾区\東四つ木一丁目\0001-01-01IMG_0189.JPG"
-        '    Console.WriteLine(ii.IsImage)
-        '    Console.WriteLine(ii.FileName)
-        '    Console.WriteLine(ii.CaptureDate)
-
-        '    With ii.CaptureLocation
-        '        Dim loc = cgps.GetLocation(.X, .Y)
-        '        Console.WriteLine(loc)
-
-        '    End With
-        'End Using
-
-
-
-        'Dim ax = New CacheGPS(CacheGPS.CacheType.DB_SQLite)
-
 
         'フォルダ選択ダイアログの初期化
         fbd.Description = "任意のフォルダを選択して下さい。"
         'ユーザーが新しいフォルダを作成できるようにする
         fbd.ShowNewFolderButton = True
 
-
         'プログレスバーの最小値初期化
         pgb進捗.Minimum = 0
-
 
         'テキストボックスにドロップを許可する
         tbx整理対象.AllowDrop = True
@@ -91,7 +58,6 @@ Public Class 整理ツール２
         rbt任意場所.Checked = My.Settings.出力先_任意
         tbx撮影日書式.Text = My.Settings.撮影日書式
         chk日付合成.Checked = My.Settings.日付付与
-
 
         'グループボックスの初期化
         grp整理.Enabled = chk整理する.Checked
@@ -207,8 +173,6 @@ Public Class 整理ツール２
         '処理中用のコントロール状態に設定
         SetVisible処理中(True)
 
-
-
         '画像比較クラスを生成
         Using imgCmp As New ImageComparator, imgInfo As New ImageInfo
 
@@ -238,7 +202,7 @@ Public Class 整理ツール２
                     Dim filename = Path.GetFileName(sfile)
                     Dim dfile = dpath '出力先のファイルパス
 
-                    'リネーム無し
+                    '必要情報を持っているフラグ
                     Dim hasNeededInfo = True
 
                     ' この画像に整理情報があるか判断する
@@ -273,7 +237,6 @@ Public Class 整理ツール２
                         cntNotExif += 1
                     End If
 
-
                     '「フォルダ分類しない」または「リネームする」場合は日付を付ける
                     If Not chk整理する.Checked OrElse Not chkリネームしない.Checked Then
                         Dim prefix = ""
@@ -306,7 +269,6 @@ Public Class 整理ツール２
                         My.Computer.FileSystem.CopyFile(sfile, dfile)
                     End If
 
-
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "予期せぬエラー", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     '処理中状態を解除
@@ -327,7 +289,6 @@ Public Class 整理ツール２
         '処理中状態を解除
         SetVisible処理中(False)
     End Sub
-
 
 
     Private Sub TextBox_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles tbx整理対象.DragDrop, tbx出力先.DragDrop
@@ -360,11 +321,10 @@ Public Class 整理ツール２
 
 #End Region
 
-
 #Region "５．その他の定義"
 
     ''' <summary>
-    ''' 現在選択されている整理タイプに応じたフォルダ名を取得します。
+    ''' 現在選択されている整理タイプに応じたフォルダ名をImageInfoから取得します。
     ''' </summary>
     ''' <param name="info"></param>
     ''' <returns></returns>
@@ -403,24 +363,6 @@ Public Class 整理ツール２
 
     End Function
 
-    Private Class StopWatchRap
-
-        Private sw As New Stopwatch
-
-        Public Sub _Start()
-            sw.Reset()
-            sw.Start()
-        End Sub
-
-        Private Sub _Stop()
-            sw.Stop()
-            Console.WriteLine("処理時間: " & sw.ElapsedMilliseconds & "ms")
-        End Sub
-
-    End Class
-
-
-
     Private Sub SetVisible処理中(ByVal visible As Boolean)
         lbl進捗.Visible = visible
         pgb進捗.Visible = visible
@@ -429,6 +371,13 @@ Public Class 整理ツール２
     End Sub
 
 
+    ''' <summary>
+    ''' 画像に指定の日付（年月日）を合成して、指定のパスへと出力します。
+    ''' </summary>
+    ''' <param name="sfile"></param>
+    ''' <param name="dfile"></param>
+    ''' <param name="capDate"></param>
+    ''' <remarks></remarks>
     Private Sub 画像に撮影日時を埋め込み保存(ByVal sfile As String, ByVal dfile As String, ByVal capDate As Date)
 
         'PrivateFontCollectionオブジェクトを作成
@@ -507,7 +456,6 @@ Public Class 整理ツール２
             System.Diagnostics.Process.Start("EXPLORER.EXE", dpath)
         End If
     End Sub
-
 
     ''' <summary>
     ''' 入力値をチェックします。この関数がTrueを返却すれば、処理を開始できる事が保障されます。

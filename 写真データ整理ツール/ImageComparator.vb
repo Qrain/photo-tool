@@ -9,16 +9,10 @@ Public Class FileComparator
 
     '処理済のハッシュ値を格納するリスト
     Protected hashs As New List(Of String)
-    Protected sha256 As SHA256
-    Protected md5 As MD5
+    'ハッシュ関数提供オブジェクトを初期化
+    Protected sha256 As SHA256 = System.Security.Cryptography.SHA256Managed.Create()
+    Protected md5 As MD5 = System.Security.Cryptography.MD5.Create
 
-
-
-    Public Sub New()
-        '各暗号器を初期化
-        sha256 = System.Security.Cryptography.SHA256Managed.Create()
-        md5 = System.Security.Cryptography.MD5.Create
-    End Sub
 
     ''' <summary>
     ''' ファイルが持つ全てのデータを対象にハッシュ値を計算します。
@@ -83,14 +77,10 @@ Public Class FileComparator
             End If
 
             '文字列変換
-            Dim strHash = ""
-            For Each b In hashValue
-                strHash &= b.ToString("X2")
-            Next
-
-            Return strHash
+            Return hashValue.extHexString
         End Using
     End Function
+
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' 重複する呼び出しを検出するには
@@ -117,6 +107,10 @@ Public Class FileComparator
 End Class
 
 
+''' <summary>
+''' 画像ファイルの重複の有無に特化したクラスです。
+''' </summary>
+''' <remarks></remarks>
 Public Class ImageComparator
     Inherits FileComparator
 
@@ -168,7 +162,7 @@ Public Class ImageComparator
     ''' <param name="filename">ファイルパス</param>
     ''' <returns>指定ファイルのハッシュ値がハッシュ値リストにある場合はTrue、無ければFalse</returns>
     ''' <remarks></remarks>
-    Public Overrides Function Exist(filename As String) As Boolean
+    Public Overrides Function Exist(ByVal filename As String) As Boolean
 
         '画像ファイルのピクセル情報を取得する
         Dim pxs = GetImagePixels(filename)
@@ -177,13 +171,8 @@ Public Class ImageComparator
             Return False
         End If
 
-        'ピクセルデータでハッシュ計算
-        Dim hash As String = ""
-
         'ピクセルデータからMD5ハッシュを計算し、文字列化する
-        For Each byt In md5.ComputeHash(pxs)
-            hash &= byt.ToString("X2")
-        Next
+        Dim hash = md5.ComputeHash(pxs).extHexString
 
         If hashs.Contains(hash) Then '既存の場合
             Return True

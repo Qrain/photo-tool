@@ -176,7 +176,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("yyyyMMdd")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("yyyyMMdd_")>  _
         Public Property 撮影日書式() As String
             Get
                 Return CType(Me("撮影日書式"),String)
@@ -201,9 +201,9 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("Data Source=SQLite.cache.db;Version=3;")>  _
-        Public ReadOnly Property DB接続文字列() As String
+        Public ReadOnly Property SQLite接続文字列() As String
             Get
-                Return CType(Me("DB接続文字列"),String)
+                Return CType(Me("SQLite接続文字列"),String)
             End Get
         End Property
     End Class

@@ -9,8 +9,8 @@ Imports System.Runtime.InteropServices
 ' アセンブリ属性の値を確認します。
 
 <Assembly: AssemblyTitle("写真データ整理ツール")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
+<Assembly: AssemblyDescription("写真をExif情報を元に分類・整理するツールです。")> 
+<Assembly: AssemblyCompany("株式会社 シスパート")> 
 <Assembly: AssemblyProduct("写真データ整理ツール")> 
 <Assembly: AssemblyCopyright("Copyright ©  2015")> 
 <Assembly: AssemblyTrademark("")> 
