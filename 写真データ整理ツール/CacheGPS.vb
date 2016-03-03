@@ -3,7 +3,11 @@ Imports System.Text
 Imports System.Net
 Imports System.Xml
 
-
+''' <summary>
+''' 経度と緯度で指定された位置情報の取得、及び結果のキャッシュを行うクラスです。
+''' キャッシュ用のデータベースとしてSQLiteを使用しています。
+''' </summary>
+''' <remarks></remarks>
 Public Class CacheGPS
 
     '座標→住所解決に使用するWebAPI のURLフォーマット
@@ -20,7 +24,6 @@ Public Class CacheGPS
     Private Const decs = 3
 
     Private sql As New StringBuilder
-
 
     ''' <summary>
     ''' 引数に指定した経度と緯度に対応するLocationInfoオブジェクトを返却します。
@@ -63,7 +66,6 @@ Public Class CacheGPS
                 drw.Item("ADDRESS_S").ToString,
                 "",
                 drw.Item("POSTAL").ToString)
-
 
         Else
 
@@ -184,7 +186,11 @@ Public Class CacheGPS
 End Class
 
 
-'位置情報のクラス
+''' <summary>
+''' 位置情報を管理するための値クラスです。
+''' 全ての変数は ReadOnly なのでコンストラクターでのみ一度だけ初期化されます。
+''' </summary>
+''' <remarks></remarks>
 Public Class LocationInfo
     Public Sub New(ByVal x As Double,
                    ByVal y As Double,
@@ -207,13 +213,16 @@ Public Class LocationInfo
     '緯度と軽度
     Public ReadOnly X As Double
     Public ReadOnly Y As Double
+
     '緯度・経度と住所との誤差目安（m）
     Public ReadOnly Distance As Double
+
     '各住所（大区分、中区分、小区分、それ以降）
     Public ReadOnly AddressL As String
     Public ReadOnly AddressM As String
     Public ReadOnly AddressS As String
     Public ReadOnly AddressElse As String
+
     '郵便番号
     Public ReadOnly Postal As String
 

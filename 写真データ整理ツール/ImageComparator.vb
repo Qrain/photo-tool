@@ -177,7 +177,7 @@ Public Class ImageComparator
         If hashs.Contains(hash) Then '既存の場合
             Return True
 
-        Else '含まれていなければ登録して False
+        Else '含まれていなければ基底クラスのハッシュリストに登録して False
             hashs.Add(hash)
             Return False
         End If

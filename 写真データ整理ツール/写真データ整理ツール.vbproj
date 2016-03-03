@@ -124,7 +124,6 @@
     <Compile Include="CacheGPS.vb" />
     <Compile Include="ImageInfo.vb" />
     <Compile Include="共通関数.vb" />
-    <Compile Include="ObjGPS.vb" />
     <Compile Include="整理ツール_OLD.vb">
       <SubType>Form</SubType>
     </Compile>

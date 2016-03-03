@@ -1,6 +1,7 @@
 ﻿Imports System.Data.SQLite
 Imports System.Text
 Imports System.Data.Common
+Imports System.Data.SqlClient
 
 Module 共通関数
 
@@ -97,8 +98,29 @@ Module 共通関数
         Return dtb
     End Function
 
-#End Region
 
+    Public Function SQLServer_GetDataTable(ByVal sql As String) As DataTable
+        Return GetDataTable(New SqlDataAdapter, sql, My.Settings.SQLite接続文字列)
+    End Function
+
+    Private Function GetDataTable(ByVal adt As DbDataAdapter, ByVal sql As String, ByVal con As String) As DataTable
+        Dim dtb As New DataTable
+
+        Try
+            Using adt
+                adt.SelectCommand.Connection.ConnectionString = con
+                adt.SelectCommand.CommandText = sql
+                adt.SelectCommand.CommandTimeout = 300
+                adt.Fill(dtb)
+            End Using
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error @ GetDataTable", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
+        Return dtb
+    End Function
+
+#End Region
 
 #Region "拡張メソッドに関する定義"
 
@@ -131,7 +153,6 @@ Module 共通関数
 
 #End Region
 
-
 #Region "ユーティリティ関連"
 
     '※複数スレッドから使用する場合、計測中にStartされると値がリセットされてしまう
@@ -157,7 +178,6 @@ Module 共通関数
     End Sub
 
 #End Region
-
 
 #Region "Test Codes"
     ''' <summary>
@@ -190,6 +210,5 @@ Module 共通関数
     End Function
 
 #End Region
-
 
 End Module
