@@ -14,37 +14,55 @@ Module mdlUninstall
         Dim installed As Dictionary(Of String, RegistryKey) = GetInstalledPrograms(Environment.Is64BitOperatingSystem)
         ' DisplayName（表示名）がパラメータと一致するものを抽出
         Dim targets = installed.Where(Function(x) CStr(x.Value.GetValue("DisplayName", "")) = strDisplayName)
-        ' 安全な形式のアンインストール文字列に変換する
-        Dim uninstStr = targets.Select(Function(x) GetSafeUninstallString(x.Key, x.Value))
+        ' 実行するコマンド文字列
+        Dim cmd As String = ""
+        '
+        If targets.Count <= 0 Then
+            ' 指定した名称のPGが無ければリターン
+            Return
+        ElseIf targets.Count = 1 Then
+            ' 安全な形式のアンインストール文字列に変換する
+            cmd = GetSafeUninstallString(targets.First.Key, targets.First.Value)
+        Else
+            ' 選択させるダイアログを表示
+            With New プログラム選択(targets)
+                .ShowDialog()
+                .Dispose()
+                cmd = .Uninstaller
+            End With
+        End If
+
+        If cmd = "" Then
+            Return
+        End If
+
         ' 同じ表示名の全てのアンインストーラーを起動する
-        For Each cmd In uninstStr
-            'Processオブジェクトを作成
-            Dim p As New System.Diagnostics.Process()
-            'ComSpec(cmd.exe)のパスを取得して、FileNameプロパティに指定
-            p.StartInfo.FileName = System.Environment.GetEnvironmentVariable("ComSpec")
-            '出力を読み取れるようにする
-            p.StartInfo.UseShellExecute = False
-            p.StartInfo.RedirectStandardOutput = True
-            'p.StartInfo.RedirectStandardInput = False
-            'ウィンドウを表示しないようにする
-            p.StartInfo.CreateNoWindow = True
-            'コマンドラインを指定（"/c"は実行後閉じるために必要）
-            p.StartInfo.Arguments = "/c " & cmd
-            '起動
-            p.Start()
-            'プロセス終了まで待機する
-            'WaitForExitはReadToEndの後である必要がある
-            '(親プロセス、子プロセスでブロック防止のため)
-            p.WaitForExit()
-            p.Close()
-        Next
+        'Processオブジェクトを作成
+        Dim p As New System.Diagnostics.Process()
+        'ComSpec(cmd.exe)のパスを取得して、FileNameプロパティに指定
+        p.StartInfo.FileName = System.Environment.GetEnvironmentVariable("ComSpec")
+        '出力を読み取れるようにする
+        p.StartInfo.UseShellExecute = False
+        p.StartInfo.RedirectStandardOutput = True
+        'p.StartInfo.RedirectStandardInput = False
+        'ウィンドウを表示しないようにする
+        p.StartInfo.CreateNoWindow = True
+        'コマンドラインを指定（"/c"は実行後閉じるために必要）
+        p.StartInfo.Arguments = "/c " & cmd
+        '起動
+        p.Start()
+        'プロセス終了まで待機する
+        'WaitForExitはReadToEndの後である必要がある
+        '(親プロセス、子プロセスでブロック防止のため)
+        p.WaitForExit()
+        p.Close()
     End Sub
 
     ''' <summary>
     ''' インストール済のプログラム及びそのレジストリ情報の一覧を取得します
     ''' </summary>
     ''' <param name="x64">OSが64bitならばTrue</param>
-    ''' <returns></returns>
+    ''' <returns>Dictionary( キー名, レジストリ内容 )</returns>
     Function GetInstalledPrograms(ByVal x64 As Boolean) As Dictionary(Of String, RegistryKey)
         ' ※ルートキー "HKEY_LOCAL_MACHINE" は省略しなければならない
         Dim rootKey As String = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
@@ -103,10 +121,10 @@ Module mdlUninstall
     ''' <param name="key">レジストリ上のサブキー文字列</param>
     ''' <param name="reg">keyに関連付けられたレジストリキーオブジェクト</param>
     ''' <returns></returns>
-    Function GetSafeUninstallString(ByVal key As String, ByVal reg As RegistryKey) As String
+    Public Function GetSafeUninstallString(ByVal key As String, ByVal reg As RegistryKey) As String
         Dim uninstallpath = CStr(reg.GetValue("UninstallString", ""))
         ' WindowsInstaller で UninstallString がない場合はサブキー名から作る
-        If CInt(reg.GetValue("WindowsInstaller", 0)) = 1 AndAlso UninstallPath = "" Then
+        If CInt(reg.GetValue("WindowsInstaller", 0)) = 1 AndAlso uninstallpath = "" Then
             ' /I インストールオプションで生成
             uninstallpath = "MSIEXEC.EXE /I" & key
         End If

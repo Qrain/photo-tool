@@ -3,8 +3,6 @@ Imports Microsoft.Win32
 Public Class アンインストールツール
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'MsgBox(sysIsInstalled("GIMP 2.8.15"))
-        'sysUninstall("GIMP 2.8.16")
         Try
             インストール済PG一覧表示()
             lst一覧.SelectedIndex = 0
