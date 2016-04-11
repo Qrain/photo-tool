@@ -16,36 +16,60 @@ Public Class frm22_社員マスタ
         End If
         '
         Dim int行 As Integer
+        Dim str社員ID As String = edit社員ID.Text.Trim
         ' 
         If rbt登録.Checked Then
             ' 重複チェック
             SQL.Length = 0
             SQL.AppendLine("SELECT")
-            SQL.AppendLine("    COUNT(*)")
+            SQL.AppendLine("    社員名,")
+            SQL.AppendLine("    社員区分,")
+            SQL.AppendLine("    削除区分")
             SQL.AppendLine("FROM")
             SQL.AppendLine("    M02_社員")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("    社員ID = '" & edit社員ID.Text.Trim & "'")
-            '
-            If GetValue(Of Integer)(SQL.ToString) > 0 Then
-                MsgWarn("重複チェック", "この社員IDは既に登録されています。ご確認下さい。")
-                Return
-            End If
+            SQL.AppendLine("    社員ID = '" & str社員ID & "'")
+
+            Dim dtb As DataTable = GetDataTable(SQL.ToString)
             '
             SQL.Length = 0
+            If dtb.Rows.Count > 0 Then
+                'Dim drw As DataRow = dtb(0)
+                'If drw("削除区分") = 0 Then
+                ' 削除されてない表示データに重複がある
+                MsgWarn("重複チェック", "社員ID: """ & str社員ID & """ は既に登録されています。")
+                Return
+                'Else
+                '    Dim msg =
+                '        "社員ID: """ & str社員ID & """ は既に登録されていますが論理削除されています。" & vbNewLine &
+                '        "社員名: """ & drw("社員名") & """  社員区分: """ & drw("社員区分") & """" & vbNewLine &
+                '        "物理削除して登録処理を続行しますか？"
+                '    ' 論理削除されているデータに重複がある
+                '    If MsgOKCancel("重複チェック", msg) = DialogResult.Cancel Then
+                '        Return
+                '    End If
+                '    ' 削除SQLを追加
+                '    SQL.AppendLine("DELETE")
+                '    SQL.AppendLine("    M02_社員")
+                '    SQL.AppendLine("WHERE")
+                '    SQL.AppendLine("        社員ID = '" & str社員ID & "';")
+                'End If
+            End If
+            '
             SQL.AppendLine("INSERT")
             SQL.AppendLine("INTO")
             SQL.AppendLine("    M02_社員")
             SQL.AppendLine("VALUES")
             SQL.AppendLine("(")
-            SQL.AppendLine("    '" & edit社員ID.Text.Trim & "',")
+            SQL.AppendLine("    '" & str社員ID & "',")
             SQL.AppendLine("    '" & edit社員名.Text & "',")
             SQL.AppendLine("    '" & If(rbt個人.Checked, "個人", "法人") & "',")
             SQL.AppendLine("    '" & If(chk権利者区分.Checked, "1", "0") & "',")
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    0")
-            SQL.AppendLine(")")
+            SQL.AppendLine(");")
+            's
         ElseIf rbt更新.Checked Then
             SQL.Length = 0
             SQL.AppendLine("UPDATE")
@@ -56,17 +80,22 @@ Public Class frm22_社員マスタ
             SQL.AppendLine("    権利者区分 = '" & If(chk権利者区分.Checked, "1", "0") & "',")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        社員ID = '" & edit社員ID.Text & "'")
+            SQL.AppendLine("        社員ID = '" & str社員ID & "'")
             int行 = dgv社員一覧.CurrentRow.Index
+            '
         ElseIf rbt削除.Checked Then
             If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
                 Return
             End If
+            ' 論理削除する
             SQL.Length = 0
-            SQL.AppendLine("DELETE")
+            SQL.AppendLine("UPDATE")
             SQL.AppendLine("    M02_社員")
+            SQL.AppendLine("SET")
+            SQL.AppendLine("    削除区分 = 1,")
+            SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        社員ID = '" & edit社員ID.Text.Trim & "'")
+            SQL.AppendLine("        社員ID = '" & str社員ID & "'")
             int行 = If(dgv社員一覧.CurrentRow.Index = 0, 0, dgv社員一覧.CurrentRow.Index - 1)
         End If
 
@@ -128,15 +157,33 @@ Public Class frm22_社員マスタ
         SQL.AppendLine("    社員区分,")
         SQL.AppendLine("    権利者区分,")
         SQL.AppendLine("    作成日時,")
-        SQL.AppendLine("    更新日時")
+        SQL.AppendLine("    更新日時,")
+        SQL.AppendLine("    削除区分")
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M02_社員")
-        SQL.AppendLine("WHERE")
-        SQL.AppendLine("    削除区分 = 0")
         ' 不用意なイベント発生を防ぐため一旦外す
         RemoveHandler dgv社員一覧.RowEnter, AddressOf dgv社員一覧_RowEnter
-        dgv社員一覧.DataSource = GetDataTable(SQL.ToString)
+        Dim dtb As DataTable = GetDataTable(SQL.ToString)
+
+        ' 削除表示が指定されていたら全て表示する
+        If chk削除済表示.Checked Then
+            dgv社員一覧.DataSource = dtb
+            ' 論理削除済みの項目を表示し前景色を変更する
+            For i = 0 To dtb.Rows.Count - 1
+                ' 削除区分=1 ならば前景色を変える
+                If dtb(i)("削除区分") = 1 Then
+                    For Each ce As DataGridViewCell In dgv社員一覧.Rows(i).Cells
+                        ce.Style.ForeColor = Color.LightBlue
+                    Next
+                End If
+            Next
+        Else
+            ' 削除区分=0 ものだけ表示する
+            dgv社員一覧.DataSource = (From r In dtb Where r("削除区分") = 0).CopyToDataTable
+        End If
         AddHandler dgv社員一覧.RowEnter, AddressOf dgv社員一覧_RowEnter
+
+
     End Sub
 
     Private Function 入力チェック() As Boolean
@@ -164,6 +211,8 @@ Public Class frm22_社員マスタ
             chk権利者区分.Checked = False
             edit作成日時.Text = ""
             edit更新日時.Text = ""
+            edit削除区分.Text = ""
+            btn更新.Enabled = True
         Else
             ' 修正 or 削除 モード
             ' 行数がパラメータによって指定されていればそっちを優先して使う
@@ -176,9 +225,14 @@ Public Class frm22_社員マスタ
                 chk権利者区分.Checked = sNvl(.Item("権利者区分")) = "1"
                 edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
                 edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
+                edit削除区分.Text = .Item("削除区分")
+                btn更新.Enabled = .Item("削除区分") = 0
             End With
         End If
     End Sub
 
-
+    Private Sub chk削除済表示_CheckedChanged(sender As Object, e As EventArgs) Handles chk削除済表示.CheckedChanged
+        グリッド表示()
+        詳細項目更新()
+    End Sub
 End Class

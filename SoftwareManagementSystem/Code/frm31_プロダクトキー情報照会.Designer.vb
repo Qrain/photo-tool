@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class frm31_情報照会
+Partial Class frm31_プロダクトキー情報照会
     Inherits System.Windows.Forms.Form
 
     'フォームがコンポーネントの一覧をクリーンアップするために dispose をオーバーライドします。
@@ -23,12 +23,6 @@ Partial Class frm31_情報照会
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.dgv一覧 = New System.Windows.Forms.DataGridView()
-        Me.dgvc権利者 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcメーカー = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcソフトウェア = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcプロダクトキー = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvc利用者 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcサブスクリプションID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
@@ -43,6 +37,12 @@ Partial Class frm31_情報照会
         Me.rbtプロダクトキー = New System.Windows.Forms.RadioButton()
         Me.btn検索 = New System.Windows.Forms.Button()
         Me.txt検索 = New System.Windows.Forms.TextBox()
+        Me.dgvcメーカー = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcソフトウェア = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcプロダクトキー = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvc権利者 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcサブスクリプションID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvc利用者 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.dgv一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
@@ -54,7 +54,7 @@ Partial Class frm31_情報照会
         Me.dgv一覧.AllowUserToDeleteRows = False
         Me.dgv一覧.AllowUserToResizeColumns = False
         Me.dgv一覧.AllowUserToResizeRows = False
-        Me.dgv一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvc権利者, Me.dgvcメーカー, Me.dgvcソフトウェア, Me.dgvcプロダクトキー, Me.dgvc利用者, Me.dgvcサブスクリプションID})
+        Me.dgv一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcメーカー, Me.dgvcソフトウェア, Me.dgvcプロダクトキー, Me.dgvc権利者, Me.dgvcサブスクリプションID, Me.dgvc利用者})
         Me.dgv一覧.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgv一覧.Location = New System.Drawing.Point(3, 15)
         Me.dgv一覧.Name = "dgv一覧"
@@ -63,61 +63,8 @@ Partial Class frm31_情報照会
         Me.dgv一覧.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgv一覧.RowTemplate.Height = 21
         Me.dgv一覧.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgv一覧.Size = New System.Drawing.Size(754, 411)
+        Me.dgv一覧.Size = New System.Drawing.Size(854, 551)
         Me.dgv一覧.TabIndex = 0
-        '
-        'dgvc権利者
-        '
-        Me.dgvc権利者.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvc権利者.DataPropertyName = "権利者"
-        Me.dgvc権利者.HeaderText = "権利者"
-        Me.dgvc権利者.Name = "dgvc権利者"
-        Me.dgvc権利者.ReadOnly = True
-        Me.dgvc権利者.Width = 66
-        '
-        'dgvcメーカー
-        '
-        Me.dgvcメーカー.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvcメーカー.DataPropertyName = "メーカー名称"
-        Me.dgvcメーカー.HeaderText = "メーカー"
-        Me.dgvcメーカー.Name = "dgvcメーカー"
-        Me.dgvcメーカー.ReadOnly = True
-        Me.dgvcメーカー.Width = 67
-        '
-        'dgvcソフトウェア
-        '
-        Me.dgvcソフトウェア.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.dgvcソフトウェア.DataPropertyName = "ソフトウェア名称"
-        Me.dgvcソフトウェア.HeaderText = "ソフトウェア"
-        Me.dgvcソフトウェア.Name = "dgvcソフトウェア"
-        Me.dgvcソフトウェア.ReadOnly = True
-        '
-        'dgvcプロダクトキー
-        '
-        Me.dgvcプロダクトキー.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvcプロダクトキー.DataPropertyName = "プロダクトキー"
-        Me.dgvcプロダクトキー.HeaderText = "プロダクトキー"
-        Me.dgvcプロダクトキー.Name = "dgvcプロダクトキー"
-        Me.dgvcプロダクトキー.ReadOnly = True
-        Me.dgvcプロダクトキー.Width = 93
-        '
-        'dgvc利用者
-        '
-        Me.dgvc利用者.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvc利用者.DataPropertyName = "利用者"
-        Me.dgvc利用者.HeaderText = "利用者"
-        Me.dgvc利用者.Name = "dgvc利用者"
-        Me.dgvc利用者.ReadOnly = True
-        Me.dgvc利用者.Width = 66
-        '
-        'dgvcサブスクリプションID
-        '
-        Me.dgvcサブスクリプションID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvcサブスクリプションID.DataPropertyName = "サブスクリプションID"
-        Me.dgvcサブスクリプションID.HeaderText = "サブスクリプションID"
-        Me.dgvcサブスクリプションID.Name = "dgvcサブスクリプションID"
-        Me.dgvcサブスクリプションID.ReadOnly = True
-        Me.dgvcサブスクリプションID.Width = 118
         '
         'Label1
         '
@@ -127,9 +74,9 @@ Partial Class frm31_情報照会
         Me.Label1.ForeColor = System.Drawing.Color.Blue
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(760, 35)
+        Me.Label1.Size = New System.Drawing.Size(860, 35)
         Me.Label1.TabIndex = 6
-        Me.Label1.Text = "情報照会"
+        Me.Label1.Text = "プロダクトキー情報照会"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'GroupBox2
@@ -140,7 +87,7 @@ Partial Class frm31_情報照会
         Me.GroupBox2.Controls.Add(Me.dgv一覧)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 121)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(760, 429)
+        Me.GroupBox2.Size = New System.Drawing.Size(860, 569)
         Me.GroupBox2.TabIndex = 8
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "プロダクトキー情報"
@@ -163,7 +110,7 @@ Partial Class frm31_情報照会
         Me.GroupBox4.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.GroupBox4.Location = New System.Drawing.Point(12, 47)
         Me.GroupBox4.Name = "GroupBox4"
-        Me.GroupBox4.Size = New System.Drawing.Size(760, 68)
+        Me.GroupBox4.Size = New System.Drawing.Size(860, 68)
         Me.GroupBox4.TabIndex = 26
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "検索"
@@ -272,7 +219,7 @@ Partial Class frm31_情報照会
         '
         Me.btn検索.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btn検索.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.btn検索.Location = New System.Drawing.Point(658, 40)
+        Me.btn検索.Location = New System.Drawing.Point(758, 40)
         Me.btn検索.Name = "btn検索"
         Me.btn検索.Size = New System.Drawing.Size(65, 23)
         Me.btn検索.TabIndex = 9
@@ -284,20 +231,70 @@ Partial Class frm31_情報照会
         Me.txt検索.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txt検索.Location = New System.Drawing.Point(313, 42)
         Me.txt検索.Name = "txt検索"
-        Me.txt検索.Size = New System.Drawing.Size(339, 19)
+        Me.txt検索.Size = New System.Drawing.Size(439, 19)
         Me.txt検索.TabIndex = 7
+        '
+        'dgvcメーカー
+        '
+        Me.dgvcメーカー.DataPropertyName = "メーカー名称"
+        Me.dgvcメーカー.HeaderText = "メーカー"
+        Me.dgvcメーカー.Name = "dgvcメーカー"
+        Me.dgvcメーカー.ReadOnly = True
+        Me.dgvcメーカー.Width = 70
+        '
+        'dgvcソフトウェア
+        '
+        Me.dgvcソフトウェア.DataPropertyName = "ソフトウェア名称"
+        Me.dgvcソフトウェア.HeaderText = "ソフトウェア"
+        Me.dgvcソフトウェア.Name = "dgvcソフトウェア"
+        Me.dgvcソフトウェア.ReadOnly = True
+        Me.dgvcソフトウェア.Width = 300
+        '
+        'dgvcプロダクトキー
+        '
+        Me.dgvcプロダクトキー.DataPropertyName = "プロダクトキー"
+        Me.dgvcプロダクトキー.HeaderText = "プロダクトキー"
+        Me.dgvcプロダクトキー.Name = "dgvcプロダクトキー"
+        Me.dgvcプロダクトキー.ReadOnly = True
+        Me.dgvcプロダクトキー.Width = 230
+        '
+        'dgvc権利者
+        '
+        Me.dgvc権利者.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.dgvc権利者.DataPropertyName = "権利者"
+        Me.dgvc権利者.HeaderText = "権利者"
+        Me.dgvc権利者.Name = "dgvc権利者"
+        Me.dgvc権利者.ReadOnly = True
+        Me.dgvc権利者.Width = 66
+        '
+        'dgvcサブスクリプションID
+        '
+        Me.dgvcサブスクリプションID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.dgvcサブスクリプションID.DataPropertyName = "サブスクリプションID"
+        Me.dgvcサブスクリプションID.HeaderText = "サブスクリプションID"
+        Me.dgvcサブスクリプションID.Name = "dgvcサブスクリプションID"
+        Me.dgvcサブスクリプションID.ReadOnly = True
+        Me.dgvcサブスクリプションID.Width = 118
+        '
+        'dgvc利用者
+        '
+        Me.dgvc利用者.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.dgvc利用者.DataPropertyName = "利用者"
+        Me.dgvc利用者.HeaderText = "利用者"
+        Me.dgvc利用者.Name = "dgvc利用者"
+        Me.dgvc利用者.ReadOnly = True
         '
         'frm31_情報照会
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(784, 562)
+        Me.ClientSize = New System.Drawing.Size(884, 702)
         Me.Controls.Add(Me.GroupBox4)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.Label1)
-        Me.MinimumSize = New System.Drawing.Size(800, 600)
+        Me.MinimumSize = New System.Drawing.Size(900, 740)
         Me.Name = "frm31_情報照会"
-        Me.Text = "サブスクリプション登録"
+        Me.Text = "プロダクトキー情報照会"
         CType(Me.dgv一覧, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox4.ResumeLayout(False)
@@ -320,10 +317,10 @@ Partial Class frm31_情報照会
     Friend WithEvents cbx権利者 As ComboBox
     Friend WithEvents rbtサブスクリプションID As RadioButton
     Friend WithEvents rbtソフト名称 As RadioButton
-    Friend WithEvents dgvc権利者 As DataGridViewTextBoxColumn
     Friend WithEvents dgvcメーカー As DataGridViewTextBoxColumn
     Friend WithEvents dgvcソフトウェア As DataGridViewTextBoxColumn
     Friend WithEvents dgvcプロダクトキー As DataGridViewTextBoxColumn
-    Friend WithEvents dgvc利用者 As DataGridViewTextBoxColumn
+    Friend WithEvents dgvc権利者 As DataGridViewTextBoxColumn
     Friend WithEvents dgvcサブスクリプションID As DataGridViewTextBoxColumn
+    Friend WithEvents dgvc利用者 As DataGridViewTextBoxColumn
 End Class

@@ -5,11 +5,5 @@
     <Setting Name="DB接続文字列" Type="System.String" Scope="Application">
       <Value Profile="(Default)">User ID = summer_user;Password = ;Data Source = 192.168.88.213;Initial Catalog = SoftwareManagement</Value>
     </Setting>
-    <Setting Name="MSメーカーID" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">001</Value>
-    </Setting>
-    <Setting Name="MSカスタムキー代替文字列" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">&lt;Custom Key&gt;</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

@@ -33,28 +33,20 @@ Public Class frm25_ソフトウェア
         End If
         '
         Dim int行 As Integer
+        Dim strメーカーID As String = DirectCast(cbxメーカーID.SelectedItem, CbxItem).L
+        Dim strソフトID As String = editソフトウェアID.Text.Trim
         '
         If rbt登録.Checked Then
             ' ソフトウェアID構成 → メーカーID（3桁）＋連番（4桁）
-            Dim strメーカーID As String = DirectCast(cbxメーカーID.SelectedItem, CbxItem).L
-            SQL.Length = 0
-            SQL.AppendLine("SELECT")
-            SQL.AppendLine("    CONVERT(INT,MAX(ソフトウェアID))")
-            SQL.AppendLine("FROM")
-            SQL.AppendLine("    M12_ソフトウェア")
-            SQL.AppendLine("WHERE")
-            SQL.AppendLine("    ソフトウェアID LIKE '" & strメーカーID & "%'")
-            Dim 連番最大 As Integer? = GetValue(Of Integer?)(SQL.ToString)
-            Dim 連番採番 As Integer = If(連番最大 Is Nothing, CInt(strメーカーID & "0001"), 連番最大 + 1)
-            editソフトウェアID.Text = 連番採番.ToString("0000000")
-            'SQL.AppendLine("    RIGHT('000'+CONVERT(varchar,ISNULL((SELECT MAX(メーカーID) FROM M11_メーカー), 0)+1), 3),")
+            strソフトID = Get採番ソフトウェアID()
+            '
             SQL.Length = 0
             SQL.AppendLine("INSERT")
             SQL.AppendLine("INTO")
             SQL.AppendLine("    M12_ソフトウェア")
             SQL.AppendLine("VALUES")
             SQL.AppendLine("(")
-            SQL.AppendLine("    '" & editソフトウェアID.Text & "',") ' ソフトウェアID
+            SQL.AppendLine("    '" & strソフトID & "',") ' ソフトウェアID
             SQL.AppendLine("    '" & strメーカーID & "',")
             SQL.AppendLine("    '" & editソフトウェア名称.Text.Trim & "',")
             SQL.AppendLine("    '" & editファイル名称.Text.Trim & "',")
@@ -64,40 +56,74 @@ Public Class frm25_ソフトウェア
             SQL.AppendLine(")")
             '
         ElseIf rbt更新.Checked Then
+
+            ' メーカーIDが変更された場合は再度ソフトウェアIDを採番する
+            Dim str新採番 As String = Get採番ソフトウェアID()
+
+            ' 元々のメーカーID
+            Dim str元メーカーID As String = sNvl(DirectCast(dgvソフトウェア一覧.DataSource, DataTable)(dgvソフトウェア一覧.CurrentRow.Index)("メーカーID"))
+
             SQL.Length = 0
+            ' メーカーIDが変更された場合は再度ソフトウェアIDを採番する
             SQL.AppendLine("UPDATE")
             SQL.AppendLine("    M12_ソフトウェア")
             SQL.AppendLine("SET")
+            ' メーカーIDが変更され主キーが変わった場合は更新する
+            If str元メーカーID <> strメーカーID Then
+                SQL.AppendLine("    ソフトウェアID = '" & str新採番 & "',")
+            End If
             SQL.AppendLine("    ソフトウェア名称 = '" & editソフトウェア名称.Text.Trim & "',")
             SQL.AppendLine("    ファイル名 = '" & editファイル名称.Text.Trim & "',")
-            SQL.AppendLine("    メーカーID = '" & DirectCast(cbxメーカーID.SelectedItem, CbxItem).L & "',")
+            SQL.AppendLine("    メーカーID = '" & strメーカーID & "',")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("    ソフトウェアID = '" & editソフトウェアID.Text.Trim & "'")
-            int行 = dgvソフトウェア一覧.CurrentRow.Index
+            SQL.AppendLine("    ソフトウェアID = '" & strソフトID & "';")
+
+            ' メーカーIDが変更された場合、プロダクトキーテーブルのソフトウェアIDも共に変更する
+            If str元メーカーID <> strメーカーID Then
+                SQL.AppendLine("UPDATE")
+                SQL.AppendLine("    M13_プロダクトキー")
+                SQL.AppendLine("SET")
+                ' メーカーIDが変更され主キーが変わった場合は更新する
+                SQL.AppendLine("    ソフトウェアID = '" & str新採番 & "',")
+                SQL.AppendLine("    更新日時 = GETDATE()")
+                SQL.AppendLine("WHERE")
+                SQL.AppendLine("    ソフトウェアID = '" & strソフトID & "';")
+                ' ソフトIDを新たにする
+                strソフトID = str新採番
+            End If
+
+            ' ※ プロダクトキーのメーカー変更した場合は合わせて、サブスクリプションのメーカーも変更したほうが親切かも
+
         ElseIf rbt削除.Checked Then
-            If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
+            If MessageBox.Show("ソフトウェアを削除すると関連するプロダクトキーも合わせて削除されます。" & vbNewLine & "本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
                 Return
             End If
+            'ソフトウェア管理でメインなので、これは物理削除する
             SQL.Length = 0
             SQL.AppendLine("DELETE")
             SQL.AppendLine("    M12_ソフトウェア")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("    ソフトウェアID = '" & editソフトウェアID.Text.Trim & "'")
+            SQL.AppendLine("    ソフトウェアID = '" & editソフトウェアID.Text.Trim & "';")
+            ' ソフトウェアを削除したらプロダクトキーも合わせて削除する
+            SQL.AppendLine("DELETE")
+            SQL.AppendLine("    M13_プロダクトキー")
+            SQL.AppendLine("WHERE")
+            SQL.AppendLine("    ソフトウェアID = '" & editソフトウェアID.Text.Trim & "';")
             int行 = If(dgvソフトウェア一覧.CurrentRow.Index = 0, 0, dgvソフトウェア一覧.CurrentRow.Index - 1)
         End If
 
         ' 実行
-        If ExecNonQuery(SQL.ToString) Then
+        If ExecNonQuery(SQL.ToString, True) Then
             MsgInfo("DB更新結果", "データベースの更新に成功しました。")
         End If
 
         グリッド表示()
 
         ' 新規登録の時は、追加したデータを修正モードにする
-        If rbt登録.Checked Then
+        If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgvソフトウェア一覧.DataSource, DataTable)
-            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) sNvl(x("ソフトウェアID")) = editソフトウェアID.Text)
+            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) sNvl(x("ソフトウェアID")) = strソフトID)
             int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
         End If
 
@@ -189,7 +215,7 @@ Public Class frm25_ソフトウェア
         SQL.AppendLine("    M12.作成日時")
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M12_ソフトウェア M12")
-        SQL.AppendLine("    LEFT JOIN")
+        SQL.AppendLine("    INNER JOIN")
         SQL.AppendLine("    M11_メーカー M11 ON")
         SQL.AppendLine("    M12.メーカーID = M11.メーカーID")
         SQL.AppendLine("WHERE")
@@ -221,11 +247,26 @@ Public Class frm25_ソフトウェア
                 editソフトウェアID.Text = sNvl(.Item("ソフトウェアID"))
                 editソフトウェア名称.Text = sNvl(.Item("ソフトウェア名称"))
                 editファイル名称.Text = sNvl(.Item("ファイル名"))
-                cbxメーカーID.SelectedItem = cbxメーカーID.Items.Cast(Of CbxItem).Where(Function(x) x.L = .Item("メーカーID")).First
+                cbxメーカーID.SelectedItem = GetComboBoxItem(cbxメーカーID, .Item("メーカーID"))
                 edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
                 edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
             End With
         End If
     End Sub
+
+    Private Function Get採番ソフトウェアID() As String
+        Dim strメーカーID As String = DirectCast(cbxメーカーID.SelectedItem, CbxItem).L
+        SQL.Length = 0
+
+        Dim base = CInt(strメーカーID) * 10000
+
+        SQL.AppendLine("SELECT")
+        SQL.AppendLine("    RIGHT('0000000' + CONVERT(VARCHAR,ISNULL(MAX(ソフトウェアID)," & base & ") + 1),7)")
+        SQL.AppendLine("FROM")
+        SQL.AppendLine("    M12_ソフトウェア")
+        SQL.AppendLine("WHERE")
+        SQL.AppendLine("    LEFT(ソフトウェアID,3) = '" & strメーカーID & "'")
+        Return GetValue(Of String)(SQL.ToString)
+    End Function
 
 End Class

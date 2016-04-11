@@ -24,6 +24,9 @@ Partial Class frm24_サブスクリプション
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.dgvサブスクリプション一覧 = New System.Windows.Forms.DataGridView()
+        Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbt削除 = New System.Windows.Forms.RadioButton()
@@ -31,6 +34,8 @@ Partial Class frm24_サブスクリプション
         Me.rbt登録 = New System.Windows.Forms.RadioButton()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.tbxサブスクリプション連番 = New System.Windows.Forms.TextBox()
         Me.chkサブスクリプション不要 = New System.Windows.Forms.CheckBox()
         Me.ndtp購入日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
         Me.ndtp終了日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
@@ -50,10 +55,7 @@ Partial Class frm24_サブスクリプション
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.tbx隠_サブスクリプション連番 = New System.Windows.Forms.TextBox()
-        Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.tbxサブスクリプションオーバーレイ = New System.Windows.Forms.TextBox()
         CType(Me.dgvサブスクリプション一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -74,8 +76,34 @@ Partial Class frm24_サブスクリプション
         Me.dgvサブスクリプション一覧.RowHeadersWidth = 25
         Me.dgvサブスクリプション一覧.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvサブスクリプション一覧.RowTemplate.Height = 21
-        Me.dgvサブスクリプション一覧.Size = New System.Drawing.Size(424, 385)
+        Me.dgvサブスクリプション一覧.Size = New System.Drawing.Size(424, 485)
         Me.dgvサブスクリプション一覧.TabIndex = 0
+        '
+        'Column1
+        '
+        Me.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.Column1.DataPropertyName = "権利者"
+        Me.Column1.HeaderText = "権利者"
+        Me.Column1.Name = "Column1"
+        Me.Column1.ReadOnly = True
+        Me.Column1.Width = 66
+        '
+        'Column2
+        '
+        Me.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.Column2.DataPropertyName = "メーカー"
+        Me.Column2.HeaderText = "メーカー"
+        Me.Column2.Name = "Column2"
+        Me.Column2.ReadOnly = True
+        Me.Column2.Width = 67
+        '
+        'Column3
+        '
+        Me.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Column3.DataPropertyName = "サブスクリプションID"
+        Me.Column3.HeaderText = "サブスクリプションID"
+        Me.Column3.Name = "Column3"
+        Me.Column3.ReadOnly = True
         '
         'Label1
         '
@@ -143,7 +171,7 @@ Partial Class frm24_サブスクリプション
         Me.GroupBox2.Controls.Add(Me.dgvサブスクリプション一覧)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 47)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(430, 403)
+        Me.GroupBox2.Size = New System.Drawing.Size(430, 503)
         Me.GroupBox2.TabIndex = 8
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "１．サブスクリプション一覧"
@@ -152,6 +180,9 @@ Partial Class frm24_サブスクリプション
         '
         Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox3.Controls.Add(Me.tbxサブスクリプションオーバーレイ)
+        Me.GroupBox3.Controls.Add(Me.Label10)
+        Me.GroupBox3.Controls.Add(Me.tbxサブスクリプション連番)
         Me.GroupBox3.Controls.Add(Me.chkサブスクリプション不要)
         Me.GroupBox3.Controls.Add(Me.ndtp購入日)
         Me.GroupBox3.Controls.Add(Me.ndtp終了日)
@@ -171,15 +202,35 @@ Partial Class frm24_サブスクリプション
         Me.GroupBox3.Controls.Add(Me.Label3)
         Me.GroupBox3.Location = New System.Drawing.Point(448, 99)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(324, 315)
+        Me.GroupBox3.Size = New System.Drawing.Size(324, 415)
         Me.GroupBox3.TabIndex = 8
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
         '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(18, 43)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(106, 12)
+        Me.Label10.TabIndex = 33
+        Me.Label10.Text = "サブスクリプション連番"
+        '
+        'tbxサブスクリプション連番
+        '
+        Me.tbxサブスクリプション連番.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.tbxサブスクリプション連番.Location = New System.Drawing.Point(139, 40)
+        Me.tbxサブスクリプション連番.Name = "tbxサブスクリプション連番"
+        Me.tbxサブスクリプション連番.ReadOnly = True
+        Me.tbxサブスクリプション連番.Size = New System.Drawing.Size(30, 19)
+        Me.tbxサブスクリプション連番.TabIndex = 12
+        Me.tbxサブスクリプション連番.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
         'chkサブスクリプション不要
         '
         Me.chkサブスクリプション不要.AutoSize = True
-        Me.chkサブスクリプション不要.Location = New System.Drawing.Point(139, 18)
+        Me.chkサブスクリプション不要.Location = New System.Drawing.Point(139, 72)
+        Me.chkサブスクリプション不要.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.chkサブスクリプション不要.Name = "chkサブスクリプション不要"
         Me.chkサブスクリプション不要.Size = New System.Drawing.Size(125, 16)
         Me.chkサブスクリプション不要.TabIndex = 1
@@ -188,7 +239,7 @@ Partial Class frm24_サブスクリプション
         '
         'ndtp購入日
         '
-        Me.ndtp購入日.Location = New System.Drawing.Point(139, 209)
+        Me.ndtp購入日.Location = New System.Drawing.Point(139, 254)
         Me.ndtp購入日.Name = "ndtp購入日"
         Me.ndtp購入日.NullValue = " <日付を選択>"
         Me.ndtp購入日.Size = New System.Drawing.Size(150, 19)
@@ -197,7 +248,7 @@ Partial Class frm24_サブスクリプション
         '
         'ndtp終了日
         '
-        Me.ndtp終了日.Location = New System.Drawing.Point(139, 177)
+        Me.ndtp終了日.Location = New System.Drawing.Point(139, 222)
         Me.ndtp終了日.Name = "ndtp終了日"
         Me.ndtp終了日.NullValue = " <日付を選択>"
         Me.ndtp終了日.Size = New System.Drawing.Size(150, 19)
@@ -206,7 +257,7 @@ Partial Class frm24_サブスクリプション
         '
         'ndtp開始日
         '
-        Me.ndtp開始日.Location = New System.Drawing.Point(139, 145)
+        Me.ndtp開始日.Location = New System.Drawing.Point(139, 190)
         Me.ndtp開始日.Name = "ndtp開始日"
         Me.ndtp開始日.NullValue = " <日付を選択>"
         Me.ndtp開始日.Size = New System.Drawing.Size(150, 19)
@@ -216,7 +267,7 @@ Partial Class frm24_サブスクリプション
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(18, 214)
+        Me.Label9.Location = New System.Drawing.Point(18, 259)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(53, 12)
         Me.Label9.TabIndex = 32
@@ -225,7 +276,7 @@ Partial Class frm24_サブスクリプション
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(18, 182)
+        Me.Label8.Location = New System.Drawing.Point(18, 227)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(89, 12)
         Me.Label8.TabIndex = 31
@@ -234,7 +285,7 @@ Partial Class frm24_サブスクリプション
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(18, 150)
+        Me.Label2.Location = New System.Drawing.Point(18, 195)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(89, 12)
         Me.Label2.TabIndex = 30
@@ -243,7 +294,7 @@ Partial Class frm24_サブスクリプション
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(18, 115)
+        Me.Label7.Location = New System.Drawing.Point(18, 160)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(53, 12)
         Me.Label7.TabIndex = 27
@@ -252,7 +303,7 @@ Partial Class frm24_サブスクリプション
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(18, 82)
+        Me.Label6.Location = New System.Drawing.Point(18, 127)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(52, 12)
         Me.Label6.TabIndex = 26
@@ -263,7 +314,7 @@ Partial Class frm24_サブスクリプション
         Me.cbxメーカーID.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.cbxメーカーID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbxメーカーID.FormattingEnabled = True
-        Me.cbxメーカーID.Location = New System.Drawing.Point(139, 112)
+        Me.cbxメーカーID.Location = New System.Drawing.Point(139, 157)
         Me.cbxメーカーID.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.cbxメーカーID.Name = "cbxメーカーID"
         Me.cbxメーカーID.Size = New System.Drawing.Size(150, 20)
@@ -274,7 +325,7 @@ Partial Class frm24_サブスクリプション
         Me.cbx権利者ID.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.cbx権利者ID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbx権利者ID.FormattingEnabled = True
-        Me.cbx権利者ID.Location = New System.Drawing.Point(139, 79)
+        Me.cbx権利者ID.Location = New System.Drawing.Point(139, 124)
         Me.cbx権利者ID.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.cbx権利者ID.Name = "cbx権利者ID"
         Me.cbx権利者ID.Size = New System.Drawing.Size(150, 20)
@@ -285,7 +336,7 @@ Partial Class frm24_サブスクリプション
         Me.edit更新日時.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
         Me.edit更新日時.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.edit更新日時.Format = ""
-        Me.edit更新日時.Location = New System.Drawing.Point(139, 273)
+        Me.edit更新日時.Location = New System.Drawing.Point(139, 318)
         Me.edit更新日時.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.edit更新日時.Name = "edit更新日時"
         Me.edit更新日時.ReadOnly = True
@@ -297,7 +348,7 @@ Partial Class frm24_サブスクリプション
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(18, 276)
+        Me.Label5.Location = New System.Drawing.Point(18, 321)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(53, 12)
         Me.Label5.TabIndex = 17
@@ -306,7 +357,7 @@ Partial Class frm24_サブスクリプション
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(18, 244)
+        Me.Label4.Location = New System.Drawing.Point(18, 289)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(53, 12)
         Me.Label4.TabIndex = 16
@@ -317,7 +368,7 @@ Partial Class frm24_サブスクリプション
         Me.edit作成日時.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
         Me.edit作成日時.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.edit作成日時.Format = ""
-        Me.edit作成日時.Location = New System.Drawing.Point(139, 241)
+        Me.edit作成日時.Location = New System.Drawing.Point(139, 286)
         Me.edit作成日時.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.edit作成日時.Name = "edit作成日時"
         Me.edit作成日時.ReadOnly = True
@@ -333,7 +384,7 @@ Partial Class frm24_サブスクリプション
         Me.editサブスクリプションID.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.editサブスクリプションID.Format = ""
         Me.editサブスクリプションID.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.editサブスクリプションID.Location = New System.Drawing.Point(139, 47)
+        Me.editサブスクリプションID.Location = New System.Drawing.Point(139, 92)
         Me.editサブスクリプションID.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.editサブスクリプションID.MaxLength = 50
         Me.editサブスクリプションID.Name = "editサブスクリプションID"
@@ -343,7 +394,7 @@ Partial Class frm24_サブスクリプション
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(18, 50)
+        Me.Label3.Location = New System.Drawing.Point(18, 95)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(93, 12)
         Me.Label3.TabIndex = 12
@@ -354,7 +405,7 @@ Partial Class frm24_サブスクリプション
         Me.btn更新.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn更新.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn更新.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn更新.Location = New System.Drawing.Point(448, 420)
+        Me.btn更新.Location = New System.Drawing.Point(448, 520)
         Me.btn更新.Name = "btn更新"
         Me.btn更新.Size = New System.Drawing.Size(80, 30)
         Me.btn更新.TabIndex = 10
@@ -366,54 +417,27 @@ Partial Class frm24_サブスクリプション
         Me.btn終了.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn終了.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn終了.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn終了.Location = New System.Drawing.Point(692, 420)
+        Me.btn終了.Location = New System.Drawing.Point(692, 520)
         Me.btn終了.Name = "btn終了"
         Me.btn終了.Size = New System.Drawing.Size(80, 30)
         Me.btn終了.TabIndex = 11
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'tbx隠_サブスクリプション連番
+        'tbxサブスクリプション不要
         '
-        Me.tbx隠_サブスクリプション連番.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.tbx隠_サブスクリプション連番.Location = New System.Drawing.Point(742, 9)
-        Me.tbx隠_サブスクリプション連番.Name = "tbx隠_サブスクリプション連番"
-        Me.tbx隠_サブスクリプション連番.Size = New System.Drawing.Size(30, 19)
-        Me.tbx隠_サブスクリプション連番.TabIndex = 12
-        Me.tbx隠_サブスクリプション連番.Visible = False
-        '
-        'Column1
-        '
-        Me.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.Column1.DataPropertyName = "権利者"
-        Me.Column1.HeaderText = "権利者"
-        Me.Column1.Name = "Column1"
-        Me.Column1.ReadOnly = True
-        Me.Column1.Width = 66
-        '
-        'Column2
-        '
-        Me.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.Column2.DataPropertyName = "メーカー"
-        Me.Column2.HeaderText = "メーカー"
-        Me.Column2.Name = "Column2"
-        Me.Column2.ReadOnly = True
-        Me.Column2.Width = 67
-        '
-        'Column3
-        '
-        Me.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Column3.DataPropertyName = "サブスクリプションID"
-        Me.Column3.HeaderText = "サブスクリプションID"
-        Me.Column3.Name = "Column3"
-        Me.Column3.ReadOnly = True
+        Me.tbxサブスクリプションオーバーレイ.Enabled = False
+        Me.tbxサブスクリプションオーバーレイ.Location = New System.Drawing.Point(139, 92)
+        Me.tbxサブスクリプションオーバーレイ.Name = "tbxサブスクリプション不要"
+        Me.tbxサブスクリプションオーバーレイ.Size = New System.Drawing.Size(150, 19)
+        Me.tbxサブスクリプションオーバーレイ.TabIndex = 34
+        Me.tbxサブスクリプションオーバーレイ.Visible = False
         '
         'frm24_サブスクリプション
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(784, 462)
-        Me.Controls.Add(Me.tbx隠_サブスクリプション連番)
+        Me.ClientSize = New System.Drawing.Size(784, 562)
         Me.Controls.Add(Me.btn終了)
         Me.Controls.Add(Me.btn更新)
         Me.Controls.Add(Me.GroupBox3)
@@ -430,7 +454,6 @@ Partial Class frm24_サブスクリプション
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Friend WithEvents Label1 As Label
@@ -460,8 +483,10 @@ Partial Class frm24_サブスクリプション
     Friend WithEvents ndtp購入日 As Windows.Controls.NullableDateTimePicker
     Friend WithEvents chkサブスクリプション不要 As CheckBox
     Friend WithEvents dgvサブスクリプション一覧 As DataGridView
-    Friend WithEvents tbx隠_サブスクリプション連番 As TextBox
+    Friend WithEvents tbxサブスクリプション連番 As TextBox
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents Column3 As DataGridViewTextBoxColumn
+    Friend WithEvents Label10 As Label
+    Friend WithEvents tbxサブスクリプションオーバーレイ As TextBox
 End Class

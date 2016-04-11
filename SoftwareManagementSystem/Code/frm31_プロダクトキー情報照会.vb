@@ -1,6 +1,6 @@
 ﻿Imports System.Text
 
-Public Class frm31_情報照会
+Public Class frm31_プロダクトキー情報照会
 
     Private SQL As New StringBuilder
 
@@ -44,7 +44,7 @@ Public Class frm31_情報照会
         cbx利用者.Items.AddRange(GetDataTable(SQL.ToString).GeneratePairArray("社員ID", "社員名"))
         '
         SetupDataGridViewProperties(dgv一覧)
-        SetupDataGridViewCellMerge(dgv一覧, dgvc権利者, dgvcメーカー, dgvcソフトウェア)
+        SetupDataGridViewCellMerge(dgv一覧, dgvcメーカー, dgvcソフトウェア, dgvc権利者, dgvcサブスクリプションID)
         '
         グリッド表示()
     End Sub
@@ -113,9 +113,11 @@ Public Class frm31_情報照会
         End If
 
         SQL.AppendLine("ORDER BY")
-        SQL.AppendLine("        M03.権利者ID,")
-        SQL.AppendLine("        M11.メーカーID,")
+        'SQL.AppendLine("        M11.メーカーID,")
+        SQL.AppendLine("        M11.メーカー名称,")
         SQL.AppendLine("        M12.ソフトウェア名称,")
+        SQL.AppendLine("        M03.権利者ID,")
+        SQL.AppendLine("        M03.サブスクリプションID,")
         SQL.AppendLine("        M13.プロダクトキー")
 
         ' 不用意なイベント発生を防ぐため一旦外す

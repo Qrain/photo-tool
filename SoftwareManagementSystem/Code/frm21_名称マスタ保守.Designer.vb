@@ -208,7 +208,7 @@ Partial Class frm21_名称マスタ保守
         Me.edit備考.ImeMode = System.Windows.Forms.ImeMode.[On]
         Me.edit備考.Location = New System.Drawing.Point(110, 133)
         Me.edit備考.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
-        Me.edit備考.MaxLength = 50
+        Me.edit備考.MaxLength = 100
         Me.edit備考.Multiline = True
         Me.edit備考.Name = "edit備考"
         Me.edit備考.Size = New System.Drawing.Size(198, 80)

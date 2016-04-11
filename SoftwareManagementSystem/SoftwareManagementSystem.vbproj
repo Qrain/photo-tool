@@ -80,22 +80,34 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\frm31_情報照会.Designer.vb">
-      <DependentUpon>frm31_情報照会.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Code\frm31_情報照会.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Code\frm26_プロダクトキー登録.Designer.vb">
       <DependentUpon>frm26_プロダクトキー登録.vb</DependentUpon>
     </Compile>
     <Compile Include="Code\frm26_プロダクトキー登録.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Code\Trash\_frm10_MSDNサブスクリプションXML読取.Designer.vb">
-      <DependentUpon>_frm10_MSDNサブスクリプションXML読取.vb</DependentUpon>
+    <Compile Include="Code\Old\frm10_MSDNサブスクリプションXML読取.Designer.vb">
+      <DependentUpon>frm10_MSDNサブスクリプションXML読取.vb</DependentUpon>
     </Compile>
-    <Compile Include="Code\Trash\_frm10_MSDNサブスクリプションXML読取.vb">
+    <Compile Include="Code\Old\frm10_MSDNサブスクリプションXML読取.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Code\Old\frm26_プロダクトキー登録v2.Designer.vb">
+      <DependentUpon>frm26_プロダクトキー登録v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Code\Old\frm26_プロダクトキー登録v2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Code\frm31_プロダクトキー情報照会.Designer.vb">
+      <DependentUpon>frm31_プロダクトキー情報照会.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Code\frm31_プロダクトキー情報照会.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Code\Old\frm26_プロダクトキー登録v1.Designer.vb">
+      <DependentUpon>frm26_プロダクトキー登録v1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Code\Old\frm26_プロダクトキー登録v1.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Code\frm00_メニュー.vb">
@@ -141,13 +153,13 @@
     <Compile Include="Code\frm11_データインポート.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Code\Trash\_frmファイル実体登録編集機能.Designer.vb">
-      <DependentUpon>_frmファイル実体登録編集機能.vb</DependentUpon>
+    <Compile Include="Code\mdl共通.vb" />
+    <Compile Include="Code\Old\frmファイル実体登録編集機能.Designer.vb">
+      <DependentUpon>frmファイル実体登録編集機能.vb</DependentUpon>
     </Compile>
-    <Compile Include="Code\Trash\_frmファイル実体登録編集機能.vb">
+    <Compile Include="Code\Old\frmファイル実体登録編集機能.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Code\mdl共通.vb" />
     <Compile Include="Code\ThirdParty\NullableDateTimePicker.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -168,14 +180,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Code\frm31_情報照会.resx">
-      <DependentUpon>frm31_情報照会.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Code\frm26_プロダクトキー登録.resx">
       <DependentUpon>frm26_プロダクトキー登録.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Code\Trash\_frm10_MSDNサブスクリプションXML読取.resx">
-      <DependentUpon>_frm10_MSDNサブスクリプションXML読取.vb</DependentUpon>
+    <EmbeddedResource Include="Code\Old\frm10_MSDNサブスクリプションXML読取.resx">
+      <DependentUpon>frm10_MSDNサブスクリプションXML読取.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Code\Old\frm26_プロダクトキー登録v2.resx">
+      <DependentUpon>frm26_プロダクトキー登録v2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Code\frm31_プロダクトキー情報照会.resx">
+      <DependentUpon>frm31_プロダクトキー情報照会.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Code\Old\frm26_プロダクトキー登録v1.resx">
+      <DependentUpon>frm26_プロダクトキー登録v1.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Code\frm00_メニュー.resx">
       <DependentUpon>frm00_メニュー.vb</DependentUpon>
@@ -198,8 +216,8 @@
     <EmbeddedResource Include="Code\frm11_データインポート.resx">
       <DependentUpon>frm11_データインポート.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Code\Trash\_frmファイル実体登録編集機能.resx">
-      <DependentUpon>_frmファイル実体登録編集機能.vb</DependentUpon>
+    <EmbeddedResource Include="Code\Old\frmファイル実体登録編集機能.resx">
+      <DependentUpon>frmファイル実体登録編集機能.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -222,6 +240,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Component\SPWinFormControls.dll" />
     <Content Include="Document\KeysExport.xml" />
     <Content Include="Document\swc-KeysExport.xml">
       <SubType>Designer</SubType>

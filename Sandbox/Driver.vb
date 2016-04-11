@@ -3,6 +3,17 @@
     Sub Main()
 
 
+        Dim list As New List(Of Integer) From {1, 2, 3}
+
+        Dim selected =
+            From i In list
+            Select No = "No." & i, Str = "ABC"
+
+        Dim xxxxx As IEnumerable(Of Object) = selected
+
+        Console.ReadLine()
+
+
         ' デフォコンでは時間による乱数シードが使われる
         Dim rdm = New System.Random()
         'Console.WriteLine("１回目")
@@ -32,24 +43,21 @@
 
                 For j = 1 To 18
                     ' 0～3999の範囲で乱数を生成
-                    ' 0~1399
                     Dim x = Math.Floor(rdm.Next(4000))
+                    ' 0~1399
                     If x < 1400 Then
                         group(Math.Floor(x / 200)) += 1
                     End If
                 Next
                 ' ６以上該当したグループが１つでもあればカウントする
-                If group.Where(Function(m) m >= 3).Count > 0 Then
+                If group.Where(Function(m) m > 4).Count > 0 Then
                     count += 1
                 End If
             Next
             result.Add(count / n)
         Next
 
-
-
         Console.WriteLine("平均値 " & (result.Sum / result.Count) * 100 & " %")
-
         Console.ReadLine()
 
     End Sub

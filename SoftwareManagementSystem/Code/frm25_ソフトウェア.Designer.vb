@@ -45,7 +45,6 @@ Partial Class frm25_ソフトウェア
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.dgvcソフトID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.dgvcメーカー名称 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.dgvcソフト名称 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.dgvソフトウェア一覧, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -60,7 +59,7 @@ Partial Class frm25_ソフトウェア
         Me.dgvソフトウェア一覧.AllowUserToDeleteRows = False
         Me.dgvソフトウェア一覧.AllowUserToResizeRows = False
         Me.dgvソフトウェア一覧.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvソフトウェア一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcソフトID, Me.dgvcメーカー名称, Me.dgvcソフト名称})
+        Me.dgvソフトウェア一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcメーカー名称, Me.dgvcソフト名称})
         Me.dgvソフトウェア一覧.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvソフトウェア一覧.Location = New System.Drawing.Point(3, 15)
         Me.dgvソフトウェア一覧.Name = "dgvソフトウェア一覧"
@@ -322,15 +321,6 @@ Partial Class frm25_ソフトウェア
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'Column1
-        '
-        Me.dgvcソフトID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvcソフトID.DataPropertyName = "ソフトウェアID"
-        Me.dgvcソフトID.HeaderText = "ID"
-        Me.dgvcソフトID.Name = "Column1"
-        Me.dgvcソフトID.ReadOnly = True
-        Me.dgvcソフトID.Width = 41
-        '
         'Column2
         '
         Me.dgvcメーカー名称.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
@@ -395,7 +385,6 @@ Partial Class frm25_ソフトウェア
     Friend WithEvents Label6 As Label
     Friend WithEvents editソフトウェアID As SPWinFormControls.SPEdit
     Friend WithEvents Label9 As Label
-    Friend WithEvents dgvcソフトID As DataGridViewTextBoxColumn
     Friend WithEvents dgvcメーカー名称 As DataGridViewTextBoxColumn
     Friend WithEvents dgvcソフト名称 As DataGridViewTextBoxColumn
 End Class

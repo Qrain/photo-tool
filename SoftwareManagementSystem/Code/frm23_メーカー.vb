@@ -15,23 +15,30 @@ Public Class frm23_メーカー
         End If
         '
         Dim int行 As Integer
+        Dim strメーカーID As String = editメーカーID.Text.Trim
         '
         If rbt登録.Checked Then
-            '
+            ' メーカーIDを採番する。採番ルールは単純に最大のメーカーID＋１の値
+            SQL.Length = 0
+            SQL.AppendLine("SELECT")
+            SQL.AppendLine("    RIGHT ('000' + CONVERT(VARCHAR,ISNULL(MAX(メーカーID),0) + 1),3)")
+            SQL.AppendLine("FROM")
+            SQL.AppendLine("    M11_メーカー")
+            strメーカーID = GetValue(Of String)(SQL.ToString)
+            ' 登録SQL
             SQL.Length = 0
             SQL.AppendLine("INSERT")
             SQL.AppendLine("INTO")
             SQL.AppendLine("    M11_メーカー")
             SQL.AppendLine("VALUES")
             SQL.AppendLine("(")
-            SQL.AppendLine("    RIGHT('000'+CONVERT(varchar,ISNULL((SELECT MAX(メーカーID) FROM M11_メーカー), 0)+1), 3),")
-            'SQL.AppendLine("    '" & メーカーID採番.ToString("000") & "',")
+            SQL.AppendLine("    '" & strメーカーID & "',")
             SQL.AppendLine("    '" & editメーカー名称.Text.Trim & "',")
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    0")
             SQL.AppendLine(")")
-
+            '
         ElseIf rbt更新.Checked Then
             SQL.Length = 0
             SQL.AppendLine("UPDATE")
@@ -40,17 +47,21 @@ Public Class frm23_メーカー
             SQL.AppendLine("    メーカー名称 = '" & editメーカー名称.Text.Trim & "',")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        メーカーID = '" & editメーカーID.Text & "'")
-            int行 = dgvメーカー一覧.CurrentRow.Index
+            SQL.AppendLine("        メーカーID = '" & strメーカーID & "'")
+            '
         ElseIf rbt削除.Checked Then
             If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
                 Return
             End If
+            ' 論理削除に変更
             SQL.Length = 0
-            SQL.AppendLine("DELETE")
+            SQL.AppendLine("UPDATE")
             SQL.AppendLine("    M11_メーカー")
+            SQL.AppendLine("SET")
+            SQL.AppendLine("    削除区分 = 1,")
+            SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        メーカーID = '" & editメーカーID.Text & "'")
+            SQL.AppendLine("        メーカーID = '" & strメーカーID & "'")
             int行 = If(dgvメーカー一覧.CurrentRow.Index = 0, 0, dgvメーカー一覧.CurrentRow.Index - 1)
         End If
 
@@ -60,12 +71,14 @@ Public Class frm23_メーカー
         End If
         '
         グリッド表示()
-        ' 新規登録の時は、追加したデータを修正モードにする
-        If rbt登録.Checked Then
+
+        ' 行インデックスを割り出す
+        If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgvメーカー一覧.DataSource, DataTable)
-            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) x("メーカーID") = editメーカーID.Text.Trim)
+            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) x("メーカーID") = strメーカーID)
             int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
         End If
+
         ' 選択させる
         RemoveHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
         dgvメーカー一覧.CurrentCell = dgvメーカー一覧(0, int行)
@@ -93,6 +106,11 @@ Public Class frm23_メーカー
         End If
     End Sub
 
+    Private Sub chk削除済表示_CheckedChanged(sender As Object, e As EventArgs) Handles chk削除済表示.CheckedChanged
+        グリッド表示()
+        詳細項目更新()
+    End Sub
+
     Private Sub dgvメーカー一覧_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvメーカー一覧.RowEnter
         詳細項目更新(e.RowIndex)
     End Sub
@@ -106,14 +124,32 @@ Public Class frm23_メーカー
         SQL.AppendLine("    メーカーID,")
         SQL.AppendLine("    メーカー名称,")
         SQL.AppendLine("    作成日時,")
-        SQL.AppendLine("    更新日時")
+        SQL.AppendLine("    更新日時,")
+        SQL.AppendLine("    削除区分")
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M11_メーカー")
-        SQL.AppendLine("WHERE")
-        SQL.AppendLine("    削除区分 = 0")
         ' 不用意なイベント発生を防ぐため一旦外す
         RemoveHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
         dgvメーカー一覧.DataSource = GetDataTable(SQL.ToString)
+        Dim dtb As DataTable = GetDataTable(SQL.ToString)
+
+        ' 削除表示が指定されていたら全て表示する
+        If chk削除済表示.Checked Then
+            dgvメーカー一覧.DataSource = dtb
+            ' 論理削除済みの項目を表示し前景色を変更する
+            For i = 0 To dtb.Rows.Count - 1
+                ' 削除区分=1 ならば前景色を変える
+                If dtb(i)("削除区分") = 1 Then
+                    For Each ce As DataGridViewCell In dgvメーカー一覧.Rows(i).Cells
+                        ce.Style.ForeColor = Color.LightBlue
+                    Next
+                End If
+            Next
+        Else
+            ' 削除区分=0 ものだけ表示する
+            dgvメーカー一覧.DataSource = (From r In dtb Where r("削除区分") = 0).CopyToDataTable
+        End If
+
         AddHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
     End Sub
 
@@ -156,6 +192,8 @@ Public Class frm23_メーカー
             editメーカー名称.Text = ""
             edit作成日時.Text = ""
             edit更新日時.Text = ""
+            edit削除区分.Text = ""
+            btn更新.Enabled = True
         Else
             ' 修正 or 削除 モード
             ' 行数がパラメータによって指定されていればそっちを優先して使う
@@ -165,6 +203,8 @@ Public Class frm23_メーカー
                 editメーカー名称.Text = sNvl(.Item("メーカー名称"))
                 edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
                 edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
+                edit削除区分.Text = .Item("削除区分")
+                btn更新.Enabled = .Item("削除区分") = 0
             End With
         End If
     End Sub

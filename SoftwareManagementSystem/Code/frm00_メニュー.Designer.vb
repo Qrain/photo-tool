@@ -31,12 +31,12 @@ Partial Class frm00_メニュー
         Me.btnメーカーマスタ = New System.Windows.Forms.Button()
         Me.btnサブスクリプション = New System.Windows.Forms.Button()
         Me.btnソフトウェア = New System.Windows.Forms.Button()
-        Me.btnプロダクトキー = New System.Windows.Forms.Button()
+        Me.btnプロダクトキーv3 = New System.Windows.Forms.Button()
         Me.btn名称マスタ = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.FlowLayoutPanel3 = New System.Windows.Forms.FlowLayoutPanel()
         Me.btn情報照会 = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.FlowLayoutPanel3 = New System.Windows.Forms.FlowLayoutPanel()
         Me.grpデータ読込.SuspendLayout()
         Me.FlowLayoutPanel2.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -47,11 +47,13 @@ Partial Class frm00_メニュー
         '
         'grpデータ読込
         '
+        Me.grpデータ読込.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grpデータ読込.Controls.Add(Me.FlowLayoutPanel2)
         Me.grpデータ読込.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.grpデータ読込.Location = New System.Drawing.Point(12, 61)
+        Me.grpデータ読込.Location = New System.Drawing.Point(12, 47)
         Me.grpデータ読込.Name = "grpデータ読込"
-        Me.grpデータ読込.Size = New System.Drawing.Size(460, 63)
+        Me.grpデータ読込.Size = New System.Drawing.Size(360, 63)
         Me.grpデータ読込.TabIndex = 0
         Me.grpデータ読込.TabStop = False
         Me.grpデータ読込.Text = "データ読込"
@@ -62,7 +64,7 @@ Partial Class frm00_メニュー
         Me.FlowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel2.Location = New System.Drawing.Point(3, 15)
         Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
-        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(454, 45)
+        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(354, 45)
         Me.FlowLayoutPanel2.TabIndex = 6
         '
         'btnMSDNxml読取
@@ -78,28 +80,31 @@ Partial Class frm00_メニュー
         '
         'GroupBox2
         '
+        Me.GroupBox2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox2.Controls.Add(Me.FlowLayoutPanel1)
         Me.GroupBox2.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.GroupBox2.Location = New System.Drawing.Point(12, 147)
+        Me.GroupBox2.Location = New System.Drawing.Point(12, 130)
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(3, 20, 3, 3)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(460, 87)
+        Me.GroupBox2.Size = New System.Drawing.Size(360, 87)
         Me.GroupBox2.TabIndex = 1
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "マスタ管理"
         '
         'FlowLayoutPanel1
         '
+        Me.FlowLayoutPanel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.FlowLayoutPanel1.Controls.Add(Me.btn社員マスタ)
         Me.FlowLayoutPanel1.Controls.Add(Me.btnメーカーマスタ)
         Me.FlowLayoutPanel1.Controls.Add(Me.btnサブスクリプション)
         Me.FlowLayoutPanel1.Controls.Add(Me.btnソフトウェア)
-        Me.FlowLayoutPanel1.Controls.Add(Me.btnプロダクトキー)
+        Me.FlowLayoutPanel1.Controls.Add(Me.btnプロダクトキーv3)
         Me.FlowLayoutPanel1.Controls.Add(Me.btn名称マスタ)
-        Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(3, 15)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(454, 69)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(354, 69)
         Me.FlowLayoutPanel1.TabIndex = 6
         '
         'btn社員マスタ
@@ -139,29 +144,29 @@ Partial Class frm00_メニュー
         '
         Me.btnソフトウェア.AutoSize = True
         Me.btnソフトウェア.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.btnソフトウェア.Location = New System.Drawing.Point(280, 3)
+        Me.btnソフトウェア.Location = New System.Drawing.Point(3, 31)
         Me.btnソフトウェア.Name = "btnソフトウェア"
         Me.btnソフトウェア.Size = New System.Drawing.Size(91, 22)
         Me.btnソフトウェア.TabIndex = 1
         Me.btnソフトウェア.Text = "ソフトウェアマスタ"
         Me.btnソフトウェア.UseVisualStyleBackColor = True
         '
-        'btnプロダクトキー
+        'btnプロダクトキーv3
         '
-        Me.btnプロダクトキー.AutoSize = True
-        Me.btnプロダクトキー.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.btnプロダクトキー.Location = New System.Drawing.Point(3, 31)
-        Me.btnプロダクトキー.Name = "btnプロダクトキー"
-        Me.btnプロダクトキー.Size = New System.Drawing.Size(78, 22)
-        Me.btnプロダクトキー.TabIndex = 5
-        Me.btnプロダクトキー.Text = "プロダクトキー"
-        Me.btnプロダクトキー.UseVisualStyleBackColor = True
+        Me.btnプロダクトキーv3.AutoSize = True
+        Me.btnプロダクトキーv3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.btnプロダクトキーv3.Location = New System.Drawing.Point(100, 31)
+        Me.btnプロダクトキーv3.Name = "btnプロダクトキーv3"
+        Me.btnプロダクトキーv3.Size = New System.Drawing.Size(78, 22)
+        Me.btnプロダクトキーv3.TabIndex = 6
+        Me.btnプロダクトキーv3.Text = "プロダクトキー"
+        Me.btnプロダクトキーv3.UseVisualStyleBackColor = True
         '
         'btn名称マスタ
         '
         Me.btn名称マスタ.AutoSize = True
         Me.btn名称マスタ.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.btn名称マスタ.Location = New System.Drawing.Point(87, 31)
+        Me.btn名称マスタ.Location = New System.Drawing.Point(184, 31)
         Me.btn名称マスタ.Name = "btn名称マスタ"
         Me.btn名称マスタ.Size = New System.Drawing.Size(65, 22)
         Me.btn名称マスタ.TabIndex = 3
@@ -170,15 +175,27 @@ Partial Class frm00_メニュー
         '
         'GroupBox1
         '
+        Me.GroupBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox1.Controls.Add(Me.FlowLayoutPanel3)
         Me.GroupBox1.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 257)
+        Me.GroupBox1.Location = New System.Drawing.Point(12, 237)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 20, 3, 3)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(460, 75)
+        Me.GroupBox1.Size = New System.Drawing.Size(360, 95)
         Me.GroupBox1.TabIndex = 3
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "データ参照"
+        '
+        'FlowLayoutPanel3
+        '
+        Me.FlowLayoutPanel3.Controls.Add(Me.btn情報照会)
+        Me.FlowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FlowLayoutPanel3.Location = New System.Drawing.Point(3, 15)
+        Me.FlowLayoutPanel3.Name = "FlowLayoutPanel3"
+        Me.FlowLayoutPanel3.Size = New System.Drawing.Size(354, 77)
+        Me.FlowLayoutPanel3.TabIndex = 7
         '
         'btn情報照会
         '
@@ -193,35 +210,30 @@ Partial Class frm00_メニュー
         '
         'Label1
         '
+        Me.Label1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label1.Font = New System.Drawing.Font("MS UI Gothic", 20.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.Blue
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(460, 35)
+        Me.Label1.Size = New System.Drawing.Size(360, 35)
         Me.Label1.TabIndex = 4
         Me.Label1.Text = "ソフトウェア管理システム"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'FlowLayoutPanel3
-        '
-        Me.FlowLayoutPanel3.Controls.Add(Me.btn情報照会)
-        Me.FlowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FlowLayoutPanel3.Location = New System.Drawing.Point(3, 15)
-        Me.FlowLayoutPanel3.Name = "FlowLayoutPanel3"
-        Me.FlowLayoutPanel3.Size = New System.Drawing.Size(454, 57)
-        Me.FlowLayoutPanel3.TabIndex = 7
         '
         'frm00_メニュー
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(484, 371)
+        Me.ClientSize = New System.Drawing.Size(384, 362)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.grpデータ読込)
+        Me.MinimumSize = New System.Drawing.Size(400, 400)
         Me.Name = "frm00_メニュー"
-        Me.Text = "Form1"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "メニュー"
         Me.grpデータ読込.ResumeLayout(False)
         Me.FlowLayoutPanel2.ResumeLayout(False)
         Me.FlowLayoutPanel2.PerformLayout()
@@ -246,8 +258,8 @@ Partial Class frm00_メニュー
     Friend WithEvents Label1 As Label
     Friend WithEvents btn名称マスタ As Button
     Friend WithEvents btn社員マスタ As Button
-    Friend WithEvents btnプロダクトキー As Button
     Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
     Friend WithEvents FlowLayoutPanel2 As FlowLayoutPanel
     Friend WithEvents FlowLayoutPanel3 As FlowLayoutPanel
+    Friend WithEvents btnプロダクトキーv3 As Button
 End Class

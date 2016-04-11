@@ -1,0 +1,51 @@
+
+MSDNプロダクトキーエクスポートXMLから取得できる情報
+・キー名称（具体的な製品名ではない）
+・キータイプ（静的認証やマルチライセンスなど）
+・プロダクトキー（１キー名称に複数のプロダクトキーが存在）
+・要求日
+
+よってXMLからはファイル実体情報（ファイル名やハッシュコード）は得られない
+また、利用者（サブスクライバー）の情報も得られない
+利用者情報は手入力でXML読み込み時に入力すればOK
+
+
+
+以下、例。
+
+（アクティベーション情報）
+認証タイプ：マルチランセンス認証
+Windows 10 Enterprise (BizSpark)
+key1: 96J8G-N9MBJ-YMX3T-QY4X3-WQKR4
+
+（上記アクティベーション情報で有効な製品実体）
+Windows 10 Enterprise (x64) - DVD (Japanese)
+SHA1: 3371B025383B62B907D998EEDF125B8B7AEA2430
+
+Windows 10 Enterprise (x86) - DVD (Japanese)
+SHA1: 56EE5DD94990A7F918BAF0F8E2F71B935FBFF687
+
+Windows 10 Enterprise, Version 1511 (Updated Feb 2016) (x64) - DVD (Japanese)
+SHA1: 1009E873C80E10224DE2DC8961B2150EACBB5741
+
+Windows 10 Enterprise, Version 1511 (Updated Feb 2016) (x86) - DVD (Japanese)
+SHA1: B4CCED2DCADCAF04D5F8873D9457E99A81FD69FA
+
+１プロダクトキーで複数製品の
+
+
+（アクティベーション情報）
+認証タイプ：リテール
+Windows 10 Pro (BizSpark)
+key1: KFX94-VN38J-9FY3W-2QBFG-PDKTT
+key2: XWMWN-KRP72-FXVRV-8XX2C-8XCKG
+key3: 4XVBP-N24JP-BTHXF-9PX8P-P9XTT
+
+
+（上記アクティベーション情報で有効な製品実体）
+Windows 10 (Multiple Editions) (x86) - DVD (Japanese)
+SHA1: 9F425A21873A8A5FB40B0F6B849EDA325A6A57FC
+
+Windows 10 (Multiple Editions) (x64) - DVD (Japanese)
+SHA1: 7A0B55F969E513D366543F099B2BFAE4357E7A40
+

@@ -11,12 +11,15 @@ Public Class frm21_名称マスタ保守
     End Sub
 
     Private Sub btn更新_Click(sender As Object, e As EventArgs) Handles btn更新.Click
-
+        '
         If Not 入力チェック() Then
             Return
         End If
         '
         Dim int行 As Integer
+        Dim str名称区分 As String = edit名称区分.Text.Trim
+        Dim str名称コード As String = edit名称コード.Text.Trim
+        '
         If rbt登録.Checked Then
             ' 重複チェック
             SQL.Length = 0
@@ -25,8 +28,8 @@ Public Class frm21_名称マスタ保守
             SQL.AppendLine("FROM")
             SQL.AppendLine("    M01_名称")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("    名称区分 = '" & edit名称区分.Text.Trim & "'")
-            SQL.AppendLine("    AND 名称コード = '" & edit名称コード.Text.Trim & "'")
+            SQL.AppendLine("    名称区分 = '" & str名称区分 & "'")
+            SQL.AppendLine("    AND 名称コード = '" & str名称コード & "'")
             '
             If GetValue(Of Integer)(SQL.ToString) > 0 Then
                 MsgWarn("重複チェック", "この名称マスタ情報は既に登録されています。ご確認下さい。")
@@ -39,8 +42,8 @@ Public Class frm21_名称マスタ保守
             SQL.AppendLine("    M01_名称")
             SQL.AppendLine("VALUES")
             SQL.AppendLine("(")
-            SQL.AppendLine("    '" & edit名称区分.Text.Trim & "',")
-            SQL.AppendLine("    '" & edit名称コード.Text.Trim & "',")
+            SQL.AppendLine("    '" & str名称区分 & "',")
+            SQL.AppendLine("    '" & str名称コード & "',")
             SQL.AppendLine("    '" & edit名称.Text & "',")
             SQL.AppendLine("    '" & edit備考.Text & "',")
             SQL.AppendLine("    GETDATE(),")
@@ -57,9 +60,8 @@ Public Class frm21_名称マスタ保守
             SQL.AppendLine("    備考 = '" & edit備考.Text & "',")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        名称区分 = '" & edit名称区分.Text & "'")
-            SQL.AppendLine("    AND 名称コード = '" & edit名称コード.Text & "'")
-            int行 = dgv名称一覧.CurrentRow.Index
+            SQL.AppendLine("        名称区分 = '" & str名称区分 & "'")
+            SQL.AppendLine("    AND 名称コード = '" & str名称コード & "'")
         ElseIf rbt削除.Checked Then
             If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
                 Return
@@ -68,8 +70,8 @@ Public Class frm21_名称マスタ保守
             SQL.AppendLine("DELETE")
             SQL.AppendLine("    M01_名称")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        名称区分 = '" & edit名称区分.Text & "'")
-            SQL.AppendLine("    AND 名称コード = '" & edit名称コード.Text & "'")
+            SQL.AppendLine("        名称区分 = '" & str名称区分 & "'")
+            SQL.AppendLine("    AND 名称コード = '" & str名称コード & "'")
             int行 = If(dgv名称一覧.CurrentRow.Index = 0, 0, dgv名称一覧.CurrentRow.Index - 1)
         End If
 
@@ -80,19 +82,24 @@ Public Class frm21_名称マスタ保守
 
         グリッド表示()
 
+        ' gs名称の内容をリロードする
+        Reload名称マスタ()
+
         ' 新規登録の時は、追加したデータを修正モードにする
-        If rbt登録.Checked Then
+        If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgv名称一覧.DataSource, DataTable)
             Dim 対象行 =
-                From x In dtb.AsEnumerable
-                Where x("名称区分") = edit名称区分.Text.Trim AndAlso x("名称コード") = edit名称コード.Text.Trim
-            int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
+                From x In dtb
+                Where x("名称区分") = str名称区分 AndAlso x("名称コード") = str名称コード
+            int行 = If(対象行.Count = 0, -1, dtb.Rows.IndexOf(対象行.First))
         End If
 
         ' 選択させる
-        RemoveHandler dgv名称一覧.RowEnter, AddressOf dgv名称一覧_RowEnter
-        dgv名称一覧.CurrentCell = dgv名称一覧(0, int行)
-        AddHandler dgv名称一覧.RowEnter, AddressOf dgv名称一覧_RowEnter
+        If int行 > 0 Then
+            RemoveHandler dgv名称一覧.RowEnter, AddressOf dgv名称一覧_RowEnter
+            dgv名称一覧.CurrentCell = dgv名称一覧(0, int行)
+            AddHandler dgv名称一覧.RowEnter, AddressOf dgv名称一覧_RowEnter
+        End If
 
         If rbt登録.Checked Then
             rbt更新.Checked = True

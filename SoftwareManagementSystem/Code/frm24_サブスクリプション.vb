@@ -33,19 +33,17 @@ Public Class frm24_サブスクリプション
             cbxメーカーID.Items.Add(New CbxItem(drw("メーカーID"), sNvl(drw("メーカー名称"))))
         Next
 
+        ' サブスクリプション不要時の代替文字列を設定
+        tbxサブスクリプションオーバーレイ.Text = gs名称("代替文字列")("02")
+
         SetupDataGridViewProperties(dgvサブスクリプション一覧)
         SetupDataGridViewCellMerge(dgvサブスクリプション一覧, Column1, Column2)
         グリッド表示()
     End Sub
 
     Private Sub chkサブスクリプション不要_CheckedChanged(sender As Object, e As EventArgs) Handles chkサブスクリプション不要.CheckedChanged
-        If chkサブスクリプション不要.Checked Then
-            SetupControls(SetupType.通常, editサブスクリプションID)
-            editサブスクリプションID.Enabled = False
-        Else
-            SetupControls(SetupType.必須, editサブスクリプションID)
-            editサブスクリプションID.Enabled = True
-        End If
+        ' チェックされたら表示する
+        tbxサブスクリプションオーバーレイ.Visible = chkサブスクリプション不要.Checked
     End Sub
 
     Private Sub btn更新_Click(sender As Object, e As EventArgs) Handles btn更新.Click
@@ -58,14 +56,14 @@ Public Class frm24_サブスクリプション
         '
         If rbt登録.Checked Then
             Dim 連番最大 As Integer? = GetValue(Of Integer?)("SELECT MAX(サブスクリプション連番) FROM M03_サブスクリプション")
-            tbx隠_サブスクリプション連番.Text = If(連番最大 Is Nothing, 1, 連番最大 + 1)
+            tbxサブスクリプション連番.Text = If(連番最大 Is Nothing, 1, 連番最大 + 1)
             SQL.Length = 0
             SQL.AppendLine("INSERT")
             SQL.AppendLine("INTO")
             SQL.AppendLine("    M03_サブスクリプション")
             SQL.AppendLine("VALUES")
             SQL.AppendLine("(")
-            SQL.AppendLine("    " & tbx隠_サブスクリプション連番.Text & ",")
+            SQL.AppendLine("    " & tbxサブスクリプション連番.Text & ",")
             SQL.AppendLine("    '" & DirectCast(cbx権利者ID.SelectedItem, CbxItem).L & "',")
             SQL.AppendLine("    '" & DirectCast(cbxメーカーID.SelectedItem, CbxItem).L & "',")
             SQL.AppendLine("    " & If(chkサブスクリプション不要.Checked, "NULL", "'" & editサブスクリプションID.Text & "'") & ",")
@@ -89,16 +87,23 @@ Public Class frm24_サブスクリプション
             SQL.AppendLine("    購入日 = " & If(ndtp購入日.IsNull, "NULL", "'" & ndtp購入日.Value.Value.ToString("yyyy/MM/dd") & "'") & ",")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        サブスクリプション連番 = " & tbx隠_サブスクリプション連番.Text & "")
+            SQL.AppendLine("        サブスクリプション連番 = " & tbxサブスクリプション連番.Text & "")
         ElseIf rbt削除.Checked Then
             If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
                 Return
             End If
             SQL.Length = 0
-            SQL.AppendLine("DELETE")
+            'SQL.AppendLine("DELETE")
+            'SQL.AppendLine("    M03_サブスクリプション")
+            'SQL.AppendLine("WHERE")
+            'SQL.AppendLine("        サブスクリプション連番 = " & tbxサブスクリプション連番.Text & "")
+            SQL.AppendLine("UPDATE")
             SQL.AppendLine("    M03_サブスクリプション")
+            SQL.AppendLine("SET")
+            SQL.AppendLine("    削除区分 = 1,")
+            SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        サブスクリプション連番 = " & tbx隠_サブスクリプション連番.Text & "")
+            SQL.AppendLine("    サブスクリプション連番 = " & tbxサブスクリプション連番.Text & "")
             int行 = dgvサブスクリプション一覧.CurrentRow.Index - 1
             int行 = If(int行 < 0, 0, int行)
         End If
@@ -113,7 +118,7 @@ Public Class frm24_サブスクリプション
         ' 新規登録の時は、追加したデータを修正モードにする
         If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgvサブスクリプション一覧.DataSource, DataTable)
-            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) sNvl(x("サブスクリプション連番")) = tbx隠_サブスクリプション連番.Text)
+            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) sNvl(x("サブスクリプション連番")) = tbxサブスクリプション連番.Text)
             int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
         End If
 
@@ -131,14 +136,21 @@ Public Class frm24_サブスクリプション
 
 
     Private Sub rbt共通_CheckedChanged(sender As Object, e As EventArgs) Handles rbt登録.CheckedChanged, rbt更新.CheckedChanged, rbt削除.CheckedChanged
-        If sender Is rbt登録 AndAlso rbt登録.Checked Then
-            'SetupControls(SetupType.必須, editサブスクリプションID, cbx権利者ID, cbxメーカーID)
-            詳細項目更新()
-        ElseIf sender Is rbt更新 AndAlso rbt更新.Checked Then
-            'SetupControls(SetupType.必須, editサブスクリプションID, cbx権利者ID, cbxメーカーID)
-            詳細項目更新()
-        ElseIf sender Is rbt削除 AndAlso rbt削除.Checked Then
-            'SetupControls(SetupType.参照, editサブスクリプションID, cbx権利者ID, cbxメーカーID)
+        ' ラジオボタン変更の際、選択されたボタンについて1回のみ処理する条件
+        If sender Is rbt登録 AndAlso rbt登録.Checked OrElse
+           sender Is rbt更新 AndAlso rbt更新.Checked OrElse
+           sender Is rbt削除 AndAlso rbt削除.Checked Then
+
+            If rbt登録.Checked OrElse rbt更新.Checked Then
+                SetupControls(SetupType.必須, editサブスクリプションID, cbx権利者ID, cbxメーカーID)
+                SetupControls(SetupType.通常, ndtp開始日, ndtp終了日, ndtp購入日)
+                chkサブスクリプション不要.Enabled = True
+
+            ElseIf rbt削除.Checked Then
+                SetupControls(SetupType.参照, editサブスクリプションID, cbx権利者ID, cbxメーカーID, ndtp開始日, ndtp終了日, ndtp購入日)
+                chkサブスクリプション不要.Enabled = False
+            End If
+
             詳細項目更新()
         End If
     End Sub
@@ -185,7 +197,7 @@ Public Class frm24_サブスクリプション
         ' 登録の場合は単純な重複チェックだが
         ' 更新の場合は、変更前と変更後のPKが不変ならば許容する
         If rbt更新.Checked Then
-            SQL.AppendLine("    AND サブスクリプション連番 <> " & tbx隠_サブスクリプション連番.Text)
+            SQL.AppendLine("    AND サブスクリプション連番 <> " & tbxサブスクリプション連番.Text)
         End If
 
         If GetValue(Of Integer)(SQL.ToString) > 0 Then
@@ -237,7 +249,7 @@ Public Class frm24_サブスクリプション
 
     Private Sub 詳細項目更新(Optional ByVal vintrow As Integer = -1)
         If rbt登録.Checked OrElse dgvサブスクリプション一覧.RowCount = 0 Then
-            tbx隠_サブスクリプション連番.Text = ""
+            tbxサブスクリプション連番.Text = ""
             chkサブスクリプション不要.Checked = False
             editサブスクリプションID.Text = ""
             cbx権利者ID.SelectedIndex = -1
@@ -253,7 +265,7 @@ Public Class frm24_サブスクリプション
             Dim row As Integer = If(vintrow < 0, dgvサブスクリプション一覧.CurrentCellAddress.Y, vintrow)
             With DirectCast(dgvサブスクリプション一覧.DataSource, DataTable)(row)
                 ' サブスクリプションIDがDBNullならば不要とみなしてチェック入れる
-                tbx隠_サブスクリプション連番.Text = .Item("サブスクリプション連番")
+                tbxサブスクリプション連番.Text = .Item("サブスクリプション連番")
                 chkサブスクリプション不要.Checked = IsDBNull(.Item("サブスクリプションID"))
                 editサブスクリプションID.Text = sNvl(.Item("サブスクリプションID"))
                 cbx権利者ID.SelectedItem = GetComboBoxItem(cbx権利者ID, .Item("権利者ID"))

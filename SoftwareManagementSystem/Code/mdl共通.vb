@@ -1,12 +1,43 @@
 ﻿Imports System.Data.SqlClient
-Imports System.Runtime.InteropServices
+Imports System.Text
 Imports SPWinFormControls
 
 Module mdl共通
 
-    Public gs分割文字 As String
-    Public gsSID置換文字列 As String
+    ' gs名称("<名称区分>")("<名称コード>")
+    Public gs名称 As New Dictionary(Of String, Dictionary(Of String, String))
 
+    Public Sub Reload名称マスタ()
+
+        ' Dictionary初期化
+        gs名称.Clear()
+
+        Dim sql As New StringBuilder
+        sql.AppendLine("SELECT")
+        sql.AppendLine("    名称区分,")
+        sql.AppendLine("    名称コード,")
+        sql.AppendLine("    名称")
+        sql.AppendLine("FROM")
+        sql.AppendLine("    M01_名称")
+        sql.AppendLine("WHERE")
+        sql.AppendLine("    削除区分 = 0")
+
+        Dim str一時名称区分 As String = Nothing
+        Dim dtb = GetDataTable(sql.ToString)
+        '
+        For Each r As DataRow In dtb.Rows
+            If r("名称区分") <> str一時名称区分 Then
+                ' 新たな名称区分としてDictionaryを追加する
+                gs名称.Add(r("名称区分"), New Dictionary(Of String, String) From {{r("名称コード"), r("名称")}})
+            Else
+                ' 既存の名称区分に名称コードと名称を追加する
+                gs名称(str一時名称区分).Add(r("名称コード"), r("名称"))
+            End If
+            ' 更新
+            str一時名称区分 = r("名称区分")
+        Next
+
+    End Sub
 
     ''' <summary>
     ''' コンボボックスから指定のキーに一致するアイテムを取得します。
@@ -15,8 +46,14 @@ Module mdl共通
     ''' <param name="key">キー</param>
     ''' <returns>キーに対応するアイテム、見つからなければNohing</returns>
     Public Function GetComboBoxItem(ByVal cbx As ComboBox, ByVal key As String) As CbxItem
-        Dim seq = cbx.Items.Cast(Of CbxItem).Where(Function(x) x.L = key)
-        Return If(seq.Count > 0, seq.First, Nothing)
+        ' <未指定>=Stringなので　StringPairだけを抽出
+        Dim seqCbxItem =
+            From x In cbx.Items
+            Where TypeOf x Is CbxItem
+            Select DirectCast(x, CbxItem)
+
+        Dim seqResult = From x In seqCbxItem Where x.L = key
+        Return If(seqResult.Count > 0, seqResult.First, Nothing)
     End Function
 
     ''' <summary>
@@ -33,6 +70,11 @@ Module mdl共通
     <System.Runtime.CompilerServices.Extension()>
     Public Function GeneratePairArray(ByVal dtb As DataTable, ByVal col1 As String, ByVal col2 As String) As CbxItem()
         Return dtb.AsEnumerable.Select(Function(r) New CbxItem(sNvl(r(col1)), sNvl(r(col2)))).Distinct.ToArray
+    End Function
+
+    <System.Runtime.CompilerServices.Extension()>
+    Public Function GeneratePairArray(ByVal seq As IEnumerable(Of DataRow), ByVal col1 As String, ByVal col2 As String) As CbxItem()
+        Return seq.Select(Function(r) New CbxItem(sNvl(r(col1)), sNvl(r(col2)))).Distinct.ToArray
     End Function
 
     <System.Runtime.CompilerServices.Extension()>
@@ -79,6 +121,10 @@ Module mdl共通
         Return MessageBox.Show(msg, cap, MessageBoxButtons.OK, MessageBoxIcon.Error)
     End Function
 
+    Public Function MsgOKCancel(ByVal cap As String, ByVal msg As String) As DialogResult
+        Return MessageBox.Show(msg, cap, MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+    End Function
+
     ''' <summary>
     ''' 指定のSQLを実行します。
     ''' </summary>
@@ -123,8 +169,6 @@ Module mdl共通
             End Using
         End Using
     End Function
-
-
 
     ''' <summary>
     ''' 指定のSQLクエリを実行して、結果をDataTableで取得します。
@@ -256,7 +300,10 @@ Module mdl共通
         dgv.MultiSelect = False
         ' ユーザーが各項目をソートできないよう設定
         For Each col As DataGridViewColumn In dgv.Columns
+            ' NotSortable: クリックしてもソートしない
             col.SortMode = DataGridViewColumnSortMode.NotSortable
+            ' Automatic: ユーザーが列ヘッダクリックでソート
+            'col.SortMode = DataGridViewColumnSortMode.Automatic
         Next
 
         ' ユーザが行および列をリサイズできないよう設定
@@ -278,8 +325,6 @@ Module mdl共通
         If cols.Count = 0 Then
             Return
         End If
-        ' ダブルバッファリングを有効にする ※リフレクションを使った方法
-        'EnableDoubleBuffering(dgv)
 
         ' 一個前のセルを記憶するためのコレクション
         Dim preCells As IEnumerable(Of DataGridViewCell) = Nothing
@@ -348,13 +393,6 @@ Module mdl共通
                         e.FormattingApplied = True '以降の書式設定は不要
                     End If
                 End If
-                'If IsSameCellValue(e.ColumnIndex, e.RowIndex) Then
-                '    If dgv.FirstDisplayedScrollingRowIndex < e.RowIndex Then
-                '        e.CellStyle.ForeColor = Color.Transparent
-                '        e.CellStyle.SelectionForeColor = Color.Transparent
-                '    End If
-                '    e.FormattingApplied = True '以降の書式設定は不要
-                'End If
             End Sub
         '
         ' CellPaintingイベントを追加　※ セルが画面に描画されたとき呼ばれる？
@@ -376,47 +414,13 @@ Module mdl共通
             End Sub
     End Sub
 
-    'Private Const WM_SETREDRAW As Integer = &HB
-    '''' <summary>
-    '''' コントロールのDoubleBufferedプロパティをTrueにする
-    '''' </summary>
-    '''' <param name="control">対象のコントロール</param>
-    'Public Sub EnableDoubleBuffering(control As Control)
-    '    control.GetType().InvokeMember(
-    '        "DoubleBuffered",
-    '        Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty,
-    '        Nothing,
-    '        control,
-    '        New Object() {True})
-    'End Sub
-    '<DllImport("user32.dll")>
-    'Public Function SendMessage(hWnd As HandleRef,
-    'msg As Integer, wParam As IntPtr, lParam As IntPtr) As IntPtr
-    'End Function
-    '''' <summary>
-    '''' コントロールの再描画を停止させる
-    '''' </summary>
-    '''' <param name="control">対象のコントロール</param>
-    'Public Sub BeginControlUpdate(control As Control)
-    '    SendMessage(New HandleRef(control, control.Handle),
-    '                WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero)
-    'End Sub
-    '''' <summary>
-    '''' コントロールの再描画を再開させる
-    '''' </summary>
-    '''' <param name="control">対象のコントロール</param>
-    'Public Sub EndControlUpdate(control As Control)
-    '    SendMessage(New HandleRef(control, control.Handle),
-    '                WM_SETREDRAW, New IntPtr(1), IntPtr.Zero)
-    '    control.Invalidate()
-    'End Sub
 End Module
 
 ' 主にコンボボックスのアイテムに使用する文字列同士のペアオブジェクト
 Public Class CbxItem
     Inherits Pair(Of String, String)
     ' 区切り文字を再定義
-    Protected Overrides Property Delimiter As String = gs分割文字
+    Protected Overrides Property Delimiter As String = gs名称("分割文字")("01")
 
     Public Sub New(ByVal l As String, ByVal r As String)
         MyBase.New(l, r)
@@ -426,7 +430,15 @@ End Class
 Public Class Pair(Of T, U)
     ' 値同士の区切り文字（デフォルトはカンマ）
     Protected Overridable Property Delimiter As String = ", "
+    ''' <summary>
+    ''' ペアオブジェクトの左側の値
+    ''' </summary>
+    ''' <returns></returns>
     Public Property L As T
+    ''' <summary>
+    ''' ペアオブジェクトの右側の値
+    ''' </summary>
+    ''' <returns></returns>
     Public Property R As U
 
     Public Sub New(ByVal l As T, ByVal r As U)

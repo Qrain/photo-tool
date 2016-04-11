@@ -33,6 +33,7 @@ Partial Class frm22_社員マスタ
         Me.rbt更新 = New System.Windows.Forms.RadioButton()
         Me.rbt登録 = New System.Windows.Forms.RadioButton()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chk削除済表示 = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.chk権利者区分 = New System.Windows.Forms.CheckBox()
         Me.rbt法人 = New System.Windows.Forms.RadioButton()
@@ -48,6 +49,8 @@ Partial Class frm22_社員マスタ
         Me.Label2 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.edit削除区分 = New SPWinFormControls.SPEdit(Me.components)
         CType(Me.dgv社員一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -60,14 +63,16 @@ Partial Class frm22_社員マスタ
         Me.dgv社員一覧.AllowUserToDeleteRows = False
         Me.dgv社員一覧.AllowUserToResizeColumns = False
         Me.dgv社員一覧.AllowUserToResizeRows = False
+        Me.dgv社員一覧.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgv社員一覧.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgv社員一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column1, Me.Column2, Me.Column3})
-        Me.dgv社員一覧.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgv社員一覧.Location = New System.Drawing.Point(3, 15)
         Me.dgv社員一覧.Name = "dgv社員一覧"
         Me.dgv社員一覧.ReadOnly = True
         Me.dgv社員一覧.RowTemplate.Height = 21
-        Me.dgv社員一覧.Size = New System.Drawing.Size(324, 385)
+        Me.dgv社員一覧.Size = New System.Drawing.Size(324, 460)
         Me.dgv社員一覧.TabIndex = 1
         '
         'Column1
@@ -162,18 +167,32 @@ Partial Class frm22_社員マスタ
         Me.GroupBox2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox2.Controls.Add(Me.chk削除済表示)
         Me.GroupBox2.Controls.Add(Me.dgv社員一覧)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 47)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(330, 403)
+        Me.GroupBox2.Size = New System.Drawing.Size(330, 503)
         Me.GroupBox2.TabIndex = 8
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "１．社員一覧"
+        '
+        'chk削除済表示
+        '
+        Me.chk削除済表示.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.chk削除済表示.AutoSize = True
+        Me.chk削除済表示.Location = New System.Drawing.Point(6, 481)
+        Me.chk削除済表示.Name = "chk削除済表示"
+        Me.chk削除済表示.Size = New System.Drawing.Size(96, 16)
+        Me.chk削除済表示.TabIndex = 83
+        Me.chk削除済表示.Text = "削除項目表示"
+        Me.chk削除済表示.UseVisualStyleBackColor = True
         '
         'GroupBox3
         '
         Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox3.Controls.Add(Me.edit削除区分)
+        Me.GroupBox3.Controls.Add(Me.Label7)
         Me.GroupBox3.Controls.Add(Me.chk権利者区分)
         Me.GroupBox3.Controls.Add(Me.rbt法人)
         Me.GroupBox3.Controls.Add(Me.rbt個人)
@@ -188,7 +207,7 @@ Partial Class frm22_社員マスタ
         Me.GroupBox3.Controls.Add(Me.Label2)
         Me.GroupBox3.Location = New System.Drawing.Point(348, 99)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(324, 315)
+        Me.GroupBox3.Size = New System.Drawing.Size(324, 415)
         Me.GroupBox3.TabIndex = 8
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
@@ -203,11 +222,11 @@ Partial Class frm22_社員マスタ
         Me.chk権利者区分.Text = "権利者である"
         Me.chk権利者区分.UseVisualStyleBackColor = True
         '
-        'RadioButton1
+        'rbt法人
         '
         Me.rbt法人.AutoSize = True
         Me.rbt法人.Location = New System.Drawing.Point(163, 102)
-        Me.rbt法人.Name = "RadioButton1"
+        Me.rbt法人.Name = "rbt法人"
         Me.rbt法人.Size = New System.Drawing.Size(47, 16)
         Me.rbt法人.TabIndex = 14
         Me.rbt法人.TabStop = True
@@ -330,7 +349,7 @@ Partial Class frm22_社員マスタ
         Me.btn更新.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn更新.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn更新.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn更新.Location = New System.Drawing.Point(348, 420)
+        Me.btn更新.Location = New System.Drawing.Point(348, 520)
         Me.btn更新.Name = "btn更新"
         Me.btn更新.Size = New System.Drawing.Size(80, 30)
         Me.btn更新.TabIndex = 81
@@ -342,31 +361,55 @@ Partial Class frm22_社員マスタ
         Me.btn終了.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn終了.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn終了.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn終了.Location = New System.Drawing.Point(592, 420)
+        Me.btn終了.Location = New System.Drawing.Point(592, 520)
         Me.btn終了.Name = "btn終了"
         Me.btn終了.Size = New System.Drawing.Size(80, 30)
         Me.btn終了.TabIndex = 82
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(18, 229)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(53, 12)
+        Me.Label7.TabIndex = 22
+        Me.Label7.Text = "削除区分"
+        '
+        'edit削除区分
+        '
+        Me.edit削除区分.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
+        Me.edit削除区分.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.edit削除区分.Format = ""
+        Me.edit削除区分.Location = New System.Drawing.Point(110, 226)
+        Me.edit削除区分.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
+        Me.edit削除区分.Name = "edit削除区分"
+        Me.edit削除区分.ReadOnly = True
+        Me.edit削除区分.Size = New System.Drawing.Size(20, 19)
+        Me.edit削除区分.TabIndex = 23
+        Me.edit削除区分.TabStop = False
+        Me.edit削除区分.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
         'frm22_社員マスタ
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(684, 462)
+        Me.ClientSize = New System.Drawing.Size(684, 562)
         Me.Controls.Add(Me.btn終了)
         Me.Controls.Add(Me.btn更新)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Label1)
-        Me.MinimumSize = New System.Drawing.Size(700, 500)
+        Me.MinimumSize = New System.Drawing.Size(700, 600)
         Me.Name = "frm22_社員マスタ"
-        Me.Text = "社員マスタ保守"
+        Me.Text = "社員マスタ"
         CType(Me.dgv社員一覧, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
         Me.ResumeLayout(False)
@@ -397,4 +440,7 @@ Partial Class frm22_社員マスタ
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents Column3 As DataGridViewTextBoxColumn
+    Friend WithEvents chk削除済表示 As CheckBox
+    Friend WithEvents edit削除区分 As SPWinFormControls.SPEdit
+    Friend WithEvents Label7 As Label
 End Class

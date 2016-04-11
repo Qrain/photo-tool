@@ -63,24 +63,6 @@ Namespace My
                 Return CType(Me("DB接続文字列"),String)
             End Get
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("001")>  _
-        Public ReadOnly Property MSメーカーID() As String
-            Get
-                Return CType(Me("MSメーカーID"),String)
-            End Get
-        End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("<Custom Key>")>  _
-        Public ReadOnly Property MSカスタムキー代替文字列() As String
-            Get
-                Return CType(Me("MSカスタムキー代替文字列"),String)
-            End Get
-        End Property
     End Class
 End Namespace
 

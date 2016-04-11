@@ -26,18 +26,8 @@ Public Class frm11_データインポート
         SQL.AppendLine("    M03.メーカーID,")
         SQL.AppendLine("    M11.メーカー名称,")
         SQL.AppendLine("    CASE")
-        SQL.AppendLine("    WHEN M03.サブスクリプションID IS NULL THEN")
-        SQL.AppendLine("        (")
-        SQL.AppendLine("        SELECT")
-        SQL.AppendLine("            名称")
-        SQL.AppendLine("        FROM")
-        SQL.AppendLine("            M01_名称")
-        SQL.AppendLine("        WHERE")
-        SQL.AppendLine("                名称区分 = 'SID-NULL置換文字列'")
-        SQL.AppendLine("            AND 名称コード = '01'")
-        SQL.AppendLine("        )")
-        SQL.AppendLine("    ELSE")
-        SQL.AppendLine("        M03.サブスクリプションID")
+        SQL.AppendLine("    WHEN M03.サブスクリプションID IS NULL THEN '" & gs名称("代替文字列")("02") & "'")
+        SQL.AppendLine("    ELSE M03.サブスクリプションID")
         SQL.AppendLine("    END AS サブスクリプションID")
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M03_サブスクリプション M03")
@@ -48,12 +38,12 @@ Public Class frm11_データインポート
         SQL.AppendLine("    M11_メーカー M11 ON")
         SQL.AppendLine("    M03.メーカーID = M11.メーカーID")
         SQL.AppendLine("WHERE")
-        SQL.AppendLine("    M03.削除区分 = 0")
+        SQL.AppendLine("    M03.メーカーID = '" & gs名称("MSメーカーID")("1") & "'")
+        SQL.AppendLine("    AND M03.削除区分 = 0")
         m_dtbComboBox = GetDataTable(SQL.ToString)
         '
         ' 権利者を重複を除去して設定する
-        Dim lst権利者 = m_dtbComboBox.AsEnumerable.Select(Function(x) New CbxItem(x("権利者ID"), x("社員名"))).Distinct.ToArray
-        cbx権利者ID.Items.AddRange(lst権利者)
+        cbx権利者ID.Items.AddRange(m_dtbComboBox.GeneratePairArray("権利者ID", "社員名"))
     End Sub
 
 
@@ -66,14 +56,14 @@ Public Class frm11_データインポート
         Dim str権利者 = If(cbx権利者ID.SelectedIndex < 0, "", DirectCast(cbx権利者ID.SelectedItem, CbxItem).L)
         ' 各項目のデータは
         Dim lstメーカー =
-            From x In m_dtbComboBox.AsEnumerable
-            Where If(str権利者 = "", True, sNvl(x("権利者ID")) = str権利者)
+            From x In m_dtbComboBox
+            Where str権利者 = "" OrElse sNvl(x("権利者ID")) = str権利者
             Select New CbxItem(x("メーカーID"), x("メーカー名称"))
         ' 取得したアイテムを設定する
         cbxメーカーID.Items.Clear()
         cbxメーカーID.Items.AddRange(lstメーカー.Distinct.ToArray)
 
-        If lstメーカー.Count = 1 Then
+        If cbxメーカーID.Items.Count = 1 Then
             cbxメーカーID.SelectedIndex = 0
         End If
         ' 下位
@@ -95,7 +85,7 @@ Public Class frm11_データインポート
         ' 取得したアイテムを設定する
         cbxサブスクリプションID.Items.Clear()
         cbxサブスクリプションID.Items.AddRange(lstサブスクリプション.Distinct.ToArray)
-        If lstサブスクリプション.Count = 1 Then
+        If cbxサブスクリプションID.Items.Count = 1 Then
             cbxサブスクリプションID.SelectedIndex = 0
         End If
     End Sub
@@ -173,7 +163,7 @@ Public Class frm11_データインポート
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M12_ソフトウェア")
         SQL.AppendLine("WHERE")
-        SQL.AppendLine("    メーカーID = '" & My.Settings.MSメーカーID & "'")
+        SQL.AppendLine("    メーカーID = '" & gs名称("MSメーカーID")("1") & "'")
 
         Dim dtbDB As DataTable = GetDataTable(SQL.ToString)
         Dim seqDBソフト一覧 = dtbDB.AsEnumerable.Select(Function(x) sNvl(x("ソフトウェア名称")).Trim).Distinct
@@ -183,35 +173,33 @@ Public Class frm11_データインポート
 
         ' Insert分リスト ※２つのシーケンスの差集合を取得する（重複除去される）
         Dim seq差分登録ソフト名 As IEnumerable(Of String) = seqXMLソフト一覧.Except(seqDBソフト一覧)
-
-        Dim intソフトID採番 As Integer
-
-        If dtbDB.Rows.Count = 0 Then
-            intソフトID採番 = CInt(My.Settings.MSメーカーID & "0000")
-        Else
-            intソフトID採番 = dtbDB.AsEnumerable.Max(Function(r) CInt(r("ソフトウェアID")))
-        End If
-
-        SQL.Length = 0
-        For Each foftname In seq差分登録ソフト名
-            intソフトID採番 += 1
-            SQL.AppendLine("INSERT")
-            SQL.AppendLine("INTO")
-            SQL.AppendLine("    M12_ソフトウェア")
-            SQL.AppendLine("VALUES")
-            SQL.AppendLine("(")
-            SQL.AppendLine("    '" & intソフトID採番.ToString("0000000") & "',")
-            SQL.AppendLine("    '" & My.Settings.MSメーカーID & "',")
-            SQL.AppendLine("    '" & foftname & "',")
-            SQL.AppendLine("    NULL,")
-            SQL.AppendLine("    GETDATE(),")
-            SQL.AppendLine("    GETDATE(),")
-            SQL.AppendLine("    0")
-            SQL.AppendLine(");")
-        Next
-
+        '
         ' トランザクションではなく、先にソフトウェアマスタに追加処理しておく
         If seq差分登録ソフト名.Count > 0 Then
+            Dim intソフトID採番 As Integer
+
+            If dtbDB.Rows.Count = 0 Then
+                intソフトID採番 = CInt(gs名称("MSメーカーID")("1") & "0000")
+            Else
+                intソフトID採番 = dtbDB.AsEnumerable.Max(Function(r) CInt(r("ソフトウェアID")))
+            End If
+            SQL.Length = 0
+            For Each foftname In seq差分登録ソフト名
+                intソフトID採番 += 1
+                SQL.AppendLine("INSERT")
+                SQL.AppendLine("INTO")
+                SQL.AppendLine("    M12_ソフトウェア")
+                SQL.AppendLine("VALUES")
+                SQL.AppendLine("(")
+                SQL.AppendLine("    '" & intソフトID採番.ToString("0000000") & "',")
+                SQL.AppendLine("    '" & gs名称("MSメーカーID")("1") & "',")
+                SQL.AppendLine("    '" & foftname & "',")
+                SQL.AppendLine("    NULL,")
+                SQL.AppendLine("    GETDATE(),")
+                SQL.AppendLine("    GETDATE(),")
+                SQL.AppendLine("    0")
+                SQL.AppendLine(");")
+            Next
             If Not ExecNonQuery(SQL.ToString) Then
                 Return
             End If
@@ -223,7 +211,8 @@ Public Class frm11_データインポート
         SQL.AppendLine("    M13.ソフトウェアID,")
         SQL.AppendLine("    M12.ソフトウェア名称,")
         SQL.AppendLine("    M13.プロダクトキー,")
-        SQL.AppendLine("    M03.権利者ID")
+        SQL.AppendLine("    M03.権利者ID,")
+        SQL.AppendLine("    M03.サブスクリプションID")
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M13_プロダクトキー M13")
         SQL.AppendLine("    LEFT JOIN")
@@ -233,17 +222,22 @@ Public Class frm11_データインポート
         SQL.AppendLine("    M03_サブスクリプション M03 ON")
         SQL.AppendLine("    M13.サブスクリプション連番 = M03.サブスクリプション連番")
         SQL.AppendLine("WHERE")
-        SQL.AppendLine("    M12.メーカーID = '" & My.Settings.MSメーカーID & "'")
-        Dim seqPKey = GetDataTable(SQL.ToString).AsEnumerable
-        Dim str権利者ID = DirectCast(cbx権利者ID.SelectedItem, CbxItem).L
-        Dim strメーカーID = DirectCast(cbxメーカーID.SelectedItem, CbxItem).L
-        ' 選択されたコンボボックス情報からサブスクリプション連番を取得する
-        Dim intサブスクリプション連番 = (From r In m_dtbComboBox.AsEnumerable
-                              Where
-                              r("権利者ID") = str権利者ID AndAlso
-                              r("メーカーID") = strメーカーID AndAlso
-                              r("サブスクリプションID") = cbxサブスクリプションID.SelectedItem.ToString
-                              Select CInt(r("サブスクリプション連番"))).First
+        SQL.AppendLine("    M12.メーカーID = '" & gs名称("MSメーカーID")("1") & "'")
+        Dim seq登録済キー As DataTable = GetDataTable(SQL.ToString)
+        Dim str権利者ID As String = DirectCast(cbx権利者ID.SelectedItem, CbxItem).L
+        Dim strメーカーID As String = DirectCast(cbxメーカーID.SelectedItem, CbxItem).L
+        Dim strサブスクリプションID As String = cbxサブスクリプションID.SelectedItem.ToString
+        '
+        ' 選択されているコンボボックス情報からサブスクリプション連番を取得する
+        Dim intサブスクリプション連番 As Integer =
+            (From
+                 r In m_dtbComboBox
+             Where
+                 r("権利者ID") = str権利者ID AndAlso
+                 r("メーカーID") = strメーカーID AndAlso
+                 r("サブスクリプションID") = strサブスクリプションID
+             Select
+                 CInt(r("サブスクリプション連番"))).First
 
         Dim int法人MSサブスクリプション連番 As Integer = Get法人MSサブスクリプション連番()
 
@@ -251,13 +245,14 @@ Public Class frm11_データインポート
         ' 2 → 認証タイプが Custom Key の場合は、プロダクトキーを空にする
         ' 3 → 認証タイプを 名称コードに変換する  01:認証無し 02:静的認証 03:期間認証（動的）
         Dim seqXML整形データ =
-            From x In dtbXMLデータ.AsEnumerable
+            From
+                x In dtbXMLデータ
             Select
                 New With {
                 Key .キー名 = sNvl(x("KeyName")).Trim,
-                Key .プロダクトキー = If(sNvl(x("KeyType")).Trim = "Custom Key", My.Settings.MSカスタムキー代替文字列, sNvl(x("ProductKey")).Trim),
-                .要求日 = If(sNvl(x("ClaimedDate")).Trim = "", Nothing, x("ClaimedDate")),
-                .認証方式コード = Get認証方式名称コード(x)
+                Key .プロダクトキー = If(sNvl(x("KeyType")).Trim = "Custom Key", gs名称("代替文字列")("01"), sNvl(x("ProductKey")).Trim),
+                    .要求日 = If(sNvl(x("ClaimedDate")).Trim = "", Nothing, x("ClaimedDate")),
+                    .認証方式コード = Get認証方式名称コード(x)
                 }
 
         SQL.Length = 0
@@ -265,7 +260,7 @@ Public Class frm11_データインポート
 
             Dim seq既存プロダクトキー =
                 From
-                    r In seqPKey
+                    r In seq登録済キー
                 Where
                     r("ソフトウェア名称") = x.キー名 AndAlso
                     r("プロダクトキー") = x.プロダクトキー
@@ -278,9 +273,12 @@ Public Class frm11_データインポート
                 SQL.AppendLine("SET")
                 '
                 ' もしも同ソフト同キーかつ他の権利者のプロダクトキー情報が既にあれば
-                ' 会社で共有できるのもとみなしてサブスクリプション情報を"法人"のものに変更
                 If sNvl(drw既存プロダクトキー("権利者ID")) <> str権利者ID Then
+                    ' 会社で共有できるのもとみなしてサブスクリプション情報を"法人"のものに変更
                     SQL.AppendLine("    サブスクリプション連番 = " & int法人MSサブスクリプション連番 & ",")
+                ElseIf sNvl(drw既存プロダクトキー("サブスクリプションID")) <> strサブスクリプションID Then
+                    ' 同ソフト同キーかつ同権利者かつ異なるサブスクリプションIDならば連番を入れ替え
+                    SQL.AppendLine("    サブスクリプション連番 = " & intサブスクリプション連番 & ",")
                 End If
                 '
                 SQL.AppendLine("    認証タイプ = '" & x.認証方式コード & "',")
@@ -315,7 +313,7 @@ Public Class frm11_データインポート
                 SQL.AppendLine("        M12_ソフトウェア")
                 SQL.AppendLine("    WHERE")
                 SQL.AppendLine("        ソフトウェア名称 = '" & x.キー名 & "'")
-                SQL.AppendLine("        AND メーカーID = '" & My.Settings.MSメーカーID & "'")
+                SQL.AppendLine("        AND メーカーID = '" & gs名称("MSメーカーID")("1") & "'")
                 SQL.AppendLine("    ),")
                 ' ※カスタムキーの場合は、プロダクトキーを取得・登録しない（非常に長く有益データではないため）
                 SQL.AppendLine("    '" & x.プロダクトキー & "',")
@@ -352,7 +350,7 @@ Public Class frm11_データインポート
             MsgWarn("入力チェック", "メーカーが選択されてません。")
             cbxメーカーID.Focus()
             Return False
-        ElseIf DirectCast(cbxメーカーID.SelectedItem, CbxItem).L <> My.Settings.MSメーカーID Then
+        ElseIf DirectCast(cbxメーカーID.SelectedItem, CbxItem).L <> gs名称("MSメーカーID")("1") Then
             MsgWarn("入力チェック", "この機能はメーカーが""001:Microsoft""のときのみ有効です。")
             cbxメーカーID.Focus()
             Return False
@@ -382,7 +380,7 @@ Public Class frm11_データインポート
         sql.AppendLine("WHERE")
         sql.AppendLine("        権利者区分 = '1'")
         sql.AppendLine("    AND 社員区分 = '法人'")
-        sql.AppendLine("    AND メーカーID = '" & My.Settings.MSメーカーID & "'")
+        sql.AppendLine("    AND メーカーID = '" & gs名称("MSメーカーID")("1") & "'")
         Return GetValue(Of Integer)(sql.ToString)
     End Function
 

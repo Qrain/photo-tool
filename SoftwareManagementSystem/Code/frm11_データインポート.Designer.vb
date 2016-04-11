@@ -22,8 +22,8 @@ Partial Class frm11_データインポート
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.cbx権利者ID = New System.Windows.Forms.ComboBox()
         Me.grpデータ読込 = New System.Windows.Forms.GroupBox()
         Me.btn読込 = New System.Windows.Forms.Button()
@@ -31,6 +31,11 @@ Partial Class frm11_データインポート
         Me.btn参照 = New System.Windows.Forms.Button()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.dgv一覧 = New System.Windows.Forms.DataGridView()
+        Me.dgvcKeyName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcProductKey = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcKeyType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcClaimedDate = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvc更新対象 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.lblタイトル = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cbxメーカーID = New System.Windows.Forms.ComboBox()
@@ -40,11 +45,6 @@ Partial Class frm11_データインポート
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.ofdXML = New System.Windows.Forms.OpenFileDialog()
         Me.lbl件数 = New System.Windows.Forms.Label()
-        Me.dgvcKeyName = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcKeyType = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcClaimedDate = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcProductKey = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvc更新対象 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.grpデータ読込.SuspendLayout()
         CType(Me.dgv一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -111,7 +111,7 @@ Partial Class frm11_データインポート
         Me.btn更新.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn更新.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn更新.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn更新.Location = New System.Drawing.Point(792, 619)
+        Me.btn更新.Location = New System.Drawing.Point(792, 626)
         Me.btn更新.Name = "btn更新"
         Me.btn更新.Size = New System.Drawing.Size(80, 30)
         Me.btn更新.TabIndex = 19
@@ -126,13 +126,54 @@ Partial Class frm11_データインポート
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgv一覧.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgv一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcKeyName, Me.dgvcKeyType, Me.dgvcClaimedDate, Me.dgvcProductKey, Me.dgvc更新対象})
+        Me.dgv一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcKeyName, Me.dgvcProductKey, Me.dgvcKeyType, Me.dgvcClaimedDate, Me.dgvc更新対象})
         Me.dgv一覧.Location = New System.Drawing.Point(12, 106)
         Me.dgv一覧.MultiSelect = False
         Me.dgv一覧.Name = "dgv一覧"
         Me.dgv一覧.RowTemplate.Height = 21
-        Me.dgv一覧.Size = New System.Drawing.Size(860, 460)
+        Me.dgv一覧.Size = New System.Drawing.Size(860, 467)
         Me.dgv一覧.TabIndex = 18
+        '
+        'dgvcKeyName
+        '
+        Me.dgvcKeyName.DataPropertyName = "KeyName"
+        Me.dgvcKeyName.HeaderText = "キー名"
+        Me.dgvcKeyName.Name = "dgvcKeyName"
+        Me.dgvcKeyName.Width = 300
+        '
+        'dgvcProductKey
+        '
+        Me.dgvcProductKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.dgvcProductKey.DataPropertyName = "ProductKey"
+        Me.dgvcProductKey.HeaderText = "プロダクトキー"
+        Me.dgvcProductKey.Name = "dgvcProductKey"
+        '
+        'dgvcKeyType
+        '
+        Me.dgvcKeyType.DataPropertyName = "KeyType"
+        Me.dgvcKeyType.HeaderText = "キー種類"
+        Me.dgvcKeyType.Name = "dgvcKeyType"
+        '
+        'dgvcClaimedDate
+        '
+        Me.dgvcClaimedDate.DataPropertyName = "ClaimedDate"
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle9.NullValue = Nothing
+        Me.dgvcClaimedDate.DefaultCellStyle = DataGridViewCellStyle9
+        Me.dgvcClaimedDate.HeaderText = "要求日"
+        Me.dgvcClaimedDate.Name = "dgvcClaimedDate"
+        Me.dgvcClaimedDate.Width = 75
+        '
+        'dgvc更新対象
+        '
+        Me.dgvc更新対象.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.dgvc更新対象.DataPropertyName = "Validity"
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle10.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.dgvc更新対象.DefaultCellStyle = DataGridViewCellStyle10
+        Me.dgvc更新対象.HeaderText = "更新対象"
+        Me.dgvc更新対象.Name = "dgvc更新対象"
+        Me.dgvc更新対象.Width = 78
         '
         'lblタイトル
         '
@@ -211,7 +252,7 @@ Partial Class frm11_データインポート
         Me.GroupBox1.Controls.Add(Me.cbxメーカーID)
         Me.GroupBox1.Controls.Add(Me.Label2)
         Me.GroupBox1.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 594)
+        Me.GroupBox1.Location = New System.Drawing.Point(12, 601)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(765, 59)
         Me.GroupBox1.TabIndex = 21
@@ -227,59 +268,18 @@ Partial Class frm11_データインポート
         '
         Me.lbl件数.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lbl件数.AutoSize = True
-        Me.lbl件数.Location = New System.Drawing.Point(14, 574)
+        Me.lbl件数.Location = New System.Drawing.Point(14, 581)
         Me.lbl件数.Margin = New System.Windows.Forms.Padding(5)
         Me.lbl件数.Name = "lbl件数"
         Me.lbl件数.Size = New System.Drawing.Size(165, 12)
         Me.lbl件数.TabIndex = 22
         Me.lbl件数.Text = "全○件中　有効○件　無効○件"
         '
-        'dgvcKeyName
-        '
-        Me.dgvcKeyName.DataPropertyName = "KeyName"
-        Me.dgvcKeyName.HeaderText = "キー名"
-        Me.dgvcKeyName.Name = "dgvcKeyName"
-        Me.dgvcKeyName.Width = 200
-        '
-        'dgvcKeyType
-        '
-        Me.dgvcKeyType.DataPropertyName = "KeyType"
-        Me.dgvcKeyType.HeaderText = "キー種類"
-        Me.dgvcKeyType.Name = "dgvcKeyType"
-        '
-        'dgvcClaimedDate
-        '
-        Me.dgvcClaimedDate.DataPropertyName = "ClaimedDate"
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.NullValue = Nothing
-        Me.dgvcClaimedDate.DefaultCellStyle = DataGridViewCellStyle1
-        Me.dgvcClaimedDate.HeaderText = "要求日"
-        Me.dgvcClaimedDate.Name = "dgvcClaimedDate"
-        Me.dgvcClaimedDate.Width = 75
-        '
-        'dgvcProductKey
-        '
-        Me.dgvcProductKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.dgvcProductKey.DataPropertyName = "ProductKey"
-        Me.dgvcProductKey.HeaderText = "プロダクトキー"
-        Me.dgvcProductKey.Name = "dgvcProductKey"
-        '
-        'dgvc更新対象
-        '
-        Me.dgvc更新対象.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvc更新対象.DataPropertyName = "Validity"
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.dgvc更新対象.DefaultCellStyle = DataGridViewCellStyle2
-        Me.dgvc更新対象.HeaderText = "更新対象"
-        Me.dgvc更新対象.Name = "dgvc更新対象"
-        Me.dgvc更新対象.Width = 78
-        '
         'frm11_データインポート
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(884, 662)
+        Me.ClientSize = New System.Drawing.Size(884, 669)
         Me.Controls.Add(Me.lbl件数)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.grpデータ読込)
@@ -288,6 +288,7 @@ Partial Class frm11_データインポート
         Me.Controls.Add(Me.lblタイトル)
         Me.MinimumSize = New System.Drawing.Size(600, 500)
         Me.Name = "frm11_データインポート"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "msdn XML インポート"
         Me.grpデータ読込.ResumeLayout(False)
         Me.grpデータ読込.PerformLayout()
@@ -316,8 +317,8 @@ Partial Class frm11_データインポート
     Friend WithEvents ofdXML As OpenFileDialog
     Friend WithEvents lbl件数 As Label
     Friend WithEvents dgvcKeyName As DataGridViewTextBoxColumn
+    Friend WithEvents dgvcProductKey As DataGridViewTextBoxColumn
     Friend WithEvents dgvcKeyType As DataGridViewTextBoxColumn
     Friend WithEvents dgvcClaimedDate As DataGridViewTextBoxColumn
-    Friend WithEvents dgvcProductKey As DataGridViewTextBoxColumn
     Friend WithEvents dgvc更新対象 As DataGridViewTextBoxColumn
 End Class
