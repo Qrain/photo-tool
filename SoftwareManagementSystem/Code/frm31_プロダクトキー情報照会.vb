@@ -17,7 +17,7 @@ Public Class frm31_プロダクトキー情報照会
         SQL.AppendLine("    AND 削除区分 = 0")
         cbx権利者.Items.Add("<未指定>")
         cbx権利者.SelectedIndex = 0
-        cbx権利者.Items.AddRange(GetDataTable(SQL.ToString).GeneratePairArray("社員ID", "社員名"))
+        cbx権利者.Items.AddRange(GetDataTable(SQL.ToString).exGeneratePairArray("社員ID", "社員名"))
         '
         SQL.Length = 0
         SQL.AppendLine("SELECT")
@@ -29,7 +29,7 @@ Public Class frm31_プロダクトキー情報照会
         SQL.AppendLine("    削除区分 = 0")
         cbxメーカーID.Items.Add("<未指定>")
         cbxメーカーID.SelectedIndex = 0
-        cbxメーカーID.Items.AddRange(GetDataTable(SQL.ToString).GeneratePairArray("メーカーID", "メーカー名称"))
+        cbxメーカーID.Items.AddRange(GetDataTable(SQL.ToString).exGeneratePairArray("メーカーID", "メーカー名称"))
         '
         SQL.Length = 0
         SQL.AppendLine("SELECT")
@@ -41,7 +41,7 @@ Public Class frm31_プロダクトキー情報照会
         SQL.AppendLine("    削除区分 = 0")
         cbx利用者.Items.Add("<未指定>")
         cbx利用者.SelectedIndex = 0
-        cbx利用者.Items.AddRange(GetDataTable(SQL.ToString).GeneratePairArray("社員ID", "社員名"))
+        cbx利用者.Items.AddRange(GetDataTable(SQL.ToString).exGeneratePairArray("社員ID", "社員名"))
         '
         SetupDataGridViewProperties(dgv一覧)
         SetupDataGridViewCellMerge(dgv一覧, dgvcメーカー, dgvcソフトウェア, dgvc権利者, dgvcサブスクリプションID)

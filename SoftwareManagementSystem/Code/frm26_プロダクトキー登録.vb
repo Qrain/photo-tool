@@ -16,7 +16,7 @@ Public Class frm26_プロダクトキー登録
         SetupDataGridViewProperties(dgvプロダクトキー)
         SetupDataGridViewCellMerge(dgvソフトウェア, dgvcメーカー)
         SetupDataGridViewCellMerge(dgvプロダクトキー, dgvc権利者ID, dgvcサブスクリプション)
-        '
+        ' 
         SQL.Length = 0
         SQL.AppendLine("SELECT")
         SQL.AppendLine("    名称コード,")
@@ -28,9 +28,8 @@ Public Class frm26_プロダクトキー登録
         SQL.AppendLine("    AND 削除区分 = 0")
         '
         Dim dtb As DataTable
-        '
         dtb = GetDataTable(SQL.ToString)
-        cbx認証タイプ.Items.AddRange(dtb.GeneratePairArray("名称コード", "名称"))
+        cbx認証タイプ.Items.AddRange(dtb.exGeneratePairArray("名称コード", "名称"))
         '
         cbx利用者ID.Items.Add("<未指定>")
         cbx利用者ID.SelectedIndex = 0
@@ -44,12 +43,12 @@ Public Class frm26_プロダクトキー登録
         SQL.AppendLine("    削除区分 = 0")
         '
         dtb = GetDataTable(SQL.ToString)
-        cbx利用者ID.Items.AddRange(dtb.GeneratePairArray("社員ID", "社員名"))
+        cbx利用者ID.Items.AddRange(dtb.exGeneratePairArray("社員ID", "社員名"))
         ' ComboBoxへ設定するための   
         m_dtbComboBox = GetComboBox用DTB()
         ' 
         ' 権利者を重複を除去して設定する
-        cbx権利者ID.Items.AddRange(m_dtbComboBox.GeneratePairArray("権利者ID", "社員名"))
+        cbx権利者ID.Items.AddRange(m_dtbComboBox.exGeneratePairArray("権利者ID", "社員名"))
         '
         表示_dgvソフトウェア()
         表示_dgvプロダクトキー()
@@ -489,7 +488,7 @@ Public Class frm26_プロダクトキー登録
 
             ' 選択中のソフトウェアメーカーのサブスクリプション情報を持つ権利者のみをコンボボックスに設定
             ' 実験の結果、ClearやAddRange操作でSelectedIndexChangedは反応しないことを確認済
-            cbx権利者ID.Items.AddRange(seq権利者抽出byメーカー.GeneratePairArray("権利者ID", "社員名"))
+            cbx権利者ID.Items.AddRange(seq権利者抽出byメーカー.exGeneratePairArray("権利者ID", "社員名"))
         End If
 
         ' プロダクトキー一覧データに依存する処理
@@ -739,7 +738,7 @@ Public Class frm26_プロダクトキー登録
     End Function
 
     Private Function Getサブスクリプション連番() As String
-        If rbt登録.Checked Then
+        If rbt登録.Checked OrElse rbt更新.Checked Then
             ' 登録モードの時はコンボボックス情報からサブスクリプション連番を割り出す
 
             ' 次の場合はサブスクリプション連番を取得できないのでNothingを返す

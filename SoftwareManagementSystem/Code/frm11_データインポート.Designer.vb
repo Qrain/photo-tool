@@ -22,8 +22,8 @@ Partial Class frm11_データインポート
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.cbx権利者ID = New System.Windows.Forms.ComboBox()
         Me.grpデータ読込 = New System.Windows.Forms.GroupBox()
         Me.btn読込 = New System.Windows.Forms.Button()
@@ -45,6 +45,8 @@ Partial Class frm11_データインポート
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.ofdXML = New System.Windows.Forms.OpenFileDialog()
         Me.lbl件数 = New System.Windows.Forms.Label()
+        Me.btnファイル取込履歴 = New System.Windows.Forms.Button()
+        Me.tbxMD5 = New System.Windows.Forms.TextBox()
         Me.grpデータ読込.SuspendLayout()
         CType(Me.dgv一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -111,7 +113,7 @@ Partial Class frm11_データインポート
         Me.btn更新.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn更新.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn更新.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn更新.Location = New System.Drawing.Point(792, 626)
+        Me.btn更新.Location = New System.Drawing.Point(792, 623)
         Me.btn更新.Name = "btn更新"
         Me.btn更新.Size = New System.Drawing.Size(80, 30)
         Me.btn更新.TabIndex = 19
@@ -131,7 +133,7 @@ Partial Class frm11_データインポート
         Me.dgv一覧.MultiSelect = False
         Me.dgv一覧.Name = "dgv一覧"
         Me.dgv一覧.RowTemplate.Height = 21
-        Me.dgv一覧.Size = New System.Drawing.Size(860, 467)
+        Me.dgv一覧.Size = New System.Drawing.Size(860, 460)
         Me.dgv一覧.TabIndex = 18
         '
         'dgvcKeyName
@@ -157,9 +159,9 @@ Partial Class frm11_データインポート
         'dgvcClaimedDate
         '
         Me.dgvcClaimedDate.DataPropertyName = "ClaimedDate"
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle9.NullValue = Nothing
-        Me.dgvcClaimedDate.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.NullValue = Nothing
+        Me.dgvcClaimedDate.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvcClaimedDate.HeaderText = "要求日"
         Me.dgvcClaimedDate.Name = "dgvcClaimedDate"
         Me.dgvcClaimedDate.Width = 75
@@ -168,9 +170,9 @@ Partial Class frm11_データインポート
         '
         Me.dgvc更新対象.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
         Me.dgvc更新対象.DataPropertyName = "Validity"
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle10.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.dgvc更新対象.DefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.dgvc更新対象.DefaultCellStyle = DataGridViewCellStyle4
         Me.dgvc更新対象.HeaderText = "更新対象"
         Me.dgvc更新対象.Name = "dgvc更新対象"
         Me.dgvc更新対象.Width = 78
@@ -252,9 +254,9 @@ Partial Class frm11_データインポート
         Me.GroupBox1.Controls.Add(Me.cbxメーカーID)
         Me.GroupBox1.Controls.Add(Me.Label2)
         Me.GroupBox1.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 601)
+        Me.GroupBox1.Location = New System.Drawing.Point(12, 594)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(765, 59)
+        Me.GroupBox1.Size = New System.Drawing.Size(410, 59)
         Me.GroupBox1.TabIndex = 21
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "サブスクリプション情報"
@@ -268,25 +270,47 @@ Partial Class frm11_データインポート
         '
         Me.lbl件数.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lbl件数.AutoSize = True
-        Me.lbl件数.Location = New System.Drawing.Point(14, 581)
+        Me.lbl件数.Location = New System.Drawing.Point(14, 574)
         Me.lbl件数.Margin = New System.Windows.Forms.Padding(5)
         Me.lbl件数.Name = "lbl件数"
         Me.lbl件数.Size = New System.Drawing.Size(165, 12)
         Me.lbl件数.TabIndex = 22
         Me.lbl件数.Text = "全○件中　有効○件　無効○件"
         '
+        'btnファイル取込履歴
+        '
+        Me.btnファイル取込履歴.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnファイル取込履歴.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.btnファイル取込履歴.Location = New System.Drawing.Point(445, 598)
+        Me.btnファイル取込履歴.Name = "btnファイル取込履歴"
+        Me.btnファイル取込履歴.Size = New System.Drawing.Size(120, 23)
+        Me.btnファイル取込履歴.TabIndex = 23
+        Me.btnファイル取込履歴.Text = "ファイル取込履歴"
+        Me.btnファイル取込履歴.UseVisualStyleBackColor = True
+        '
+        'tbxMD5
+        '
+        Me.tbxMD5.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.tbxMD5.Location = New System.Drawing.Point(465, 628)
+        Me.tbxMD5.Name = "tbxMD5"
+        Me.tbxMD5.ReadOnly = True
+        Me.tbxMD5.Size = New System.Drawing.Size(213, 19)
+        Me.tbxMD5.TabIndex = 24
+        '
         'frm11_データインポート
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(884, 669)
+        Me.ClientSize = New System.Drawing.Size(884, 662)
+        Me.Controls.Add(Me.tbxMD5)
+        Me.Controls.Add(Me.btnファイル取込履歴)
         Me.Controls.Add(Me.lbl件数)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.grpデータ読込)
         Me.Controls.Add(Me.btn更新)
         Me.Controls.Add(Me.dgv一覧)
         Me.Controls.Add(Me.lblタイトル)
-        Me.MinimumSize = New System.Drawing.Size(600, 500)
+        Me.MinimumSize = New System.Drawing.Size(900, 700)
         Me.Name = "frm11_データインポート"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "msdn XML インポート"
@@ -321,4 +345,6 @@ Partial Class frm11_データインポート
     Friend WithEvents dgvcKeyType As DataGridViewTextBoxColumn
     Friend WithEvents dgvcClaimedDate As DataGridViewTextBoxColumn
     Friend WithEvents dgvc更新対象 As DataGridViewTextBoxColumn
+    Friend WithEvents btnファイル取込履歴 As Button
+    Friend WithEvents tbxMD5 As TextBox
 End Class

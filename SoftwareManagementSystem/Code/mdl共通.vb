@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Security.Cryptography
 Imports System.Text
 Imports SPWinFormControls
 
@@ -66,19 +67,26 @@ Module mdl共通
         Return GetComboBoxItem(cbx, key).R
     End Function
 
+#Region "拡張メソッド"
 
     <System.Runtime.CompilerServices.Extension()>
-    Public Function GeneratePairArray(ByVal dtb As DataTable, ByVal col1 As String, ByVal col2 As String) As CbxItem()
+    Public Function exGeneratePairArray(ByVal dtb As DataTable, ByVal col1 As String, ByVal col2 As String) As CbxItem()
         Return dtb.AsEnumerable.Select(Function(r) New CbxItem(sNvl(r(col1)), sNvl(r(col2)))).Distinct.ToArray
     End Function
 
     <System.Runtime.CompilerServices.Extension()>
-    Public Function GeneratePairArray(ByVal seq As IEnumerable(Of DataRow), ByVal col1 As String, ByVal col2 As String) As CbxItem()
+    Public Function exGeneratePairArray(ByVal seq As IEnumerable(Of DataRow), ByVal col1 As String, ByVal col2 As String) As CbxItem()
         Return seq.Select(Function(r) New CbxItem(sNvl(r(col1)), sNvl(r(col2)))).Distinct.ToArray
     End Function
 
+
+    ''' <summary>
+    ''' 選択中もコンボボックスのアイテムからキー部分（L）を取得する拡張メソッドです。
+    ''' </summary>
+    ''' <param name="cbx"></param>
+    ''' <returns></returns>
     <System.Runtime.CompilerServices.Extension()>
-    Public Function extSelectedKey(ByVal cbx As ComboBox) As String
+    Public Function exSelectedKey(ByVal cbx As ComboBox) As String
         Dim item As Object = cbx.SelectedItem
         If TypeOf item Is CbxItem Then
             Return DirectCast(cbx.SelectedItem, CbxItem).L
@@ -88,14 +96,40 @@ Module mdl共通
 
     End Function
 
+    ''' <summary>
+    ''' 選択中のコンボボックスのアイテムから値部分（R）を取得する拡張メソッドです。
+    ''' </summary>
+    ''' <param name="cbx"></param>
+    ''' <returns></returns>
     <System.Runtime.CompilerServices.Extension()>
-    Public Function extSelectedValue(ByVal cbx As ComboBox) As String
+    Public Function exSelectedValue(ByVal cbx As ComboBox) As String
         Dim item As Object = cbx.SelectedItem
         If TypeOf item Is CbxItem Then
             Return DirectCast(cbx.SelectedItem, CbxItem).R
         Else
             Return cbx.SelectedItem.ToString
         End If
+    End Function
+#End Region
+
+
+
+    ''' <summary>
+    ''' 指定したファイルのMD5ハッシュ値を計算して文字列として返します。
+    ''' </summary>
+    ''' <param name="filename">ハッシュ値計算対象のファイルパス</param>
+    ''' <returns></returns>
+    Public Function GetMD5(ByVal filename As String) As String
+        'ファイルストリームからハッシュ値を計算
+        Using stm = My.Computer.FileSystem.GetFileInfo(filename).OpenRead(), md5obj = MD5.Create
+            stm.Position = 0
+            Dim str = ""
+            'バイト配列 → 文字列 に変換処理
+            For Each b In md5obj.ComputeHash(stm)
+                str &= b.ToString("X2")
+            Next
+            Return str
+        End Using
     End Function
 
     ''' <summary>
@@ -162,7 +196,6 @@ Module mdl共通
                             MsgErr("RollBack Error @ DB_NonQuery", rbex.Message)
                         End Try
                     End If
-                    '
                     MsgErr("Error @ DB_NonQuery", ex.Message)
                     Return False
                 End Try
@@ -204,7 +237,7 @@ Module mdl共通
                     comm.CommandText = sql
                     Return CType(comm.ExecuteScalar, T)
                 Catch ex As Exception
-                    'MsgErr("Error @ DB_GetValue", ex.Message)
+                    MsgErr("Error @ DB_GetValue", ex.Message)
                     Return Nothing
                 End Try
             End Using
@@ -355,6 +388,10 @@ Module mdl共通
         ' Scrollイベントを追加　※ユーザーがグリッドを上下左右にスクロールしたとき呼ばれる
         AddHandler dgv.Scroll,
             Sub(s, e)
+                '横スクロールは無視
+                If e.ScrollOrientation = ScrollOrientation.HorizontalScroll Then
+                    Return
+                End If
                 ' 指定された結合対象列の現在1行目に表示されているセルを取得
                 Dim cells = From c In cols Select dgv(c.Index, e.NewValue)
                 ' 上方向へのスクロール時は CellFormattingイベントで値表示を制御する

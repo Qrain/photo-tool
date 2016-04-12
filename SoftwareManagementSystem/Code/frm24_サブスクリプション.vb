@@ -3,6 +3,8 @@
 Public Class frm24_サブスクリプション
 
     Private SQL As New StringBuilder
+    Private m_intDGV1CurrentRowIndex As Integer = 0
+
 
     Private Sub frm23_サブスクリプション_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' ComboBoxの準備   
@@ -53,17 +55,18 @@ Public Class frm24_サブスクリプション
         End If
         '
         Dim int行 As Integer
+        Dim intサブスクリプション連番 As Integer = CInt(tbxサブスクリプション連番.Text)
         '
         If rbt登録.Checked Then
             Dim 連番最大 As Integer? = GetValue(Of Integer?)("SELECT MAX(サブスクリプション連番) FROM M03_サブスクリプション")
-            tbxサブスクリプション連番.Text = If(連番最大 Is Nothing, 1, 連番最大 + 1)
+            intサブスクリプション連番 = If(連番最大 Is Nothing, 1, 連番最大 + 1)
             SQL.Length = 0
             SQL.AppendLine("INSERT")
             SQL.AppendLine("INTO")
             SQL.AppendLine("    M03_サブスクリプション")
             SQL.AppendLine("VALUES")
             SQL.AppendLine("(")
-            SQL.AppendLine("    " & tbxサブスクリプション連番.Text & ",")
+            SQL.AppendLine("    " & intサブスクリプション連番 & ",")
             SQL.AppendLine("    '" & DirectCast(cbx権利者ID.SelectedItem, CbxItem).L & "',")
             SQL.AppendLine("    '" & DirectCast(cbxメーカーID.SelectedItem, CbxItem).L & "',")
             SQL.AppendLine("    " & If(chkサブスクリプション不要.Checked, "NULL", "'" & editサブスクリプションID.Text & "'") & ",")
@@ -85,18 +88,15 @@ Public Class frm24_サブスクリプション
             SQL.AppendLine("    有効期間開始日 = " & If(ndtp開始日.IsNull, "NULL", "'" & ndtp開始日.Value.Value.ToString("yyyy/MM/dd") & "'") & ",")
             SQL.AppendLine("    有効期間終了日 = " & If(ndtp終了日.IsNull, "NULL", "'" & ndtp終了日.Value.Value.ToString("yyyy/MM/dd") & "'") & ",")
             SQL.AppendLine("    購入日 = " & If(ndtp購入日.IsNull, "NULL", "'" & ndtp購入日.Value.Value.ToString("yyyy/MM/dd") & "'") & ",")
+            SQL.AppendLine("    削除区分 = " & If(chk削除済.Checked, "1", "0") & ",")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
-            SQL.AppendLine("        サブスクリプション連番 = " & tbxサブスクリプション連番.Text & "")
+            SQL.AppendLine("        サブスクリプション連番 = " & intサブスクリプション連番 & "")
         ElseIf rbt削除.Checked Then
             If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
                 Return
             End If
             SQL.Length = 0
-            'SQL.AppendLine("DELETE")
-            'SQL.AppendLine("    M03_サブスクリプション")
-            'SQL.AppendLine("WHERE")
-            'SQL.AppendLine("        サブスクリプション連番 = " & tbxサブスクリプション連番.Text & "")
             SQL.AppendLine("UPDATE")
             SQL.AppendLine("    M03_サブスクリプション")
             SQL.AppendLine("SET")
@@ -118,20 +118,20 @@ Public Class frm24_サブスクリプション
         ' 新規登録の時は、追加したデータを修正モードにする
         If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgvサブスクリプション一覧.DataSource, DataTable)
-            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) sNvl(x("サブスクリプション連番")) = tbxサブスクリプション連番.Text)
+            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) x("サブスクリプション連番") = intサブスクリプション連番)
             int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
         End If
 
-        RemoveHandler dgvサブスクリプション一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
+        'RemoveHandler dgvサブスクリプション一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
         dgvサブスクリプション一覧.CurrentCell = dgvサブスクリプション一覧(0, int行)
-        AddHandler dgvサブスクリプション一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
+        'AddHandler dgvサブスクリプション一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
 
         If rbt登録.Checked Then
             rbt更新.Checked = True
             Return
         End If
-        ' 項目情報を更新する
-        詳細項目更新()
+        '' 項目情報を更新する
+        '詳細項目更新()
     End Sub
 
 
@@ -156,7 +156,8 @@ Public Class frm24_サブスクリプション
     End Sub
 
     Private Sub dgvサブスクリプション一覧_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvサブスクリプション一覧.RowEnter
-        詳細項目更新(e.RowIndex)
+        m_intDGV1CurrentRowIndex = e.RowIndex
+        詳細項目更新()
     End Sub
 
     Private Sub btn終了_Click(sender As Object, e As EventArgs) Handles btn終了.Click
@@ -191,8 +192,8 @@ Public Class frm24_サブスクリプション
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M03_サブスクリプション")
         SQL.AppendLine("WHERE")
-        SQL.AppendLine("        権利者ID = '" & cbx権利者ID.extSelectedKey & "'")
-        SQL.AppendLine("    AND メーカーID = '" & cbxメーカーID.extSelectedKey & "'")
+        SQL.AppendLine("        権利者ID = '" & cbx権利者ID.exSelectedKey & "'")
+        SQL.AppendLine("    AND メーカーID = '" & cbxメーカーID.exSelectedKey & "'")
         SQL.AppendLine("    AND ISNULL(サブスクリプションID,'') = '" & If(chkサブスクリプション不要.Checked, "", editサブスクリプションID.Text.Trim) & "'")
         ' 登録の場合は単純な重複チェックだが
         ' 更新の場合は、変更前と変更後のPKが不変ならば許容する
@@ -225,7 +226,8 @@ Public Class frm24_サブスクリプション
         SQL.AppendLine("    M03.有効期間終了日,")
         SQL.AppendLine("    M03.購入日,")
         SQL.AppendLine("    M03.作成日時,")
-        SQL.AppendLine("    M03.更新日時")
+        SQL.AppendLine("    M03.更新日時,")
+        SQL.AppendLine("    M03.削除区分")
         SQL.AppendLine("FROM")
         SQL.AppendLine("    M03_サブスクリプション M03")
         SQL.AppendLine("    INNER JOIN")
@@ -234,20 +236,55 @@ Public Class frm24_サブスクリプション
         SQL.AppendLine("    INNER JOIN")
         SQL.AppendLine("    M11_メーカー M11 ON")
         SQL.AppendLine("    M03.メーカーID = M11.メーカーID")
-        SQL.AppendLine("WHERE")
-        SQL.AppendLine("    M03.削除区分 = 0")
         SQL.AppendLine("ORDER BY")
         SQL.AppendLine("    M03.権利者ID,")
+        SQL.AppendLine("    M03.削除区分,")
         SQL.AppendLine("    M03.メーカーID,")
         SQL.AppendLine("    M03.サブスクリプションID")
 
         ' 不用意なイベント発生を防ぐため一旦外す
         RemoveHandler dgvサブスクリプション一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
-        dgvサブスクリプション一覧.DataSource = GetDataTable(SQL.ToString)
+        Dim dtb As DataTable = GetDataTable(SQL.ToString)
+        ' 削除表示が指定されていたら全て表示する
+        If chk削除済表示.Checked Then
+            dgvサブスクリプション一覧.DataSource = dtb
+            ' 論理削除済みの項目を表示し前景色を変更する
+            For i = 0 To dtb.Rows.Count - 1
+                ' 削除区分=1 ならば前景色を変える
+                If dtb(i)("削除区分") = 1 Then
+                    For Each ce As DataGridViewCell In dgvサブスクリプション一覧.Rows(i).Cells
+                        ce.Style.ForeColor = Color.Red
+                    Next
+                End If
+            Next
+        Else
+            ' 削除区分=0 ものだけ表示する
+            dgvサブスクリプション一覧.DataSource = (From r In dtb Where r("削除区分") = 0).CopyToDataTable
+        End If
         AddHandler dgvサブスクリプション一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
+        ' 行インデックス初期化
+        m_intDGV1CurrentRowIndex = 0
     End Sub
 
     Private Sub 詳細項目更新(Optional ByVal vintrow As Integer = -1)
+        Dim drw As DataRow = Nothing
+
+        ' 表示行あれば選択中のDataRowを取得
+        If dgvサブスクリプション一覧.Rows.Count > m_intDGV1CurrentRowIndex Then
+            drw = DirectCast(dgvサブスクリプション一覧.DataSource, DataTable)(m_intDGV1CurrentRowIndex)
+        End If
+
+        ' DataRowを取得できた場合、削除区分=1ならば削除モードを無効等に設定
+        If drw IsNot Nothing Then
+            ' 削除モードかつ削除済ならば更新モードに移りリターン再帰
+            If rbt削除.Checked AndAlso drw("削除区分") = 1 Then
+                rbt更新.Checked = True
+                Return
+            End If
+            ' 削除されてない:0 ならば有効:true
+            rbt削除.Enabled = drw("削除区分") = 0
+        End If
+        '
         If rbt登録.Checked OrElse dgvサブスクリプション一覧.RowCount = 0 Then
             tbxサブスクリプション連番.Text = ""
             chkサブスクリプション不要.Checked = False
@@ -259,24 +296,33 @@ Public Class frm24_サブスクリプション
             ndtp購入日.Value = Nothing
             edit作成日時.Text = ""
             edit更新日時.Text = ""
+            With chk削除済
+                .Checked = False
+                .Enabled = False
+            End With
         Else
             ' 修正 or 削除 モード
-            ' 行数がパラメータによって指定されていればそっちを優先して使う
-            Dim row As Integer = If(vintrow < 0, dgvサブスクリプション一覧.CurrentCellAddress.Y, vintrow)
-            With DirectCast(dgvサブスクリプション一覧.DataSource, DataTable)(row)
-                ' サブスクリプションIDがDBNullならば不要とみなしてチェック入れる
-                tbxサブスクリプション連番.Text = .Item("サブスクリプション連番")
-                chkサブスクリプション不要.Checked = IsDBNull(.Item("サブスクリプションID"))
-                editサブスクリプションID.Text = sNvl(.Item("サブスクリプションID"))
-                cbx権利者ID.SelectedItem = GetComboBoxItem(cbx権利者ID, .Item("権利者ID"))
-                cbxメーカーID.SelectedItem = GetComboBoxItem(cbxメーカーID, .Item("メーカーID"))
-                ndtp開始日.Value = dNvl(.Item("有効期間開始日"))
-                ndtp終了日.Value = dNvl(.Item("有効期間終了日"))
-                ndtp購入日.Value = dNvl(.Item("購入日"))
-                edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
-                edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
+            ' サブスクリプションIDがDBNullならば不要とみなしてチェック入れる
+            tbxサブスクリプション連番.Text = drw("サブスクリプション連番")
+            chkサブスクリプション不要.Checked = IsDBNull(drw("サブスクリプションID"))
+            editサブスクリプションID.Text = sNvl(drw("サブスクリプションID"))
+            cbx権利者ID.SelectedItem = GetComboBoxItem(cbx権利者ID, drw("権利者ID"))
+            cbxメーカーID.SelectedItem = GetComboBoxItem(cbxメーカーID, drw("メーカーID"))
+            ndtp開始日.Value = dNvl(drw("有効期間開始日"))
+            ndtp終了日.Value = dNvl(drw("有効期間終了日"))
+            ndtp購入日.Value = dNvl(drw("購入日"))
+            edit作成日時.Text = dNvl(drw("作成日時")).ToString("yyyy/MM/dd")
+            edit更新日時.Text = dNvl(drw("更新日時")).ToString("yyyy/MM/dd")
+            ' 削除済のものだけ、チェックボックスを有効する
+            With chk削除済
+                .Checked = drw("削除区分") = 1
+                .Enabled = .Checked
             End With
         End If
     End Sub
 
+    Private Sub chk削除済表示_CheckedChanged(sender As Object, e As EventArgs) Handles chk削除済表示.CheckedChanged
+        グリッド表示()
+        詳細項目更新()
+    End Sub
 End Class

@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿Imports System.Security.Cryptography
+Imports System.Text
 
 Public Class frm11_データインポート
 
@@ -43,7 +44,7 @@ Public Class frm11_データインポート
         m_dtbComboBox = GetDataTable(SQL.ToString)
         '
         ' 権利者を重複を除去して設定する
-        cbx権利者ID.Items.AddRange(m_dtbComboBox.GeneratePairArray("権利者ID", "社員名"))
+        cbx権利者ID.Items.AddRange(m_dtbComboBox.exGeneratePairArray("権利者ID", "社員名"))
     End Sub
 
 
@@ -140,11 +141,41 @@ Public Class frm11_データインポート
         Dim cnt無効 As Integer = cnt全件 - cnt有効
         ' ラベル更新
         lbl件数.Text = "全" & cnt全件 & "件中　有効: " & cnt有効 & "件　無効: " & cnt無効 & "件"
+        ' ファイルのMD5ハッシュを計算して設定する
+        tbxMD5.Text = GetMD5(tbxXMLパス.Text)
+
     End Sub
 
     Private Sub btn更新_Click(sender As Object, e As EventArgs) Handles btn更新.Click
 
         If Not 入力チェック() Then
+            Return
+        End If
+
+        Dim str権利者ID As String = cbx権利者ID.exSelectedKey
+        Dim strメーカーID As String = cbxメーカーID.exSelectedKey
+        Dim strサブスクリプションID As String = cbxサブスクリプションID.SelectedItem
+
+        ' 選択されているコンボボックス情報からサブスクリプション連番を取得する
+        Dim intサブスクリプション連番 As Integer =
+            (From r In m_dtbComboBox
+             Where r("権利者ID") = str権利者ID AndAlso
+                   r("メーカーID") = strメーカーID AndAlso
+                   r("サブスクリプションID") = strサブスクリプションID
+             Select CInt(r("サブスクリプション連番"))).First
+
+        ' 取込履歴をチェック
+        SQL.Length = 0
+        SQL.AppendLine("SELECT")
+        SQL.AppendLine("    COUNT(*)")
+        SQL.AppendLine("FROM")
+        SQL.AppendLine("    M21_ファイル取込履歴")
+        SQL.AppendLine("WHERE")
+        SQL.AppendLine("    サブスクリプション連番 = " & intサブスクリプション連番 & "")
+        SQL.AppendLine("    AND MD5 = '" & tbxMD5.Text & "'")
+
+        If GetValue(Of Integer)(SQL.ToString) > 0 Then
+            MsgWarn("事前チェック", "このファイルはこのサブスクリプションによって既に取り込まれています。他のファイルを指定して下さい。")
             Return
         End If
 
@@ -200,7 +231,7 @@ Public Class frm11_データインポート
                 SQL.AppendLine("    0")
                 SQL.AppendLine(");")
             Next
-            If Not ExecNonQuery(SQL.ToString) Then
+            If Not ExecNonQuery(SQL.ToString, True) Then
                 Return
             End If
         End If
@@ -223,21 +254,10 @@ Public Class frm11_データインポート
         SQL.AppendLine("    M13.サブスクリプション連番 = M03.サブスクリプション連番")
         SQL.AppendLine("WHERE")
         SQL.AppendLine("    M12.メーカーID = '" & gs名称("MSメーカーID")("1") & "'")
+
         Dim seq登録済キー As DataTable = GetDataTable(SQL.ToString)
-        Dim str権利者ID As String = DirectCast(cbx権利者ID.SelectedItem, CbxItem).L
-        Dim strメーカーID As String = DirectCast(cbxメーカーID.SelectedItem, CbxItem).L
-        Dim strサブスクリプションID As String = cbxサブスクリプションID.SelectedItem.ToString
         '
-        ' 選択されているコンボボックス情報からサブスクリプション連番を取得する
-        Dim intサブスクリプション連番 As Integer =
-            (From
-                 r In m_dtbComboBox
-             Where
-                 r("権利者ID") = str権利者ID AndAlso
-                 r("メーカーID") = strメーカーID AndAlso
-                 r("サブスクリプションID") = strサブスクリプションID
-             Select
-                 CInt(r("サブスクリプション連番"))).First
+
 
         Dim int法人MSサブスクリプション連番 As Integer = Get法人MSサブスクリプション連番()
 
@@ -288,10 +308,8 @@ Public Class frm11_データインポート
                 SQL.AppendLine("    ソフトウェアID = '" & drw既存プロダクトキー("ソフトウェアID") & "'")
                 SQL.AppendLine("    AND プロダクトキー = '" & drw既存プロダクトキー("プロダクトキー") & "';")
             Else
-                ' ここにくるということは、反復処理中のソフトウェアについて
-                ' まだDBにに登録されていないということになる。
+                ' ここにくるケースは反復処理中のソフトウェアについてDBに未登録だということ
 
-                'まだ重複がある。
                 ' 新規インサート
                 SQL.AppendLine("INSERT INTO")
                 SQL.AppendLine("    M13_プロダクトキー")
@@ -328,12 +346,32 @@ Public Class frm11_データインポート
             End If
         Next
 
+        ' 最後にファイル取込履歴を残す
+        SQL.AppendLine("INSERT INTO")
+        SQL.AppendLine("    M21_ファイル取込履歴")
+        SQL.AppendLine("(")
+        SQL.AppendLine("    サブスクリプション連番,")
+        SQL.AppendLine("    MD5,")
+        SQL.AppendLine("    ファイル名,")
+        SQL.AppendLine("    取込日時,")
+        SQL.AppendLine("    作成日時,")
+        SQL.AppendLine("    更新日時,")
+        SQL.AppendLine("    削除区分")
+        SQL.AppendLine(") VALUES (")
+        SQL.AppendLine("    " & intサブスクリプション連番 & ",")
+        SQL.AppendLine("    '" & tbxMD5.Text & "',")
+        SQL.AppendLine("    '" & IO.Path.GetFileName(tbxXMLパス.Text) & "',")
+        SQL.AppendLine("    GETDATE(),")
+        SQL.AppendLine("    GETDATE(),")
+        SQL.AppendLine("    GETDATE(),")
+        SQL.AppendLine("    0")
+        SQL.AppendLine(");")
+
         If Not ExecNonQuery(SQL.ToString, True) Then
             Return
         End If
 
         MsgInfo("更新結果", "XMLインポートが完了しました。")
-
     End Sub
 
 

@@ -4,6 +4,7 @@ Imports System.Text
 Public Class frm22_社員マスタ
 
     Private SQL As New StringBuilder
+    Private m_intDGV1CurrentRowIndex As Integer = 0
 
     Private Sub frm22_社員マスタ_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SetupDataGridViewProperties(dgv社員一覧)
@@ -69,7 +70,7 @@ Public Class frm22_社員マスタ
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    0")
             SQL.AppendLine(");")
-            's
+            '
         ElseIf rbt更新.Checked Then
             SQL.Length = 0
             SQL.AppendLine("UPDATE")
@@ -78,10 +79,10 @@ Public Class frm22_社員マスタ
             SQL.AppendLine("    社員名 = '" & edit社員名.Text & "',")
             SQL.AppendLine("    社員区分 = '" & If(rbt個人.Checked, "個人", "法人") & "',")
             SQL.AppendLine("    権利者区分 = '" & If(chk権利者区分.Checked, "1", "0") & "',")
+            SQL.AppendLine("    削除区分 = " & If(chk削除済.Checked, "1", "0") & ",")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
             SQL.AppendLine("        社員ID = '" & str社員ID & "'")
-            int行 = dgv社員一覧.CurrentRow.Index
             '
         ElseIf rbt削除.Checked Then
             If MessageBox.Show("本当に削除してよろしいですか？", "削除確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) = DialogResult.Cancel Then
@@ -107,24 +108,21 @@ Public Class frm22_社員マスタ
         ' グリッド再描画
         グリッド表示()
         ' 
-        If rbt登録.Checked Then
+        If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgv社員一覧.DataSource, DataTable)
-            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) x("社員ID") = edit社員ID.Text.Trim)
+            Dim 対象行 = From r In dtb Where r("社員ID") = str社員ID
             int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
         End If
 
         ' 選択させる
-        RemoveHandler dgv社員一覧.RowEnter, AddressOf dgv社員一覧_RowEnter
         dgv社員一覧.CurrentCell = dgv社員一覧(0, int行)
-        AddHandler dgv社員一覧.RowEnter, AddressOf dgv社員一覧_RowEnter
 
         ' 新規登録の時は、追加したデータを修正モードにする
         If rbt登録.Checked Then
             rbt更新.Checked = True
             Return
         End If
-        ' 項目情報を更新する
-        詳細項目更新()
+
     End Sub
 
     Private Sub rbt共通_CheckedChanged(sender As Object, e As EventArgs) Handles rbt登録.CheckedChanged, rbt更新.CheckedChanged, rbt削除.CheckedChanged
@@ -142,7 +140,8 @@ Public Class frm22_社員マスタ
     End Sub
 
     Private Sub dgv社員一覧_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgv社員一覧.RowEnter
-        詳細項目更新(e.RowIndex)
+        m_intDGV1CurrentRowIndex = e.RowIndex
+        詳細項目更新()
     End Sub
 
     Private Sub btn終了_Click(sender As Object, e As EventArgs) Handles btn終了.Click
@@ -173,7 +172,7 @@ Public Class frm22_社員マスタ
                 ' 削除区分=1 ならば前景色を変える
                 If dtb(i)("削除区分") = 1 Then
                     For Each ce As DataGridViewCell In dgv社員一覧.Rows(i).Cells
-                        ce.Style.ForeColor = Color.LightBlue
+                        ce.Style.ForeColor = Color.Red
                     Next
                 End If
             Next
@@ -183,11 +182,11 @@ Public Class frm22_社員マスタ
         End If
         AddHandler dgv社員一覧.RowEnter, AddressOf dgv社員一覧_RowEnter
 
-
+        ' 行インデックス初期化
+        m_intDGV1CurrentRowIndex = 0
     End Sub
 
     Private Function 入力チェック() As Boolean
-
         If edit社員ID.Text.Trim = "" Then
             MsgWarn("入力チェック", "社員IDを入力して下さい。")
             edit社員ID.Focus()
@@ -197,36 +196,54 @@ Public Class frm22_社員マスタ
             edit社員名.Focus()
             Return False
         End If
-
-
-
         Return True
     End Function
 
-    Private Sub 詳細項目更新(Optional ByVal vintrow As Integer = -1)
-        If rbt登録.Checked OrElse dgv社員一覧.RowCount = 0 Then
+    Private Sub 詳細項目更新()
+
+        Dim drw As DataRow = Nothing
+
+        ' 表示行あれば選択中のDataRowを取得
+        If dgv社員一覧.Rows.Count > m_intDGV1CurrentRowIndex Then
+            drw = DirectCast(dgv社員一覧.DataSource, DataTable)(m_intDGV1CurrentRowIndex)
+        End If
+
+        ' DataRowを取得できた場合、削除区分=1ならば削除モードを無効等に設定
+        If drw IsNot Nothing Then
+            ' 削除モードかつ削除済ならば更新モードに移りリターン再帰
+            If rbt削除.Checked AndAlso drw("削除区分") = 1 Then
+                rbt更新.Checked = True
+                Return
+            End If
+            ' 削除されてない:0 ならば有効:true
+            rbt削除.Enabled = drw("削除区分") = 0
+        End If
+
+        If rbt登録.Checked OrElse drw Is Nothing Then
             edit社員ID.Text = ""
             edit社員名.Text = ""
             rbt個人.Checked = True
             chk権利者区分.Checked = False
             edit作成日時.Text = ""
             edit更新日時.Text = ""
-            edit削除区分.Text = ""
-            btn更新.Enabled = True
+            With chk削除済
+                .Checked = False
+                .Enabled = False
+            End With
         Else
             ' 修正 or 削除 モード
             ' 行数がパラメータによって指定されていればそっちを優先して使う
-            Dim row As Integer = If(vintrow < 0, dgv社員一覧.CurrentRow.Index, vintrow)
-            With DirectCast(dgv社員一覧.DataSource, DataTable)(row)
-                edit社員ID.Text = sNvl(.Item("社員ID"))
-                edit社員名.Text = sNvl(.Item("社員名"))
-                rbt個人.Checked = sNvl(.Item("社員区分")) = "個人"
-                rbt法人.Checked = sNvl(.Item("社員区分")) = "法人"
-                chk権利者区分.Checked = sNvl(.Item("権利者区分")) = "1"
-                edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
-                edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
-                edit削除区分.Text = .Item("削除区分")
-                btn更新.Enabled = .Item("削除区分") = 0
+            edit社員ID.Text = sNvl(drw("社員ID"))
+            edit社員名.Text = sNvl(drw("社員名"))
+            rbt個人.Checked = sNvl(drw("社員区分")) = "個人"
+            rbt法人.Checked = sNvl(drw("社員区分")) = "法人"
+            chk権利者区分.Checked = sNvl(drw("権利者区分")) = "1"
+            edit作成日時.Text = dNvl(drw("作成日時")).ToString("yyyy/MM/dd")
+            edit更新日時.Text = dNvl(drw("更新日時")).ToString("yyyy/MM/dd")
+            ' 削除済のものだけ、チェックボックスを有効する
+            With chk削除済
+                .Checked = drw("削除区分") = 1
+                .Enabled = .Checked
             End With
         End If
     End Sub

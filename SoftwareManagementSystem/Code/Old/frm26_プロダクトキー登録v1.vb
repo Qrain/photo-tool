@@ -28,7 +28,7 @@ Public Class frm26_プロダクトキー登録v1
         Dim dtb As DataTable
         '
         dtb = GetDataTable(SQL.ToString)
-        cbx認証タイプ.Items.AddRange(dtb.GeneratePairArray("名称コード", "名称"))
+        cbx認証タイプ.Items.AddRange(dtb.exGeneratePairArray("名称コード", "名称"))
         '
         cbx利用者ID.Items.Add("<未指定>")
         cbx利用者ID.SelectedIndex = 0
@@ -42,7 +42,7 @@ Public Class frm26_プロダクトキー登録v1
         SQL.AppendLine("    削除区分 = 0")
         '
         dtb = GetDataTable(SQL.ToString)
-        cbx利用者ID.Items.AddRange(dtb.GeneratePairArray("社員ID", "社員名"))
+        cbx利用者ID.Items.AddRange(dtb.exGeneratePairArray("社員ID", "社員名"))
 
         cbxメーカーID.Enabled = False
         cbxサブスクリプションID.Enabled = False
@@ -51,7 +51,7 @@ Public Class frm26_プロダクトキー登録v1
         m_dtbComboBox = GetComboBox設定用DTB()
         ' 
         ' 権利者を重複を除去して設定する
-        cbx権利者ID.Items.AddRange(m_dtbComboBox.GeneratePairArray("権利者ID", "社員名"))
+        cbx権利者ID.Items.AddRange(m_dtbComboBox.exGeneratePairArray("権利者ID", "社員名"))
         '
         グリッド表示()
     End Sub

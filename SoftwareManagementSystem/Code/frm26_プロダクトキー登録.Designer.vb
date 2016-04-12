@@ -24,10 +24,6 @@ Partial Class frm26_プロダクトキー登録
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.dgvプロダクトキー = New System.Windows.Forms.DataGridView()
-        Me.dgvc権利者ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcサブスクリプション = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcプロダクトキー = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvc状態 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbt削除 = New System.Windows.Forms.RadioButton()
@@ -79,7 +75,6 @@ Partial Class frm26_プロダクトキー登録
         Me.cbx認証タイプ = New System.Windows.Forms.ComboBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.cbxサブスクリプションID = New System.Windows.Forms.ComboBox()
-        Me.ndtp要求日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
@@ -89,6 +84,11 @@ Partial Class frm26_プロダクトキー登録
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
+        Me.ndtp要求日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
+        Me.dgvc権利者ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcサブスクリプション = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvcプロダクトキー = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvc状態 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.dgvプロダクトキー, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -107,41 +107,8 @@ Partial Class frm26_プロダクトキー登録
         Me.dgvプロダクトキー.Location = New System.Drawing.Point(6, 18)
         Me.dgvプロダクトキー.Name = "dgvプロダクトキー"
         Me.dgvプロダクトキー.RowTemplate.Height = 21
-        Me.dgvプロダクトキー.Size = New System.Drawing.Size(392, 311)
+        Me.dgvプロダクトキー.Size = New System.Drawing.Size(442, 311)
         Me.dgvプロダクトキー.TabIndex = 0
-        '
-        'dgvc権利者ID
-        '
-        Me.dgvc権利者ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvc権利者ID.DataPropertyName = "権利者"
-        Me.dgvc権利者ID.HeaderText = "権利者"
-        Me.dgvc権利者ID.Name = "dgvc権利者ID"
-        Me.dgvc権利者ID.Width = 61
-        '
-        'dgvcサブスクリプション
-        '
-        Me.dgvcサブスクリプション.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvcサブスクリプション.DataPropertyName = "サブスクリプションID"
-        Me.dgvcサブスクリプション.HeaderText = "サブスクリプションID"
-        Me.dgvcサブスクリプション.Name = "dgvcサブスクリプション"
-        Me.dgvcサブスクリプション.ReadOnly = True
-        Me.dgvcサブスクリプション.Width = 76
-        '
-        'dgvcプロダクトキー
-        '
-        Me.dgvcプロダクトキー.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.dgvcプロダクトキー.DataPropertyName = "プロダクトキー"
-        Me.dgvcプロダクトキー.HeaderText = "プロダクトキー"
-        Me.dgvcプロダクトキー.Name = "dgvcプロダクトキー"
-        Me.dgvcプロダクトキー.ReadOnly = True
-        '
-        'dgvc状態
-        '
-        Me.dgvc状態.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvc状態.DataPropertyName = "状態"
-        Me.dgvc状態.HeaderText = "状態"
-        Me.dgvc状態.Name = "dgvc状態"
-        Me.dgvc状態.Width = 51
         '
         'Label1
         '
@@ -151,7 +118,7 @@ Partial Class frm26_プロダクトキー登録
         Me.Label1.ForeColor = System.Drawing.Color.Blue
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(860, 35)
+        Me.Label1.Size = New System.Drawing.Size(910, 35)
         Me.Label1.TabIndex = 6
         Me.Label1.Text = "プロダクトキー登録"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -164,7 +131,7 @@ Partial Class frm26_プロダクトキー登録
         Me.GroupBox1.Controls.Add(Me.rbt登録)
         Me.GroupBox1.Location = New System.Drawing.Point(468, 47)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(404, 46)
+        Me.GroupBox1.Size = New System.Drawing.Size(454, 46)
         Me.GroupBox1.TabIndex = 7
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "２．操作モード"
@@ -605,7 +572,7 @@ Partial Class frm26_プロダクトキー登録
         'Label4
         '
         Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label4.Location = New System.Drawing.Point(261, 332)
+        Me.Label4.Location = New System.Drawing.Point(311, 332)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(99, 20)
         Me.Label4.TabIndex = 39
@@ -615,7 +582,7 @@ Partial Class frm26_プロダクトキー登録
         'lblプロダクトキー数
         '
         Me.lblプロダクトキー数.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblプロダクトキー数.Location = New System.Drawing.Point(357, 332)
+        Me.lblプロダクトキー数.Location = New System.Drawing.Point(407, 332)
         Me.lblプロダクトキー数.Name = "lblプロダクトキー数"
         Me.lblプロダクトキー数.Size = New System.Drawing.Size(41, 20)
         Me.lblプロダクトキー数.TabIndex = 54
@@ -645,7 +612,7 @@ Partial Class frm26_プロダクトキー登録
         Me.group1.Controls.Add(Me.lblプロダクトキー数)
         Me.group1.Location = New System.Drawing.Point(468, 99)
         Me.group1.Name = "group1"
-        Me.group1.Size = New System.Drawing.Size(404, 590)
+        Me.group1.Size = New System.Drawing.Size(454, 590)
         Me.group1.TabIndex = 8
         Me.group1.TabStop = False
         Me.group1.Text = "３．詳細情報"
@@ -721,17 +688,6 @@ Partial Class frm26_プロダクトキー登録
         Me.cbxサブスクリプションID.Name = "cbxサブスクリプションID"
         Me.cbxサブスクリプションID.Size = New System.Drawing.Size(150, 20)
         Me.cbxサブスクリプションID.TabIndex = 33
-        '
-        'ndtp要求日
-        '
-        Me.ndtp要求日.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ndtp要求日.Location = New System.Drawing.Point(139, 557)
-        Me.ndtp要求日.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
-        Me.ndtp要求日.Name = "ndtp要求日"
-        Me.ndtp要求日.NullValue = " <日付を選択>"
-        Me.ndtp要求日.Size = New System.Drawing.Size(150, 19)
-        Me.ndtp要求日.TabIndex = 16
-        Me.ndtp要求日.Value = New Date(CType(0, Long))
         '
         'Label9
         '
@@ -827,25 +783,65 @@ Partial Class frm26_プロダクトキー登録
         Me.btn終了.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn終了.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn終了.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn終了.Location = New System.Drawing.Point(792, 695)
+        Me.btn終了.Location = New System.Drawing.Point(842, 695)
         Me.btn終了.Name = "btn終了"
         Me.btn終了.Size = New System.Drawing.Size(80, 30)
         Me.btn終了.TabIndex = 11
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
+        'ndtp要求日
+        '
+        Me.ndtp要求日.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ndtp要求日.Location = New System.Drawing.Point(139, 557)
+        Me.ndtp要求日.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
+        Me.ndtp要求日.Name = "ndtp要求日"
+        Me.ndtp要求日.NullValue = " <日付を選択>"
+        Me.ndtp要求日.Size = New System.Drawing.Size(150, 19)
+        Me.ndtp要求日.TabIndex = 16
+        Me.ndtp要求日.Value = New Date(CType(0, Long))
+        '
+        'dgvc権利者ID
+        '
+        Me.dgvc権利者ID.DataPropertyName = "権利者"
+        Me.dgvc権利者ID.HeaderText = "権利者"
+        Me.dgvc権利者ID.Name = "dgvc権利者ID"
+        Me.dgvc権利者ID.Width = 60
+        '
+        'dgvcサブスクリプション
+        '
+        Me.dgvcサブスクリプション.DataPropertyName = "サブスクリプションID"
+        Me.dgvcサブスクリプション.HeaderText = "サブスクリプションID"
+        Me.dgvcサブスクリプション.Name = "dgvcサブスクリプション"
+        Me.dgvcサブスクリプション.ReadOnly = True
+        '
+        'dgvcプロダクトキー
+        '
+        Me.dgvcプロダクトキー.DataPropertyName = "プロダクトキー"
+        Me.dgvcプロダクトキー.HeaderText = "プロダクトキー"
+        Me.dgvcプロダクトキー.Name = "dgvcプロダクトキー"
+        Me.dgvcプロダクトキー.ReadOnly = True
+        Me.dgvcプロダクトキー.Width = 211
+        '
+        'dgvc状態
+        '
+        Me.dgvc状態.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.dgvc状態.DataPropertyName = "状態"
+        Me.dgvc状態.HeaderText = "状態"
+        Me.dgvc状態.Name = "dgvc状態"
+        '
         'frm26_プロダクトキー登録
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(884, 737)
+        Me.ClientSize = New System.Drawing.Size(934, 737)
         Me.Controls.Add(Me.btn終了)
         Me.Controls.Add(Me.btn更新)
         Me.Controls.Add(Me.group1)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Label1)
-        Me.MinimumSize = New System.Drawing.Size(900, 775)
+        Me.MinimumSize = New System.Drawing.Size(950, 775)
         Me.Name = "frm26_プロダクトキー登録"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "プロダクトキー登録"

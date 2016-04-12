@@ -28,7 +28,7 @@ Public Class frm26_プロダクトキー登録v2
         Dim dtb As DataTable
         '
         dtb = GetDataTable(SQL.ToString)
-        cbx認証タイプ.Items.AddRange(dtb.GeneratePairArray("名称コード", "名称"))
+        cbx認証タイプ.Items.AddRange(dtb.exGeneratePairArray("名称コード", "名称"))
         '
         cbx利用者ID.Items.Add("<未指定>")
         cbx利用者ID.SelectedIndex = 0
@@ -42,12 +42,12 @@ Public Class frm26_プロダクトキー登録v2
         SQL.AppendLine("    削除区分 = 0")
         '
         dtb = GetDataTable(SQL.ToString)
-        cbx利用者ID.Items.AddRange(dtb.GeneratePairArray("社員ID", "社員名"))
+        cbx利用者ID.Items.AddRange(dtb.exGeneratePairArray("社員ID", "社員名"))
         ' ComboBoxへ設定するための   
         m_dtbComboBox = GetComboBox用DTB()
         ' 
         ' 権利者を重複を除去して設定する
-        cbx権利者ID.Items.AddRange(m_dtbComboBox.GeneratePairArray("権利者ID", "社員名"))
+        cbx権利者ID.Items.AddRange(m_dtbComboBox.exGeneratePairArray("権利者ID", "社員名"))
         '
         グリッド表示()
     End Sub
@@ -154,7 +154,7 @@ Public Class frm26_プロダクトキー登録v2
         ' 実験の結果、ClearやAddRange操作でSelectedIndexChangedは反応しないことを確認済
         Dim seqメーカー抽出 = From x In m_dtbComboBox Where x("メーカーID") = strメーカーID
         cbx権利者ID.Items.Clear()
-        cbx権利者ID.Items.AddRange(seqメーカー抽出.GeneratePairArray("権利者ID", "社員名"))
+        cbx権利者ID.Items.AddRange(seqメーカー抽出.exGeneratePairArray("権利者ID", "社員名"))
 
         ' もし選択中のメーカーのサブスクリプションがなければ、登録不可能なので登録ボタンも無効にする
         Dim flg権利者有り As Boolean = cbx権利者ID.Items.Count > 0

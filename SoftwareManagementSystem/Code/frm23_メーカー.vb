@@ -3,6 +3,7 @@
 Public Class frm23_メーカー
 
     Private SQL As New StringBuilder
+    Private m_intDGV1CurrentRowIndex As Integer = 0
 
     Private Sub frm23_メーカー_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SetupDataGridViewProperties(dgvメーカー一覧)
@@ -45,6 +46,7 @@ Public Class frm23_メーカー
             SQL.AppendLine("    M11_メーカー")
             SQL.AppendLine("SET")
             SQL.AppendLine("    メーカー名称 = '" & editメーカー名称.Text.Trim & "',")
+            SQL.AppendLine("    削除区分 = " & If(chk削除済.Checked, "1", "0") & ",")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
             SQL.AppendLine("        メーカーID = '" & strメーカーID & "'")
@@ -75,33 +77,31 @@ Public Class frm23_メーカー
         ' 行インデックスを割り出す
         If rbt登録.Checked OrElse rbt更新.Checked Then
             Dim dtb = DirectCast(dgvメーカー一覧.DataSource, DataTable)
-            Dim 対象行 = dtb.AsEnumerable.Where(Function(x) x("メーカーID") = strメーカーID)
+            Dim 対象行 = From r In dtb Where r("メーカーID") = strメーカーID
             int行 = If(対象行.Count = 0, 0, dtb.Rows.IndexOf(対象行.First))
         End If
 
         ' 選択させる
-        RemoveHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
         dgvメーカー一覧.CurrentCell = dgvメーカー一覧(0, int行)
-        AddHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
         '
         If rbt登録.Checked Then
             rbt更新.Checked = True
             Return
         End If
 
-        ' 項目情報を更新する
-        詳細項目更新()
     End Sub
 
     Private Sub rbt共通_CheckedChanged(sender As Object, e As EventArgs) Handles rbt登録.CheckedChanged, rbt更新.CheckedChanged, rbt削除.CheckedChanged
-        If sender Is rbt登録 AndAlso rbt登録.Checked Then
-            SetupControls(SetupType.必須, editメーカー名称)
-            詳細項目更新()
-        ElseIf sender Is rbt更新 AndAlso rbt更新.Checked Then
-            SetupControls(SetupType.必須, editメーカー名称)
-            詳細項目更新()
-        ElseIf sender Is rbt削除 AndAlso rbt削除.Checked Then
-            SetupControls(SetupType.参照, editメーカー名称)
+        If sender Is rbt登録 AndAlso rbt登録.Checked OrElse
+           sender Is rbt更新 AndAlso rbt更新.Checked OrElse
+           sender Is rbt削除 AndAlso rbt削除.Checked Then
+
+            If rbt登録.Checked OrElse rbt更新.Checked Then
+                SetupControls(SetupType.必須, editメーカー名称)
+            ElseIf rbt削除.Checked Then
+                SetupControls(SetupType.参照, editメーカー名称)
+            End If
+
             詳細項目更新()
         End If
     End Sub
@@ -112,7 +112,8 @@ Public Class frm23_メーカー
     End Sub
 
     Private Sub dgvメーカー一覧_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvメーカー一覧.RowEnter
-        詳細項目更新(e.RowIndex)
+        m_intDGV1CurrentRowIndex = e.RowIndex
+        詳細項目更新()
     End Sub
     Private Sub btn終了_Click(sender As Object, e As EventArgs) Handles btn終了.Click
         Me.Close()
@@ -130,9 +131,7 @@ Public Class frm23_メーカー
         SQL.AppendLine("    M11_メーカー")
         ' 不用意なイベント発生を防ぐため一旦外す
         RemoveHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
-        dgvメーカー一覧.DataSource = GetDataTable(SQL.ToString)
         Dim dtb As DataTable = GetDataTable(SQL.ToString)
-
         ' 削除表示が指定されていたら全て表示する
         If chk削除済表示.Checked Then
             dgvメーカー一覧.DataSource = dtb
@@ -141,7 +140,7 @@ Public Class frm23_メーカー
                 ' 削除区分=1 ならば前景色を変える
                 If dtb(i)("削除区分") = 1 Then
                     For Each ce As DataGridViewCell In dgvメーカー一覧.Rows(i).Cells
-                        ce.Style.ForeColor = Color.LightBlue
+                        ce.Style.ForeColor = Color.Red
                     Next
                 End If
             Next
@@ -149,8 +148,9 @@ Public Class frm23_メーカー
             ' 削除区分=0 ものだけ表示する
             dgvメーカー一覧.DataSource = (From r In dtb Where r("削除区分") = 0).CopyToDataTable
         End If
-
         AddHandler dgvメーカー一覧.RowEnter, AddressOf dgvメーカー一覧_RowEnter
+        ' 行インデックス初期化
+        m_intDGV1CurrentRowIndex = 0
     End Sub
 
     Private Function 入力チェック() As Boolean
@@ -186,25 +186,44 @@ Public Class frm23_メーカー
         Return True
     End Function
 
-    Private Sub 詳細項目更新(Optional ByVal vintrow As Integer = -1)
-        If rbt登録.Checked OrElse dgvメーカー一覧.RowCount = 0 Then
+    Private Sub 詳細項目更新()
+        Dim drw As DataRow = Nothing
+
+        ' 表示行あれば選択中のDataRowを取得
+        If dgvメーカー一覧.Rows.Count > m_intDGV1CurrentRowIndex Then
+            drw = DirectCast(dgvメーカー一覧.DataSource, DataTable)(m_intDGV1CurrentRowIndex)
+        End If
+
+        ' DataRowを取得できた場合、削除区分=1ならば削除モードを無効等に設定
+        If drw IsNot Nothing Then
+            ' 削除モードかつ削除済ならば更新モードに移りリターン再帰
+            If rbt削除.Checked AndAlso drw("削除区分") = 1 Then
+                rbt更新.Checked = True
+                Return
+            End If
+            ' 削除されてない:0 ならば有効:true
+            rbt削除.Enabled = drw("削除区分") = 0
+        End If
+        '
+        If rbt登録.Checked OrElse drw Is Nothing Then
             editメーカーID.Text = ""
             editメーカー名称.Text = ""
             edit作成日時.Text = ""
             edit更新日時.Text = ""
-            edit削除区分.Text = ""
-            btn更新.Enabled = True
+            With chk削除済
+                .Checked = False
+                .Enabled = False
+            End With
         Else
             ' 修正 or 削除 モード
-            ' 行数がパラメータによって指定されていればそっちを優先して使う
-            Dim row As Integer = If(vintrow < 0, dgvメーカー一覧.CurrentCellAddress.Y, vintrow)
-            With DirectCast(dgvメーカー一覧.DataSource, DataTable)(row)
-                editメーカーID.Text = sNvl(.Item("メーカーID"))
-                editメーカー名称.Text = sNvl(.Item("メーカー名称"))
-                edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
-                edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
-                edit削除区分.Text = .Item("削除区分")
-                btn更新.Enabled = .Item("削除区分") = 0
+            editメーカーID.Text = sNvl(drw("メーカーID"))
+            editメーカー名称.Text = sNvl(drw("メーカー名称"))
+            edit作成日時.Text = dNvl(drw("作成日時")).ToString("yyyy/MM/dd")
+            edit更新日時.Text = dNvl(drw("更新日時")).ToString("yyyy/MM/dd")
+            ' 削除済のものだけ、チェックボックスを有効する
+            With chk削除済
+                .Checked = drw("削除区分") = 1
+                .Enabled = .Checked
             End With
         End If
     End Sub

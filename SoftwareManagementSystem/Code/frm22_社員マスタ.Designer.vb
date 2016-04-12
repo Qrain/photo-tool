@@ -35,6 +35,7 @@ Partial Class frm22_社員マスタ
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chk削除済表示 = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.chk権利者区分 = New System.Windows.Forms.CheckBox()
         Me.rbt法人 = New System.Windows.Forms.RadioButton()
         Me.rbt個人 = New System.Windows.Forms.RadioButton()
@@ -49,8 +50,7 @@ Partial Class frm22_社員マスタ
         Me.Label2 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.edit削除区分 = New SPWinFormControls.SPEdit(Me.components)
+        Me.chk削除済 = New System.Windows.Forms.CheckBox()
         CType(Me.dgv社員一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -191,7 +191,7 @@ Partial Class frm22_社員マスタ
         '
         Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GroupBox3.Controls.Add(Me.edit削除区分)
+        Me.GroupBox3.Controls.Add(Me.chk削除済)
         Me.GroupBox3.Controls.Add(Me.Label7)
         Me.GroupBox3.Controls.Add(Me.chk権利者区分)
         Me.GroupBox3.Controls.Add(Me.rbt法人)
@@ -211,6 +211,15 @@ Partial Class frm22_社員マスタ
         Me.GroupBox3.TabIndex = 8
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(18, 229)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(53, 12)
+        Me.Label7.TabIndex = 22
+        Me.Label7.Text = "削除区分"
         '
         'chk権利者区分
         '
@@ -368,28 +377,15 @@ Partial Class frm22_社員マスタ
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'Label7
+        'chk削除済
         '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(18, 229)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(53, 12)
-        Me.Label7.TabIndex = 22
-        Me.Label7.Text = "削除区分"
-        '
-        'edit削除区分
-        '
-        Me.edit削除区分.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
-        Me.edit削除区分.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.edit削除区分.Format = ""
-        Me.edit削除区分.Location = New System.Drawing.Point(110, 226)
-        Me.edit削除区分.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
-        Me.edit削除区分.Name = "edit削除区分"
-        Me.edit削除区分.ReadOnly = True
-        Me.edit削除区分.Size = New System.Drawing.Size(20, 19)
-        Me.edit削除区分.TabIndex = 23
-        Me.edit削除区分.TabStop = False
-        Me.edit削除区分.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.chk削除済.AutoSize = True
+        Me.chk削除済.Location = New System.Drawing.Point(110, 228)
+        Me.chk削除済.Name = "chk削除済"
+        Me.chk削除済.Size = New System.Drawing.Size(71, 16)
+        Me.chk削除済.TabIndex = 24
+        Me.chk削除済.Text = "削除済み"
+        Me.chk削除済.UseVisualStyleBackColor = True
         '
         'frm22_社員マスタ
         '
@@ -441,6 +437,6 @@ Partial Class frm22_社員マスタ
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents Column3 As DataGridViewTextBoxColumn
     Friend WithEvents chk削除済表示 As CheckBox
-    Friend WithEvents edit削除区分 As SPWinFormControls.SPEdit
     Friend WithEvents Label7 As Label
+    Friend WithEvents chk削除済 As CheckBox
 End Class

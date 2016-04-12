@@ -34,6 +34,8 @@ Partial Class frm23_メーカー
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chk削除済表示 = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chk削除済 = New System.Windows.Forms.CheckBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.editメーカーID = New SPWinFormControls.SPEdit(Me.components)
         Me.Label6 = New System.Windows.Forms.Label()
         Me.editメーカー名称 = New SPWinFormControls.SPEdit(Me.components)
@@ -44,8 +46,6 @@ Partial Class frm23_メーカー
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.edit削除区分 = New SPWinFormControls.SPEdit(Me.components)
-        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.dgvメーカー一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -171,7 +171,7 @@ Partial Class frm23_メーカー
         '
         Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GroupBox3.Controls.Add(Me.edit削除区分)
+        Me.GroupBox3.Controls.Add(Me.chk削除済)
         Me.GroupBox3.Controls.Add(Me.Label7)
         Me.GroupBox3.Controls.Add(Me.editメーカーID)
         Me.GroupBox3.Controls.Add(Me.Label6)
@@ -187,6 +187,25 @@ Partial Class frm23_メーカー
         Me.GroupBox3.TabIndex = 8
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
+        '
+        'chk削除済
+        '
+        Me.chk削除済.AutoSize = True
+        Me.chk削除済.Location = New System.Drawing.Point(139, 158)
+        Me.chk削除済.Name = "chk削除済"
+        Me.chk削除済.Size = New System.Drawing.Size(71, 16)
+        Me.chk削除済.TabIndex = 40
+        Me.chk削除済.Text = "削除済み"
+        Me.chk削除済.UseVisualStyleBackColor = True
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(18, 159)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(53, 12)
+        Me.Label7.TabIndex = 37
+        Me.Label7.Text = "削除区分"
         '
         'editメーカーID
         '
@@ -302,29 +321,6 @@ Partial Class frm23_メーカー
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'edit削除区分
-        '
-        Me.edit削除区分.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
-        Me.edit削除区分.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.edit削除区分.Format = ""
-        Me.edit削除区分.Location = New System.Drawing.Point(139, 156)
-        Me.edit削除区分.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
-        Me.edit削除区分.Name = "edit削除区分"
-        Me.edit削除区分.ReadOnly = True
-        Me.edit削除区分.Size = New System.Drawing.Size(20, 19)
-        Me.edit削除区分.TabIndex = 38
-        Me.edit削除区分.TabStop = False
-        Me.edit削除区分.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(18, 159)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(53, 12)
-        Me.Label7.TabIndex = 37
-        Me.Label7.Text = "削除区分"
-        '
         'frm23_メーカー
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
@@ -372,6 +368,6 @@ Partial Class frm23_メーカー
     Friend WithEvents Column1 As DataGridViewTextBoxColumn
     Friend WithEvents Column2 As DataGridViewTextBoxColumn
     Friend WithEvents chk削除済表示 As CheckBox
-    Friend WithEvents edit削除区分 As SPWinFormControls.SPEdit
     Friend WithEvents Label7 As Label
+    Friend WithEvents chk削除済 As CheckBox
 End Class
