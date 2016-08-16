@@ -564,7 +564,8 @@ Public Class frm26_プロダクトキー登録
         SQL.AppendLine("    WHEN M03.削除区分 = 1 THEN '" & gs名称("キー状態区分")("03") & "'")
         SQL.AppendLine("    WHEN M03.メーカーID <> M12.メーカーID THEN '" & gs名称("キー状態区分")("02") & "'")
         SQL.AppendLine("    WHEN M02.削除区分 = 1 THEN '" & gs名称("キー状態区分")("01") & "'")
-        SQL.AppendLine("    ELSE '" & gs名称("キー状態区分")("00") & "'")
+        SQL.AppendLine("    WHEN M13.利用者ID is not NULL THEN '" & gs名称("キー状態区分")("04") & "'")
+        SQL.AppendLine("    ELSE '" & gs名称("キー状態区分")("00") & "'") ' 未使用状態のプロダクトキー
         SQL.AppendLine("    END AS 状態")
         '
         SQL.AppendLine("FROM")

@@ -98,7 +98,7 @@ Public Class 整理ツール
         fbd.SelectedPath = My.Settings.整理対象_パス
 
         '選択されたフォルダパスを設定
-        If fbd.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+        If fbd.ShowDialog(Me) = DialogResult.OK Then
             tbx整理対象.Text = fbd.SelectedPath
             '選択したフォルダパスを記録
             My.Settings.整理対象_パス = fbd.SelectedPath
@@ -310,7 +310,7 @@ Public Class 整理ツール
 
     End Sub
 
-    Private Sub TextBox_DragEnter(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles tbx整理対象.DragEnter, tbx出力先.DragEnter
+    Private Sub TextBox_DragEnter(ByVal sender As Object, ByVal e As DragEventArgs) Handles tbx整理対象.DragEnter, tbx出力先.DragEnter
         'ファイル形式の場合のみ、ドラッグを受け付けます。
         If e.Data.GetDataPresent(DataFormats.FileDrop) Then
             e.Effect = DragDropEffects.Copy
@@ -452,7 +452,7 @@ Public Class 整理ツール
         report.AppendLine("対象フォルダを開きますか？")
 
         'エクスプローラでフォルダを開く
-        If MessageBox.Show(report.ToString, "整理結果", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = Windows.Forms.DialogResult.Yes Then
+        If MessageBox.Show(report.ToString, "整理結果", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = DialogResult.Yes Then
             System.Diagnostics.Process.Start("EXPLORER.EXE", dpath)
         End If
     End Sub

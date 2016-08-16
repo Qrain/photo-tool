@@ -20,7 +20,7 @@ Public Class frm25_ソフトウェア
         Next
         ' グリッドの設定
         SetupDataGridViewProperties(dgvソフトウェア一覧)
-        SetupDataGridViewCellMerge(dgvソフトウェア一覧, dgvcメーカー名称)
+        SetupDataGridViewCellMerge(dgvソフトウェア一覧, Column2)
         '
         グリッド表示()
     End Sub
@@ -49,7 +49,8 @@ Public Class frm25_ソフトウェア
             SQL.AppendLine("    '" & strソフトID & "',") ' ソフトウェアID
             SQL.AppendLine("    '" & strメーカーID & "',")
             SQL.AppendLine("    '" & editソフトウェア名称.Text.Trim & "',")
-            SQL.AppendLine("    '" & editファイル名称.Text.Trim & "',")
+            SQL.AppendLine("    '" & If(chkDL済.Checked, "1", "0") & "',")
+            SQL.AppendLine("    '" & If(chkDL済.Checked, editファイル名.Text.Trim, "") & "',")
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    GETDATE(),")
             SQL.AppendLine("    0")
@@ -73,7 +74,8 @@ Public Class frm25_ソフトウェア
                 SQL.AppendLine("    ソフトウェアID = '" & str新採番 & "',")
             End If
             SQL.AppendLine("    ソフトウェア名称 = '" & editソフトウェア名称.Text.Trim & "',")
-            SQL.AppendLine("    ファイル名 = '" & editファイル名称.Text.Trim & "',")
+            SQL.AppendLine("    DL区分 = '" & If(chkDL済.Checked, "1", "0") & "',")
+            SQL.AppendLine("    ファイル名 = '" & If(chkDL済.Checked, editファイル名.Text.Trim, "") & "',")
             SQL.AppendLine("    メーカーID = '" & strメーカーID & "',")
             SQL.AppendLine("    更新日時 = GETDATE()")
             SQL.AppendLine("WHERE")
@@ -144,14 +146,14 @@ Public Class frm25_ソフトウェア
     Private Sub rbt共通_CheckedChanged(sender As Object, e As EventArgs) Handles rbt登録.CheckedChanged, rbt更新.CheckedChanged, rbt削除.CheckedChanged
         If sender Is rbt登録 AndAlso rbt登録.Checked Then
             SetupControls(SetupType.必須, editソフトウェア名称, cbxメーカーID)
-            SetupControls(SetupType.通常, editファイル名称)
+            SetupControls(SetupType.通常, editファイル名)
             詳細項目更新()
         ElseIf sender Is rbt更新 AndAlso rbt更新.Checked Then
             SetupControls(SetupType.必須, editソフトウェア名称, cbxメーカーID)
-            SetupControls(SetupType.通常, editファイル名称)
+            SetupControls(SetupType.通常, editファイル名)
             詳細項目更新()
         ElseIf sender Is rbt削除 AndAlso rbt削除.Checked Then
-            SetupControls(SetupType.参照, editソフトウェア名称, cbxメーカーID, editファイル名称)
+            SetupControls(SetupType.参照, editソフトウェア名称, cbxメーカーID, editファイル名)
             詳細項目更新()
         End If
     End Sub
@@ -208,6 +210,7 @@ Public Class frm25_ソフトウェア
         SQL.AppendLine("SELECT")
         SQL.AppendLine("    M12.ソフトウェアID,")
         SQL.AppendLine("    M12.ソフトウェア名称,")
+        SQL.AppendLine("    M12.DL区分,")
         SQL.AppendLine("    M12.ファイル名,")
         SQL.AppendLine("    M12.メーカーID,")
         SQL.AppendLine("    M11.メーカー名称,")
@@ -234,7 +237,9 @@ Public Class frm25_ソフトウェア
         If rbt登録.Checked OrElse dgvソフトウェア一覧.RowCount = 0 Then
             editソフトウェアID.Text = ""
             editソフトウェア名称.Text = ""
-            editファイル名称.Text = ""
+            chkDL済.Checked = False
+            editファイル名.Enabled = False
+            editファイル名.Text = ""
             cbxメーカーID.SelectedIndex = -1
             edit作成日時.Text = ""
             edit更新日時.Text = ""
@@ -246,7 +251,9 @@ Public Class frm25_ソフトウェア
                 ' サブスクリプションIDがDBNullならば不要とみなしてチェック入れる
                 editソフトウェアID.Text = sNvl(.Item("ソフトウェアID"))
                 editソフトウェア名称.Text = sNvl(.Item("ソフトウェア名称"))
-                editファイル名称.Text = sNvl(.Item("ファイル名"))
+                chkDL済.Checked = sNvl(.Item("DL区分")) = "1"
+                editファイル名.Enabled = sNvl(.Item("DL区分")) = "1"
+                editファイル名.Text = sNvl(.Item("ファイル名"))
                 cbxメーカーID.SelectedItem = GetComboBoxItem(cbxメーカーID, .Item("メーカーID"))
                 edit作成日時.Text = dNvl(.Item("作成日時")).ToString("yyyy/MM/dd")
                 edit更新日時.Text = dNvl(.Item("更新日時")).ToString("yyyy/MM/dd")
@@ -269,4 +276,7 @@ Public Class frm25_ソフトウェア
         Return GetValue(Of String)(SQL.ToString)
     End Function
 
+    Private Sub chkDL済_CheckedChanged(sender As Object, e As EventArgs) Handles chkDL済.CheckedChanged
+        editファイル名.Enabled = chkDL済.Checked
+    End Sub
 End Class

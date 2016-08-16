@@ -111,7 +111,7 @@ Public Class frm31_プロダクトキー情報照会
                 SQL.AppendLine("    AND M13.プロダクトキー LIKE '%" & txt検索.Text.Trim & "%'")
             End If
         End If
-
+        '
         SQL.AppendLine("ORDER BY")
         'SQL.AppendLine("        M11.メーカーID,")
         SQL.AppendLine("        M11.メーカー名称,")
@@ -119,11 +119,10 @@ Public Class frm31_プロダクトキー情報照会
         SQL.AppendLine("        M03.権利者ID,")
         SQL.AppendLine("        M03.サブスクリプションID,")
         SQL.AppendLine("        M13.プロダクトキー")
-
-        ' 不用意なイベント発生を防ぐため一旦外す
-        'RemoveHandler dgvプロダクトキー一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
-        dgv一覧.DataSource = GetDataTable(SQL.ToString)
-        'AddHandler dgvプロダクトキー一覧.RowEnter, AddressOf dgvサブスクリプション一覧_RowEnter
+        '
+        Dim dtb As DataTable = GetDataTable(SQL.ToString)
+        dgv一覧.DataSource = dtb
+        lbl件数.Text = "結果件数: " & dtb.Rows.Count & "件"
     End Sub
 
 

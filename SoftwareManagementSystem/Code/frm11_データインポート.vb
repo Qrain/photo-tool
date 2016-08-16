@@ -8,6 +8,8 @@ Public Class frm11_データインポート
 
     Private Sub frm11_データインポート_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 
+        dgv一覧.DefaultCellStyle.BackColor = Color.Transparent
+        dgv一覧.RowsDefaultCellStyle.BackColor = Color.White
         SetupDataGridViewProperties(dgv一覧)
         SetupDataGridViewCellMerge(dgv一覧, dgvcKeyName, dgvcKeyType)
         lbl件数.Text = ""
@@ -47,7 +49,6 @@ Public Class frm11_データインポート
         cbx権利者ID.Items.AddRange(m_dtbComboBox.exGeneratePairArray("権利者ID", "社員名"))
     End Sub
 
-
     Private Sub cbx権利者ID_TextChanged(sender As Object, e As EventArgs) Handles cbx権利者ID.TextChanged
         ' メーカー選択コンボボックスを有効にする
         cbxメーカーID.Enabled = cbx権利者ID.SelectedIndex >= 0
@@ -63,7 +64,7 @@ Public Class frm11_データインポート
         ' 取得したアイテムを設定する
         cbxメーカーID.Items.Clear()
         cbxメーカーID.Items.AddRange(lstメーカー.Distinct.ToArray)
-
+        '
         If cbxメーカーID.Items.Count = 1 Then
             cbxメーカーID.SelectedIndex = 0
         End If
@@ -100,7 +101,7 @@ Public Class frm11_データインポート
     Private Sub btn読込_Click(sender As Object, e As EventArgs) Handles btn読込.Click
         '
         If Not IO.File.Exists(tbxXMLパス.Text) Then
-            MsgBox("指定されたファイルは存在しないかアクセスできません。")
+            MsgErr("XML読込エラー", "指定されたファイルは存在しないかアクセスできません。")
             Return
         End If
         '
@@ -108,7 +109,7 @@ Public Class frm11_データインポート
         Try
             xDoc = XDocument.Load(tbxXMLパス.Text)
         Catch ex As Exception
-            MsgBox("指定されたファイルをXMLとして読み込めませんでした。")
+            MsgErr("XML読込エラー", "指定されたファイルをXMLとして読み込めませんでした。")
             Return
         End Try
         ' 列を定義
@@ -131,20 +132,44 @@ Public Class frm11_データインポート
             Next
         Next
         '
+        If dtb.Rows.Count = 0 Then
+            MsgWarn("XML読込エラー", "有効なデータ行が存在しません。")
+            Return
+        End If
+        '
         dgv一覧.DataSource =
             (From r In dtb
-             Order By r("KeyName"), r("KeyType")).CopyToDataTable
+             Order By r("KeyName"), r("ProductKey"), r("KeyType")).CopyToDataTable
+
+        ' 管理対象外のデータは行背景色を変更
+        For Each dgvr As DataGridViewRow In dgv一覧.Rows
+            With DirectCast(dgvr.DataBoundItem, DataRowView)
+                If .Item("Validity") = "✕" Then
+                    dgvr.DefaultCellStyle.BackColor = Color.LightPink
+                End If
+                If .Item("ClaimedDate") <> "" Then
+                    dgvr.Cells(3).Style.BackColor = Color.PaleGreen
+                End If
+
+            End With
+
+            'If DirectCast(dgvr.DataBoundItem, DataRowView)("Validity") = "✕" Then
+            '    dgvr.DefaultCellStyle.BackColor = Color.LightSalmon
+            'End If
+        Next
+
         '
         ' 集計結果
         Dim cnt全件 As Integer = dtb.Rows.Count
-        Dim cnt有効 As Integer = dtb.AsEnumerable.Count(Function(x) x("Validity") = "○")
-        Dim cnt無効 As Integer = cnt全件 - cnt有効
+        Dim cnt管理対象 As Integer = dtb.AsEnumerable.Count(Function(x) x("Validity") = "○")
+        Dim cnt管理外 As Integer = cnt全件 - cnt管理対象
         ' ラベル更新
-        lbl件数.Text = "全" & cnt全件 & "件中　有効: " & cnt有効 & "件　無効: " & cnt無効 & "件"
+        lbl件数.Text = "全" & cnt全件 & "件中　管理対象: " & cnt管理対象 & "件　管理外: " & cnt管理外 & "件"
         ' ファイルのMD5ハッシュを計算して設定する
-        tbxMD5.Text = GetMD5(tbxXMLパス.Text)
-
+        'tbxMD5.Text = CommonLibs.Utlis.GetMD5(tbxXMLパス.Text)
     End Sub
+
+
 
     Private Sub btn更新_Click(sender As Object, e As EventArgs) Handles btn更新.Click
 
@@ -165,19 +190,18 @@ Public Class frm11_データインポート
              Select CInt(r("サブスクリプション連番"))).First
 
         ' 取込履歴をチェック
-        SQL.Length = 0
-        SQL.AppendLine("SELECT")
-        SQL.AppendLine("    COUNT(*)")
-        SQL.AppendLine("FROM")
-        SQL.AppendLine("    M21_ファイル取込履歴")
-        SQL.AppendLine("WHERE")
-        SQL.AppendLine("    サブスクリプション連番 = " & intサブスクリプション連番 & "")
-        SQL.AppendLine("    AND MD5 = '" & tbxMD5.Text & "'")
-
-        If GetValue(Of Integer)(SQL.ToString) > 0 Then
-            MsgWarn("事前チェック", "このファイルはこのサブスクリプションによって既に取り込まれています。他のファイルを指定して下さい。")
-            Return
-        End If
+        'SQL.Length = 0
+        'SQL.AppendLine("SELECT")
+        'SQL.AppendLine("    COUNT(*)")
+        'SQL.AppendLine("FROM")
+        'SQL.AppendLine("    M21_ファイル取込履歴")
+        'SQL.AppendLine("WHERE")
+        'SQL.AppendLine("    サブスクリプション連番 = " & intサブスクリプション連番 & "")
+        'SQL.AppendLine("    AND MD5 = '" & tbxMD5.Text & "'")
+        'If GetValue(Of Integer)(SQL.ToString) > 0 Then
+        '    MsgWarn("事前チェック", "このファイルはこのサブスクリプションによって既に取り込まれています。他のファイルを指定して下さい。")
+        '    Return
+        'End If
 
         ' 読み込んだXMLによるDB更新手順
         ' 1.正確なソフト名ではないプロダクトキー名をソフト名としてソフトウェアマスタに登録する
@@ -225,6 +249,7 @@ Public Class frm11_データインポート
                 SQL.AppendLine("    '" & intソフトID採番.ToString("0000000") & "',")
                 SQL.AppendLine("    '" & gs名称("MSメーカーID")("1") & "',")
                 SQL.AppendLine("    '" & foftname & "',")
+                SQL.AppendLine("    '0',") ' DLフラグ
                 SQL.AppendLine("    NULL,")
                 SQL.AppendLine("    GETDATE(),")
                 SQL.AppendLine("    GETDATE(),")
@@ -257,8 +282,6 @@ Public Class frm11_データインポート
 
         Dim seq登録済キー As DataTable = GetDataTable(SQL.ToString)
         '
-
-
         Dim int法人MSサブスクリプション連番 As Integer = Get法人MSサブスクリプション連番()
 
         ' 1 → プロダクトキー名とプロダクトキーに関して重複を除去
@@ -292,13 +315,19 @@ Public Class frm11_データインポート
                 SQL.AppendLine("    M13_プロダクトキー")
                 SQL.AppendLine("SET")
                 '
-                ' もしも同ソフト同キーかつ他の権利者のプロダクトキー情報が既にあれば
-                If sNvl(drw既存プロダクトキー("権利者ID")) <> str権利者ID Then
-                    ' 会社で共有できるのもとみなしてサブスクリプション情報を"法人"のものに変更
-                    SQL.AppendLine("    サブスクリプション連番 = " & int法人MSサブスクリプション連番 & ",")
-                ElseIf sNvl(drw既存プロダクトキー("サブスクリプションID")) <> strサブスクリプションID Then
-                    ' 同ソフト同キーかつ同権利者かつ異なるサブスクリプションIDならば連番を入れ替え
+                ' 要求日がないのは法人のものなので連番はそのまま変更しない
+                If chkDebug.Checked AndAlso x.要求日 IsNot Nothing Then
+                    ' 要求日がある場合は、自分の連番で更新
                     SQL.AppendLine("    サブスクリプション連番 = " & intサブスクリプション連番 & ",")
+                Else
+                    ' もしも同ソフト同キーかつ他の権利者のプロダクトキー情報が既にあれば
+                    If sNvl(drw既存プロダクトキー("権利者ID")) <> str権利者ID Then
+                        ' 会社で共有できるのもとみなしてサブスクリプション情報を"法人"のものに変更
+                        SQL.AppendLine("    サブスクリプション連番 = " & gs名称("SB連番")("MS法人") & ",")
+                    ElseIf sNvl(drw既存プロダクトキー("サブスクリプションID")) <> strサブスクリプションID Then
+                        ' 同ソフト同キーかつ同権利者かつ異なるサブスクリプションIDならば連番を入れ替え
+                        SQL.AppendLine("    サブスクリプション連番 = " & intサブスクリプション連番 & ",")
+                    End If
                 End If
                 '
                 SQL.AppendLine("    認証タイプ = '" & x.認証方式コード & "',")
@@ -335,7 +364,15 @@ Public Class frm11_データインポート
                 SQL.AppendLine("    ),")
                 ' ※カスタムキーの場合は、プロダクトキーを取得・登録しない（非常に長く有益データではないため）
                 SQL.AppendLine("    '" & x.プロダクトキー & "',")
-                SQL.AppendLine("    " & intサブスクリプション連番 & ",") ' 連番
+
+                'テスト：要求日が無い場合は法人用とみなす
+                If chkDebug.Checked AndAlso x.要求日 Is Nothing Then
+                    SQL.AppendLine("    " & gs名称("SB連番")("MS法人") & ",")
+                Else
+                    ' 非テストモード　又は要求日がある
+                    SQL.AppendLine("    " & intサブスクリプション連番 & ",")
+                End If
+
                 SQL.AppendLine("    '" & x.認証方式コード & "',")
                 SQL.AppendLine("    " & If(x.要求日 Is Nothing, "NULL", "'" & x.要求日 & "'") & ",")
                 SQL.AppendLine("    NULL,") ' 利用者IDは現在 NULL固定
@@ -347,25 +384,25 @@ Public Class frm11_データインポート
         Next
 
         ' 最後にファイル取込履歴を残す
-        SQL.AppendLine("INSERT INTO")
-        SQL.AppendLine("    M21_ファイル取込履歴")
-        SQL.AppendLine("(")
-        SQL.AppendLine("    サブスクリプション連番,")
-        SQL.AppendLine("    MD5,")
-        SQL.AppendLine("    ファイル名,")
-        SQL.AppendLine("    取込日時,")
-        SQL.AppendLine("    作成日時,")
-        SQL.AppendLine("    更新日時,")
-        SQL.AppendLine("    削除区分")
-        SQL.AppendLine(") VALUES (")
-        SQL.AppendLine("    " & intサブスクリプション連番 & ",")
-        SQL.AppendLine("    '" & tbxMD5.Text & "',")
-        SQL.AppendLine("    '" & IO.Path.GetFileName(tbxXMLパス.Text) & "',")
-        SQL.AppendLine("    GETDATE(),")
-        SQL.AppendLine("    GETDATE(),")
-        SQL.AppendLine("    GETDATE(),")
-        SQL.AppendLine("    0")
-        SQL.AppendLine(");")
+        'SQL.AppendLine("INSERT INTO")
+        'SQL.AppendLine("    M21_ファイル取込履歴")
+        'SQL.AppendLine("(")
+        'SQL.AppendLine("    サブスクリプション連番,")
+        'SQL.AppendLine("    MD5,")
+        'SQL.AppendLine("    ファイル名,")
+        'SQL.AppendLine("    取込日時,")
+        'SQL.AppendLine("    作成日時,")
+        'SQL.AppendLine("    更新日時,")
+        'SQL.AppendLine("    削除区分")
+        'SQL.AppendLine(") VALUES (")
+        'SQL.AppendLine("    " & intサブスクリプション連番 & ",")
+        'SQL.AppendLine("    '" & tbxMD5.Text & "',")
+        'SQL.AppendLine("    '" & IO.Path.GetFileName(tbxXMLパス.Text) & "',")
+        'SQL.AppendLine("    GETDATE(),")
+        'SQL.AppendLine("    GETDATE(),")
+        'SQL.AppendLine("    GETDATE(),")
+        'SQL.AppendLine("    0")
+        'SQL.AppendLine(");")
 
         If Not ExecNonQuery(SQL.ToString, True) Then
             Return

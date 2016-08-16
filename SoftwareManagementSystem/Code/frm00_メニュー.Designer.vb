@@ -233,7 +233,7 @@ Partial Class frm00_メニュー
         Me.MinimumSize = New System.Drawing.Size(400, 400)
         Me.Name = "frm00_メニュー"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "メニュー"
+        Me.Text = "SoftwareManagementSystem"
         Me.grpデータ読込.ResumeLayout(False)
         Me.FlowLayoutPanel2.ResumeLayout(False)
         Me.FlowLayoutPanel2.PerformLayout()

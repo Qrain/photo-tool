@@ -149,7 +149,7 @@ Public Class 整理ツール１
             warn.AppendLine()
             warn.AppendLine("続行しますか？")
 
-            If MessageBox.Show(warn.ToString, "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = Windows.Forms.DialogResult.No Then
+            If MessageBox.Show(warn.ToString, "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = DialogResult.No Then
                 Return
             End If
         End If
@@ -339,7 +339,7 @@ Public Class 整理ツール１
         report.AppendLine()
         report.AppendLine("対象フォルダを開きますか？")
 
-        If MessageBox.Show(report.ToString, "整理結果", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = Windows.Forms.DialogResult.Yes Then
+        If MessageBox.Show(report.ToString, "整理結果", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = DialogResult.Yes Then
             '開く処理
             'エクスプローラでフォルダを開く
             System.Diagnostics.Process.Start("EXPLORER.EXE", target)
@@ -355,7 +355,7 @@ Public Class 整理ツール１
     Private Sub btn参照_Click(sender As Object, e As EventArgs) Handles btn整理対象参照.Click
 
         '選択されたフォルダパスを設定
-        If fbd対象フォルダ.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+        If fbd対象フォルダ.ShowDialog(Me) = DialogResult.OK Then
             tbx整理対象.Text = fbd対象フォルダ.SelectedPath
         End If
 

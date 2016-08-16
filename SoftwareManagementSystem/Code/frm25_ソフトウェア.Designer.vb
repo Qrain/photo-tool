@@ -24,6 +24,8 @@ Partial Class frm25_ソフトウェア
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.dgvソフトウェア一覧 = New System.Windows.Forms.DataGridView()
+        Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbt削除 = New System.Windows.Forms.RadioButton()
@@ -31,9 +33,10 @@ Partial Class frm25_ソフトウェア
         Me.rbt登録 = New System.Windows.Forms.RadioButton()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chkDL済 = New System.Windows.Forms.CheckBox()
         Me.editソフトウェアID = New SPWinFormControls.SPEdit(Me.components)
         Me.Label9 = New System.Windows.Forms.Label()
-        Me.editファイル名称 = New SPWinFormControls.SPEdit(Me.components)
+        Me.editファイル名 = New SPWinFormControls.SPEdit(Me.components)
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.cbxメーカーID = New System.Windows.Forms.ComboBox()
@@ -45,8 +48,6 @@ Partial Class frm25_ソフトウェア
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.dgvcメーカー名称 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvcソフト名称 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.dgvソフトウェア一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -59,14 +60,31 @@ Partial Class frm25_ソフトウェア
         Me.dgvソフトウェア一覧.AllowUserToDeleteRows = False
         Me.dgvソフトウェア一覧.AllowUserToResizeRows = False
         Me.dgvソフトウェア一覧.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvソフトウェア一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcメーカー名称, Me.dgvcソフト名称})
+        Me.dgvソフトウェア一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Column2, Me.Column3})
         Me.dgvソフトウェア一覧.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvソフトウェア一覧.Location = New System.Drawing.Point(3, 15)
         Me.dgvソフトウェア一覧.Name = "dgvソフトウェア一覧"
         Me.dgvソフトウェア一覧.ReadOnly = True
         Me.dgvソフトウェア一覧.RowTemplate.Height = 21
-        Me.dgvソフトウェア一覧.Size = New System.Drawing.Size(324, 385)
+        Me.dgvソフトウェア一覧.Size = New System.Drawing.Size(424, 485)
         Me.dgvソフトウェア一覧.TabIndex = 0
+        '
+        'Column2
+        '
+        Me.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.Column2.DataPropertyName = "メーカー名称"
+        Me.Column2.HeaderText = "メーカー"
+        Me.Column2.Name = "Column2"
+        Me.Column2.ReadOnly = True
+        Me.Column2.Width = 53
+        '
+        'Column3
+        '
+        Me.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Column3.DataPropertyName = "ソフトウェア名称"
+        Me.Column3.HeaderText = "ソフトウェア名称"
+        Me.Column3.Name = "Column3"
+        Me.Column3.ReadOnly = True
         '
         'Label1
         '
@@ -76,7 +94,7 @@ Partial Class frm25_ソフトウェア
         Me.Label1.ForeColor = System.Drawing.Color.Blue
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(660, 35)
+        Me.Label1.Size = New System.Drawing.Size(760, 35)
         Me.Label1.TabIndex = 6
         Me.Label1.Text = "ソフトウェア登録"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -87,7 +105,7 @@ Partial Class frm25_ソフトウェア
         Me.GroupBox1.Controls.Add(Me.rbt削除)
         Me.GroupBox1.Controls.Add(Me.rbt更新)
         Me.GroupBox1.Controls.Add(Me.rbt登録)
-        Me.GroupBox1.Location = New System.Drawing.Point(348, 47)
+        Me.GroupBox1.Location = New System.Drawing.Point(448, 47)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(324, 46)
         Me.GroupBox1.TabIndex = 7
@@ -134,7 +152,7 @@ Partial Class frm25_ソフトウェア
         Me.GroupBox2.Controls.Add(Me.dgvソフトウェア一覧)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 47)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(330, 403)
+        Me.GroupBox2.Size = New System.Drawing.Size(430, 503)
         Me.GroupBox2.TabIndex = 8
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "１．ソフトウェア一覧"
@@ -143,9 +161,10 @@ Partial Class frm25_ソフトウェア
         '
         Me.GroupBox3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox3.Controls.Add(Me.chkDL済)
         Me.GroupBox3.Controls.Add(Me.editソフトウェアID)
         Me.GroupBox3.Controls.Add(Me.Label9)
-        Me.GroupBox3.Controls.Add(Me.editファイル名称)
+        Me.GroupBox3.Controls.Add(Me.editファイル名)
         Me.GroupBox3.Controls.Add(Me.Label6)
         Me.GroupBox3.Controls.Add(Me.Label7)
         Me.GroupBox3.Controls.Add(Me.cbxメーカーID)
@@ -155,12 +174,23 @@ Partial Class frm25_ソフトウェア
         Me.GroupBox3.Controls.Add(Me.edit作成日時)
         Me.GroupBox3.Controls.Add(Me.editソフトウェア名称)
         Me.GroupBox3.Controls.Add(Me.Label3)
-        Me.GroupBox3.Location = New System.Drawing.Point(348, 99)
+        Me.GroupBox3.Location = New System.Drawing.Point(448, 99)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(324, 315)
+        Me.GroupBox3.Size = New System.Drawing.Size(324, 415)
         Me.GroupBox3.TabIndex = 8
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
+        '
+        'chkDL済
+        '
+        Me.chkDL済.AutoSize = True
+        Me.chkDL済.Location = New System.Drawing.Point(139, 89)
+        Me.chkDL済.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
+        Me.chkDL済.Name = "chkDL済"
+        Me.chkDL済.Size = New System.Drawing.Size(50, 16)
+        Me.chkDL済.TabIndex = 37
+        Me.chkDL済.Text = "DL済"
+        Me.chkDL済.UseVisualStyleBackColor = True
         '
         'editソフトウェアID
         '
@@ -185,33 +215,33 @@ Partial Class frm25_ソフトウェア
         Me.Label9.TabIndex = 35
         Me.Label9.Text = "ソフトウェアID"
         '
-        'editファイル名称
+        'editファイル名
         '
-        Me.editファイル名称.AccessibleRole = System.Windows.Forms.AccessibleRole.Grip
-        Me.editファイル名称.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
-        Me.editファイル名称.BackColor = System.Drawing.SystemColors.Window
-        Me.editファイル名称.Format = ""
-        Me.editファイル名称.ImeMode = System.Windows.Forms.ImeMode.Disable
-        Me.editファイル名称.Location = New System.Drawing.Point(139, 89)
-        Me.editファイル名称.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
-        Me.editファイル名称.MaxLength = 50
-        Me.editファイル名称.Name = "editファイル名称"
-        Me.editファイル名称.Size = New System.Drawing.Size(179, 19)
-        Me.editファイル名称.TabIndex = 34
+        Me.editファイル名.AccessibleRole = System.Windows.Forms.AccessibleRole.Grip
+        Me.editファイル名.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
+        Me.editファイル名.BackColor = System.Drawing.SystemColors.Window
+        Me.editファイル名.Format = ""
+        Me.editファイル名.ImeMode = System.Windows.Forms.ImeMode.Disable
+        Me.editファイル名.Location = New System.Drawing.Point(139, 107)
+        Me.editファイル名.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
+        Me.editファイル名.MaxLength = 100
+        Me.editファイル名.Name = "editファイル名"
+        Me.editファイル名.Size = New System.Drawing.Size(179, 19)
+        Me.editファイル名.TabIndex = 34
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(18, 92)
+        Me.Label6.Location = New System.Drawing.Point(18, 110)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(63, 12)
+        Me.Label6.Size = New System.Drawing.Size(51, 12)
         Me.Label6.TabIndex = 33
-        Me.Label6.Text = "ファイル名称"
+        Me.Label6.Text = "ファイル名"
         '
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(18, 124)
+        Me.Label7.Location = New System.Drawing.Point(18, 142)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(53, 12)
         Me.Label7.TabIndex = 27
@@ -222,7 +252,7 @@ Partial Class frm25_ソフトウェア
         Me.cbxメーカーID.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.cbxメーカーID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbxメーカーID.FormattingEnabled = True
-        Me.cbxメーカーID.Location = New System.Drawing.Point(139, 121)
+        Me.cbxメーカーID.Location = New System.Drawing.Point(139, 139)
         Me.cbxメーカーID.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.cbxメーカーID.Name = "cbxメーカーID"
         Me.cbxメーカーID.Size = New System.Drawing.Size(150, 20)
@@ -233,7 +263,7 @@ Partial Class frm25_ソフトウェア
         Me.edit更新日時.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
         Me.edit更新日時.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.edit更新日時.Format = ""
-        Me.edit更新日時.Location = New System.Drawing.Point(139, 186)
+        Me.edit更新日時.Location = New System.Drawing.Point(139, 204)
         Me.edit更新日時.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.edit更新日時.Name = "edit更新日時"
         Me.edit更新日時.ReadOnly = True
@@ -245,7 +275,7 @@ Partial Class frm25_ソフトウェア
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(18, 189)
+        Me.Label5.Location = New System.Drawing.Point(18, 207)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(53, 12)
         Me.Label5.TabIndex = 17
@@ -254,7 +284,7 @@ Partial Class frm25_ソフトウェア
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(18, 157)
+        Me.Label4.Location = New System.Drawing.Point(18, 175)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(53, 12)
         Me.Label4.TabIndex = 16
@@ -265,7 +295,7 @@ Partial Class frm25_ソフトウェア
         Me.edit作成日時.AllowSpace = SPWinFormControls.AllowSpaceMode.Both
         Me.edit作成日時.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.edit作成日時.Format = ""
-        Me.edit作成日時.Location = New System.Drawing.Point(139, 154)
+        Me.edit作成日時.Location = New System.Drawing.Point(139, 172)
         Me.edit作成日時.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
         Me.edit作成日時.Name = "edit作成日時"
         Me.edit作成日時.ReadOnly = True
@@ -302,7 +332,7 @@ Partial Class frm25_ソフトウェア
         Me.btn更新.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn更新.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn更新.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn更新.Location = New System.Drawing.Point(348, 420)
+        Me.btn更新.Location = New System.Drawing.Point(448, 520)
         Me.btn更新.Name = "btn更新"
         Me.btn更新.Size = New System.Drawing.Size(80, 30)
         Me.btn更新.TabIndex = 10
@@ -314,43 +344,27 @@ Partial Class frm25_ソフトウェア
         Me.btn終了.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btn終了.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btn終了.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.btn終了.Location = New System.Drawing.Point(592, 420)
+        Me.btn終了.Location = New System.Drawing.Point(692, 520)
         Me.btn終了.Name = "btn終了"
         Me.btn終了.Size = New System.Drawing.Size(80, 30)
         Me.btn終了.TabIndex = 11
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'Column2
-        '
-        Me.dgvcメーカー名称.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvcメーカー名称.DataPropertyName = "メーカー名称"
-        Me.dgvcメーカー名称.HeaderText = "メーカー"
-        Me.dgvcメーカー名称.Name = "Column2"
-        Me.dgvcメーカー名称.ReadOnly = True
-        Me.dgvcメーカー名称.Width = 67
-        '
-        'Column3
-        '
-        Me.dgvcソフト名称.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.dgvcソフト名称.DataPropertyName = "ソフトウェア名称"
-        Me.dgvcソフト名称.HeaderText = "ソフトウェア名称"
-        Me.dgvcソフト名称.Name = "Column3"
-        Me.dgvcソフト名称.ReadOnly = True
-        '
         'frm25_ソフトウェア
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(684, 462)
+        Me.ClientSize = New System.Drawing.Size(784, 562)
         Me.Controls.Add(Me.btn終了)
         Me.Controls.Add(Me.btn更新)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Label1)
-        Me.MinimumSize = New System.Drawing.Size(700, 500)
+        Me.MinimumSize = New System.Drawing.Size(800, 600)
         Me.Name = "frm25_ソフトウェア"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "ソフトウェア登録"
         CType(Me.dgvソフトウェア一覧, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
@@ -381,10 +395,13 @@ Partial Class frm25_ソフトウェア
     Friend WithEvents Label8 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents dgvソフトウェア一覧 As DataGridView
-    Friend WithEvents editファイル名称 As SPWinFormControls.SPEdit
+    Friend WithEvents editファイル名 As SPWinFormControls.SPEdit
     Friend WithEvents Label6 As Label
     Friend WithEvents editソフトウェアID As SPWinFormControls.SPEdit
     Friend WithEvents Label9 As Label
     Friend WithEvents dgvcメーカー名称 As DataGridViewTextBoxColumn
     Friend WithEvents dgvcソフト名称 As DataGridViewTextBoxColumn
+    Friend WithEvents Column2 As DataGridViewTextBoxColumn
+    Friend WithEvents Column3 As DataGridViewTextBoxColumn
+    Friend WithEvents chkDL済 As CheckBox
 End Class

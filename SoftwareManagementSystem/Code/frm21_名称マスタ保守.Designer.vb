@@ -363,6 +363,7 @@ Partial Class frm21_名称マスタ保守
         Me.Controls.Add(Me.Label1)
         Me.MinimumSize = New System.Drawing.Size(700, 500)
         Me.Name = "frm21_名称マスタ保守"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "名称マスタ保守"
         CType(Me.dgv名称一覧, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)

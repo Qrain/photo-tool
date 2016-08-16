@@ -131,7 +131,7 @@ Module 共通関数
     ''' <returns></returns>
     ''' <remarks></remarks>
     <System.Runtime.CompilerServices.Extension()>
-    Public Function extHexString(ByVal bytes As Byte()) As String
+    Public Function extxHexString(ByVal bytes As Byte()) As String
         Dim str = ""
         For Each b In bytes
             str &= b.ToString("X2")
@@ -139,75 +139,7 @@ Module 共通関数
         Return str
     End Function
 
-    ''' <summary>
-    ''' String.Format の拡張メソッドです。
-    ''' </summary>
-    ''' <param name="format">適用するフォーマット文字列</param>
-    ''' <param name="args">文字列置換されるオブジェクト配列</param>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    <System.Runtime.CompilerServices.Extension()>
-    Public Function extFormat(ByVal format As String, ByVal ParamArray args As Object()) As String
-        Return String.Format(format, args)
-    End Function
 
-#End Region
-
-#Region "ユーティリティ関連"
-
-    '※複数スレッドから使用する場合、計測中にStartされると値がリセットされてしまう
-    Private sw As New Stopwatch
-
-    ''' <summary>
-    ''' ストップウォッチをリセットして、スタートさせます。
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Sub SwStart()
-        sw.Reset()
-        sw.Start()
-    End Sub
-
-    ''' <summary>
-    ''' ストップウォッチを停止して、任意の形式で結果秒数を表示します。
-    ''' </summary>
-    ''' <param name="fmt"></param>
-    ''' <remarks></remarks>
-    Private Sub SwStop(Optional ByVal fmt As String = "処理時間: {0}ms")
-        sw.Stop()
-        Console.WriteLine(fmt.extFormat(sw.ElapsedMilliseconds))
-    End Sub
-
-#End Region
-
-#Region "Test Codes"
-    ''' <summary>
-    ''' 汎用的なテーブル取得メソッドです
-    ''' </summary>
-    ''' <typeparam name="A"></typeparam>
-    ''' <param name="sql"></param>
-    ''' <param name="con"></param>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Private Function rab_GetDataTable(Of A As {New, DbDataAdapter}, C As {New, DbCommand})(ByVal sql As String, ByVal con As String) As DataTable
-
-        Dim dtb As New DataTable
-
-        Try
-            'DB と DataTableオブジェクトを関連づけるアダプターを作成
-            Using adp As New A
-                adp.SelectCommand = New C
-                adp.SelectCommand.Connection.ConnectionString = con
-                adp.SelectCommand.CommandTimeout = 300
-                adp.SelectCommand.CommandText = sql
-                adp.Fill(dtb)
-            End Using
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "Error @ DB_GetDataTable", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-
-        Return dtb
-
-    End Function
 
 #End Region
 

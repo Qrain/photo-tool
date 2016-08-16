@@ -1,5 +1,4 @@
 ﻿Imports System.Data.SqlClient
-Imports System.Security.Cryptography
 Imports System.Text
 Imports SPWinFormControls
 
@@ -112,26 +111,6 @@ Module mdl共通
     End Function
 #End Region
 
-
-
-    ''' <summary>
-    ''' 指定したファイルのMD5ハッシュ値を計算して文字列として返します。
-    ''' </summary>
-    ''' <param name="filename">ハッシュ値計算対象のファイルパス</param>
-    ''' <returns></returns>
-    Public Function GetMD5(ByVal filename As String) As String
-        'ファイルストリームからハッシュ値を計算
-        Using stm = My.Computer.FileSystem.GetFileInfo(filename).OpenRead(), md5obj = MD5.Create
-            stm.Position = 0
-            Dim str = ""
-            'バイト配列 → 文字列 に変換処理
-            For Each b In md5obj.ComputeHash(stm)
-                str &= b.ToString("X2")
-            Next
-            Return str
-        End Using
-    End Function
-
     ''' <summary>
     ''' 同じ Name を持つフォームが既に開かれていればTrue
     ''' </summary>
@@ -141,7 +120,6 @@ Module mdl共通
     Public Function IsOpen(ByVal parent As Form, ByVal child As Form) As Boolean
         Return parent.OwnedForms.Select(Function(f) f.Name).Contains(child.Name)
     End Function
-
 
     Public Function MsgInfo(ByVal cap As String, ByVal msg As String) As DialogResult
         Return MessageBox.Show(msg, cap, MessageBoxButtons.OK, MessageBoxIcon.Information)

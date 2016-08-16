@@ -35,7 +35,7 @@ Partial Class frm11_データインポート
         Me.dgvcProductKey = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.dgvcKeyType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.dgvcClaimedDate = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.dgvc更新対象 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.dgvc管理対象 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.lblタイトル = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cbxメーカーID = New System.Windows.Forms.ComboBox()
@@ -47,6 +47,7 @@ Partial Class frm11_データインポート
         Me.lbl件数 = New System.Windows.Forms.Label()
         Me.btnファイル取込履歴 = New System.Windows.Forms.Button()
         Me.tbxMD5 = New System.Windows.Forms.TextBox()
+        Me.chkDebug = New System.Windows.Forms.CheckBox()
         Me.grpデータ読込.SuspendLayout()
         CType(Me.dgv一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -128,7 +129,7 @@ Partial Class frm11_データインポート
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgv一覧.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgv一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcKeyName, Me.dgvcProductKey, Me.dgvcKeyType, Me.dgvcClaimedDate, Me.dgvc更新対象})
+        Me.dgv一覧.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.dgvcKeyName, Me.dgvcProductKey, Me.dgvcKeyType, Me.dgvcClaimedDate, Me.dgvc管理対象})
         Me.dgv一覧.Location = New System.Drawing.Point(12, 106)
         Me.dgv一覧.MultiSelect = False
         Me.dgv一覧.Name = "dgv一覧"
@@ -166,16 +167,16 @@ Partial Class frm11_データインポート
         Me.dgvcClaimedDate.Name = "dgvcClaimedDate"
         Me.dgvcClaimedDate.Width = 75
         '
-        'dgvc更新対象
+        'dgvc管理対象
         '
-        Me.dgvc更新対象.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.dgvc更新対象.DataPropertyName = "Validity"
+        Me.dgvc管理対象.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.dgvc管理対象.DataPropertyName = "Validity"
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle4.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.dgvc更新対象.DefaultCellStyle = DataGridViewCellStyle4
-        Me.dgvc更新対象.HeaderText = "更新対象"
-        Me.dgvc更新対象.Name = "dgvc更新対象"
-        Me.dgvc更新対象.Width = 78
+        Me.dgvc管理対象.DefaultCellStyle = DataGridViewCellStyle4
+        Me.dgvc管理対象.HeaderText = "管理対象"
+        Me.dgvc管理対象.Name = "dgvc管理対象"
+        Me.dgvc管理対象.Width = 78
         '
         'lblタイトル
         '
@@ -287,21 +288,34 @@ Partial Class frm11_データインポート
         Me.btnファイル取込履歴.TabIndex = 23
         Me.btnファイル取込履歴.Text = "ファイル取込履歴"
         Me.btnファイル取込履歴.UseVisualStyleBackColor = True
+        Me.btnファイル取込履歴.Visible = False
         '
         'tbxMD5
         '
         Me.tbxMD5.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.tbxMD5.Location = New System.Drawing.Point(465, 628)
+        Me.tbxMD5.Location = New System.Drawing.Point(445, 627)
         Me.tbxMD5.Name = "tbxMD5"
         Me.tbxMD5.ReadOnly = True
         Me.tbxMD5.Size = New System.Drawing.Size(213, 19)
         Me.tbxMD5.TabIndex = 24
+        Me.tbxMD5.Visible = False
+        '
+        'chkDebug
+        '
+        Me.chkDebug.AutoSize = True
+        Me.chkDebug.Location = New System.Drawing.Point(12, 25)
+        Me.chkDebug.Name = "chkDebug"
+        Me.chkDebug.Size = New System.Drawing.Size(102, 16)
+        Me.chkDebug.TabIndex = 25
+        Me.chkDebug.Text = "テスト取込モード"
+        Me.chkDebug.UseVisualStyleBackColor = True
         '
         'frm11_データインポート
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(884, 662)
+        Me.Controls.Add(Me.chkDebug)
         Me.Controls.Add(Me.tbxMD5)
         Me.Controls.Add(Me.btnファイル取込履歴)
         Me.Controls.Add(Me.lbl件数)
@@ -340,11 +354,12 @@ Partial Class frm11_データインポート
     Friend WithEvents btn読込 As Button
     Friend WithEvents ofdXML As OpenFileDialog
     Friend WithEvents lbl件数 As Label
+    Friend WithEvents btnファイル取込履歴 As Button
+    Friend WithEvents tbxMD5 As TextBox
+    Friend WithEvents chkDebug As CheckBox
     Friend WithEvents dgvcKeyName As DataGridViewTextBoxColumn
     Friend WithEvents dgvcProductKey As DataGridViewTextBoxColumn
     Friend WithEvents dgvcKeyType As DataGridViewTextBoxColumn
     Friend WithEvents dgvcClaimedDate As DataGridViewTextBoxColumn
-    Friend WithEvents dgvc更新対象 As DataGridViewTextBoxColumn
-    Friend WithEvents btnファイル取込履歴 As Button
-    Friend WithEvents tbxMD5 As TextBox
+    Friend WithEvents dgvc管理対象 As DataGridViewTextBoxColumn
 End Class

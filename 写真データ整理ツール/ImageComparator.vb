@@ -1,4 +1,5 @@
 ﻿Imports System.Security.Cryptography
+Imports CommonLibs.Utlis
 
 ''' <summary>
 ''' ハッシュ値を利用してファイルを比較するためのクラスです。
@@ -77,7 +78,7 @@ Public Class FileComparator
             End If
 
             '文字列変換
-            Return hashValue.extHexString
+            Return hashValue.exByte2HexString
         End Using
     End Function
 
@@ -172,7 +173,7 @@ Public Class ImageComparator
         End If
 
         'ピクセルデータからMD5ハッシュを計算し、文字列化する
-        Dim hash = md5.ComputeHash(pxs).extHexString
+        Dim hash = md5.ComputeHash(pxs).exByte2HexString
 
         If hashs.Contains(hash) Then '既存の場合
             Return True

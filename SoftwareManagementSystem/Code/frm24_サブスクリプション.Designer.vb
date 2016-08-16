@@ -34,10 +34,15 @@ Partial Class frm24_サブスクリプション
         Me.rbt登録 = New System.Windows.Forms.RadioButton()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chk削除済 = New System.Windows.Forms.CheckBox()
+        Me.Label11 = New System.Windows.Forms.Label()
         Me.tbxサブスクリプションオーバーレイ = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.tbxサブスクリプション連番 = New System.Windows.Forms.TextBox()
         Me.chkサブスクリプション不要 = New System.Windows.Forms.CheckBox()
+        Me.ndtp購入日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
+        Me.ndtp終了日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
+        Me.ndtp開始日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -53,11 +58,6 @@ Partial Class frm24_サブスクリプション
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.ndtp購入日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
-        Me.ndtp終了日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
-        Me.ndtp開始日 = New SoftwareManagementSystem.Windows.Controls.NullableDateTimePicker()
-        Me.chk削除済 = New System.Windows.Forms.CheckBox()
-        Me.Label11 = New System.Windows.Forms.Label()
         Me.chk削除済表示 = New System.Windows.Forms.CheckBox()
         CType(Me.dgvサブスクリプション一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -212,6 +212,26 @@ Partial Class frm24_サブスクリプション
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
         '
+        'chk削除済
+        '
+        Me.chk削除済.AutoSize = True
+        Me.chk削除済.Location = New System.Drawing.Point(139, 350)
+        Me.chk削除済.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
+        Me.chk削除済.Name = "chk削除済"
+        Me.chk削除済.Size = New System.Drawing.Size(71, 16)
+        Me.chk削除済.TabIndex = 42
+        Me.chk削除済.Text = "削除済み"
+        Me.chk削除済.UseVisualStyleBackColor = True
+        '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.Location = New System.Drawing.Point(18, 351)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(53, 12)
+        Me.Label11.TabIndex = 41
+        Me.Label11.Text = "削除区分"
+        '
         'tbxサブスクリプションオーバーレイ
         '
         Me.tbxサブスクリプションオーバーレイ.Enabled = False
@@ -250,6 +270,33 @@ Partial Class frm24_サブスクリプション
         Me.chkサブスクリプション不要.TabIndex = 1
         Me.chkサブスクリプション不要.Text = "サブスクリプション不要"
         Me.chkサブスクリプション不要.UseVisualStyleBackColor = True
+        '
+        'ndtp購入日
+        '
+        Me.ndtp購入日.Location = New System.Drawing.Point(139, 254)
+        Me.ndtp購入日.Name = "ndtp購入日"
+        Me.ndtp購入日.NullValue = " <日付を選択>"
+        Me.ndtp購入日.Size = New System.Drawing.Size(150, 19)
+        Me.ndtp購入日.TabIndex = 16
+        Me.ndtp購入日.Value = New Date(CType(0, Long))
+        '
+        'ndtp終了日
+        '
+        Me.ndtp終了日.Location = New System.Drawing.Point(139, 222)
+        Me.ndtp終了日.Name = "ndtp終了日"
+        Me.ndtp終了日.NullValue = " <日付を選択>"
+        Me.ndtp終了日.Size = New System.Drawing.Size(150, 19)
+        Me.ndtp終了日.TabIndex = 15
+        Me.ndtp終了日.Value = New Date(CType(0, Long))
+        '
+        'ndtp開始日
+        '
+        Me.ndtp開始日.Location = New System.Drawing.Point(139, 190)
+        Me.ndtp開始日.Name = "ndtp開始日"
+        Me.ndtp開始日.NullValue = " <日付を選択>"
+        Me.ndtp開始日.Size = New System.Drawing.Size(150, 19)
+        Me.ndtp開始日.TabIndex = 14
+        Me.ndtp開始日.Value = New Date(CType(0, Long))
         '
         'Label9
         '
@@ -411,53 +458,6 @@ Partial Class frm24_サブスクリプション
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'ndtp購入日
-        '
-        Me.ndtp購入日.Location = New System.Drawing.Point(139, 254)
-        Me.ndtp購入日.Name = "ndtp購入日"
-        Me.ndtp購入日.NullValue = " <日付を選択>"
-        Me.ndtp購入日.Size = New System.Drawing.Size(150, 19)
-        Me.ndtp購入日.TabIndex = 16
-        Me.ndtp購入日.Value = New Date(CType(0, Long))
-        '
-        'ndtp終了日
-        '
-        Me.ndtp終了日.Location = New System.Drawing.Point(139, 222)
-        Me.ndtp終了日.Name = "ndtp終了日"
-        Me.ndtp終了日.NullValue = " <日付を選択>"
-        Me.ndtp終了日.Size = New System.Drawing.Size(150, 19)
-        Me.ndtp終了日.TabIndex = 15
-        Me.ndtp終了日.Value = New Date(CType(0, Long))
-        '
-        'ndtp開始日
-        '
-        Me.ndtp開始日.Location = New System.Drawing.Point(139, 190)
-        Me.ndtp開始日.Name = "ndtp開始日"
-        Me.ndtp開始日.NullValue = " <日付を選択>"
-        Me.ndtp開始日.Size = New System.Drawing.Size(150, 19)
-        Me.ndtp開始日.TabIndex = 14
-        Me.ndtp開始日.Value = New Date(CType(0, Long))
-        '
-        'chk削除済
-        '
-        Me.chk削除済.AutoSize = True
-        Me.chk削除済.Location = New System.Drawing.Point(139, 350)
-        Me.chk削除済.Margin = New System.Windows.Forms.Padding(3, 10, 3, 3)
-        Me.chk削除済.Name = "chk削除済"
-        Me.chk削除済.Size = New System.Drawing.Size(71, 16)
-        Me.chk削除済.TabIndex = 42
-        Me.chk削除済.Text = "削除済み"
-        Me.chk削除済.UseVisualStyleBackColor = True
-        '
-        'Label11
-        '
-        Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(18, 351)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(53, 12)
-        Me.Label11.TabIndex = 41
-        Me.Label11.Text = "削除区分"
-        '
         'chk削除済表示
         '
         Me.chk削除済表示.AutoSize = True
@@ -482,6 +482,7 @@ Partial Class frm24_サブスクリプション
         Me.Controls.Add(Me.Label1)
         Me.MinimumSize = New System.Drawing.Size(800, 500)
         Me.Name = "frm24_サブスクリプション"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "サブスクリプション登録"
         CType(Me.dgvサブスクリプション一覧, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)

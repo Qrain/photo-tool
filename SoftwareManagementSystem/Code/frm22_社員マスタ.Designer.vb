@@ -35,6 +35,7 @@ Partial Class frm22_社員マスタ
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chk削除済表示 = New System.Windows.Forms.CheckBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.chk削除済 = New System.Windows.Forms.CheckBox()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.chk権利者区分 = New System.Windows.Forms.CheckBox()
         Me.rbt法人 = New System.Windows.Forms.RadioButton()
@@ -50,7 +51,6 @@ Partial Class frm22_社員マスタ
         Me.Label2 = New System.Windows.Forms.Label()
         Me.btn更新 = New System.Windows.Forms.Button()
         Me.btn終了 = New System.Windows.Forms.Button()
-        Me.chk削除済 = New System.Windows.Forms.CheckBox()
         CType(Me.dgv社員一覧, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -211,6 +211,16 @@ Partial Class frm22_社員マスタ
         Me.GroupBox3.TabIndex = 8
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "３．詳細情報"
+        '
+        'chk削除済
+        '
+        Me.chk削除済.AutoSize = True
+        Me.chk削除済.Location = New System.Drawing.Point(110, 228)
+        Me.chk削除済.Name = "chk削除済"
+        Me.chk削除済.Size = New System.Drawing.Size(71, 16)
+        Me.chk削除済.TabIndex = 24
+        Me.chk削除済.Text = "削除済み"
+        Me.chk削除済.UseVisualStyleBackColor = True
         '
         'Label7
         '
@@ -377,16 +387,6 @@ Partial Class frm22_社員マスタ
         Me.btn終了.Text = "終 了"
         Me.btn終了.UseVisualStyleBackColor = True
         '
-        'chk削除済
-        '
-        Me.chk削除済.AutoSize = True
-        Me.chk削除済.Location = New System.Drawing.Point(110, 228)
-        Me.chk削除済.Name = "chk削除済"
-        Me.chk削除済.Size = New System.Drawing.Size(71, 16)
-        Me.chk削除済.TabIndex = 24
-        Me.chk削除済.Text = "削除済み"
-        Me.chk削除済.UseVisualStyleBackColor = True
-        '
         'frm22_社員マスタ
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
@@ -400,6 +400,7 @@ Partial Class frm22_社員マスタ
         Me.Controls.Add(Me.Label1)
         Me.MinimumSize = New System.Drawing.Size(700, 600)
         Me.Name = "frm22_社員マスタ"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "社員マスタ"
         CType(Me.dgv社員一覧, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
