@@ -2,6 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.Drawing
 Imports System.Security.Cryptography
+Imports System.Text
 Imports System.Windows.Forms
 Imports SPWinFormControls
 
@@ -167,6 +168,48 @@ Namespace Utlis
                 Return str
             End Using
         End Function
+
+        ''' <summary>
+        ''' 文字列をAESで暗号化又は復号化します
+        ''' </summary>
+        ''' <param name="text">対象文字列</param>
+        ''' <param name="encrypt">暗号化の場合はTrue、復号化の場合はFalse</param>
+        ''' <returns></returns>
+        Private Function EnDecrypt(text As String, encrypt As Boolean) As String
+            ' 128bitのIV（初期ベクタ）と256bitのKey（暗号キー）
+            Dim aesIV As String = "xGi#-~zG*hqa$u*C"
+            Dim aesKey As String = "mJjS//QqpAi+/kYC(_FKiHTEc|hT%yh!"
+            ' AES暗号化サービスプロバイダ
+            Dim aes As New AesCryptoServiceProvider()
+            aes.BlockSize = 128
+            aes.KeySize = 256
+            aes.IV = Encoding.UTF8.GetBytes(aesIV)
+            aes.Key = Encoding.UTF8.GetBytes(aesKey)
+            aes.Mode = CipherMode.CBC
+            aes.Padding = PaddingMode.PKCS7
+
+            Dim src As Byte()
+
+            If encrypt Then
+                ' 文字列をバイト型配列に変換
+                src = Encoding.Unicode.GetBytes(text)
+            Else
+                ' Base64形式の文字列からバイト型配列に変換
+                src = System.Convert.FromBase64String(text)
+            End If
+
+            ' 暗号化及び復号化する
+            Using ct As ICryptoTransform = If(encrypt, aes.CreateEncryptor, aes.CreateDecryptor())
+                Dim dest As Byte() = ct.TransformFinalBlock(src, 0, src.Length)
+                If encrypt Then
+                    ' バイト型配列からBase64形式の文字列に変換
+                    Return Convert.ToBase64String(dest)
+                Else
+                    Return Encoding.Unicode.GetString(dest)
+                End If
+            End Using
+        End Function
+
 
         ''' <summary>
         ''' バイト配列を16進数文字列に変換します。

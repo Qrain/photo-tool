@@ -115,6 +115,7 @@ Public Class 整理ツール
         End If
 
     End Sub
+
     Private Sub btn終了_Click(sender As Object, e As EventArgs) Handles btn終了.Click
         Me.Close()
     End Sub
@@ -131,7 +132,6 @@ Public Class 整理ツール
         If Not CheckValue() Then
             Return
         End If
-
 
         '整理対象のフォルダパス
         Dim spath = tbx整理対象.Text.Trim
@@ -307,7 +307,6 @@ Public Class 整理ツール
 
             End If
         End If
-
     End Sub
 
     Private Sub TextBox_DragEnter(ByVal sender As Object, ByVal e As DragEventArgs) Handles tbx整理対象.DragEnter, tbx出力先.DragEnter
