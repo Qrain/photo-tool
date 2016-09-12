@@ -1,0 +1,12 @@
+﻿【SSL有効化方法】
+http://takepara.blogspot.jp/2011/04/iis-expressssl.html
+
+
+【別IPアドレスでlocalhost接続する方法】
+http://architect-wat.hatenablog.jp/entry/20130513/1368425906
+
+
+
+【applicationhost.configへの追記情報】
+<binding protocol="https" bindingInformation="*:44300:192.168.56.1" />
+<binding protocol="http" bindingInformation="*:61675:192.168.88.121" />
